@@ -5,14 +5,13 @@ import React, {
   useCallback, useEffect, useLayoutEffect, useRef, useState,
 } from 'react';
 import {
-  View, StyleSheet, FlatList,Text, Dimensions, Image, Animated, RefreshControl, StatusBar, Platform,
+  View, StyleSheet, FlatList, Dimensions, Image, Animated, RefreshControl, StatusBar, Platform,
 } from 'react-native';
 import {
   useTheme, ActivityIndicator, List,
 } from 'react-native-paper';
 import { useDispatch, useSelector } from 'react-redux';
 import SideMenu from 'react-native-side-menu';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Modal from '../CommonComponents/Modal';
 import NoData from '../CommonComponents/NoData';
 import UserButton from '../CommonComponents/UserButton';
@@ -28,13 +27,9 @@ import SuccessModal from './components/SuccessModal';
 import DrawerMenu from './components/DrawerMenu';
 import MenuButton from '../CommonComponents/MenuButton';
 import { getSettings } from '../Settings/settingsSlice';
-import TermsOfService from '../TermsOfService';
-import FirstComponent from './components/topTabComponents/firstComponent';
-import SecondComponent from './components/topTabComponents/secondComponent';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const { height } = Dimensions.get('window');
-const HEADER_HEIGHT = height * 0.35;
+const HEADER_HEIGHT = height * 0.4;
 
 function Home({ navigation, route }) {
   const { colors } = useTheme();
@@ -50,6 +45,7 @@ function Home({ navigation, route }) {
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   const [isSuccesPaymentModalVisible, setIsSuccesPaymentModalVisible] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const toggleMenu = useCallback(() => {
     setIsMenuOpen(!isMenuOpen);
   }, [isMenuOpen]);
@@ -66,8 +62,6 @@ function Home({ navigation, route }) {
     outputRange: [HEADER_HEIGHT, 0],
     extrapolate: 'clamp',
   });
-
-  const Tab = createMaterialTopTabNavigator()
 
   const renderItem = useCallback(({ item }) => (
     <CategoryItem item={item} />
@@ -130,7 +124,6 @@ function Home({ navigation, route }) {
 
   useFocusEffect(onFocus);
 
-
   const menu = <DrawerMenu navigation={navigation} />;
 
   return (
@@ -158,35 +151,28 @@ function Home({ navigation, route }) {
           />
         )
           : (
-      <Animated.View style={styles.tabContainer(headerHeight)}>
 
-             <Tab.Navigator screenOptions={styles.tabScreenOptions} >
-              <Tab.Screen  name='Screen 1' component={(props)=><FirstComponent {...props} onScroll={onScroll}/>}/>
-              <Tab.Screen  name='Screen 2' component={(props)=><SecondComponent {...props} onScroll={onScroll}/>} />
-             </Tab.Navigator>
-      </Animated.View>
-             
-            // <FlatList
-            //   onScroll={onScroll}
-            //   stickyHeaderIndices={[0]}
-            //   ListHeaderComponent={() => (
-            //     <List.Subheader
-            //       style={{ backgroundColor: colors.surface }}
-            //     >Kategorije
-            //     </List.Subheader>
-            //   )}
-            //   keyExtractor={keyExtractor}
-            //   data={data}
-            //   renderItem={renderItem}
-            //   contentContainerStyle={styles.contentContainer}
-            //   ListEmptyComponent={() => (<NoData />)}
-            //   refreshControl={(
-            //     <RefreshControl
-            //       onRefresh={onRefresh}
-            //       refreshing={isLoading}
-            //     />
-            // )}
-            // />
+            <FlatList
+              onScroll={onScroll}
+              stickyHeaderIndices={[0]}
+              ListHeaderComponent={() => (
+                <List.Subheader
+                  style={{ backgroundColor: colors.surface }}
+                >Kategorije
+                </List.Subheader>
+              )}
+              keyExtractor={keyExtractor}
+              data={data}
+              renderItem={renderItem}
+              contentContainerStyle={styles.contentContainer}
+              ListEmptyComponent={() => (<NoData />)}
+              refreshControl={(
+                <RefreshControl
+                  onRefresh={onRefresh}
+                  refreshing={isLoading}
+                />
+            )}
+            />
           )}
         <Modal
           isVisible={isPaymentModalVisible}
@@ -225,18 +211,9 @@ const styles = StyleSheet.create({
     height: 200,
     width: 200,
   },
- tabContainer:(height)=>({
-  marginTop: height,
-  flexGrow: 1,
-  borderTopColor: "#f8f9fa",
-  borderTopWidth: 2
-
- }),
-
- tabScreenOptions:{
-  tabBarLabelStyle: { fontSize: 14 },
-  tabBarItemStyle: { height: 60 },
- }
+  contentContainer: {
+    paddingTop: HEADER_HEIGHT,
+  },
 
 });
 
