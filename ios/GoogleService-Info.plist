@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>359911567385-7911d3vdgot0n8m11bn81a2ag3f2os1o.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.359911567385-7911d3vdgot0n8m11bn81a2ag3f2os1o</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>359911567385-ohuegcniibfihncn02522s829ae76vj4.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAzPUk_QNOVuKQ4qDSq-BzaATHBHjd8Ln8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>359911567385</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.policequiz</string>
+	<key>PROJECT_ID</key>
+	<string>policequiz-581ea</string>
+	<key>STORAGE_BUCKET</key>
+	<string>policequiz-581ea.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:359911567385:ios:4f32fb215310602c543a88</string>
+</dict>
+</plist>
