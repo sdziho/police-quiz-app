@@ -1,41 +1,33 @@
 {
   "project_info": {
-    "project_number": "359911567385",
-    "project_id": "policequiz-581ea",
-    "storage_bucket": "policequiz-581ea.appspot.com"
+    "project_number": "874175987764",
+    "project_id": "policequiz-v2",
+    "storage_bucket": "policequiz-v2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:359911567385:android:b342c95e1f6fb486543a88",
+        "mobilesdk_app_id": "1:874175987764:android:31f51086261cc4f8964a61",
         "android_client_info": {
           "package_name": "com.policequiz"
         }
       },
       "oauth_client": [
         {
-          "client_id": "359911567385-ohuegcniibfihncn02522s829ae76vj4.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.policequiz",
-            "certificate_hash": "c4c891f52120aa7b1be10afd037b8931f47fbe38"
-          }
-        },
-        {
-          "client_id": "359911567385-607eg2b1manbtr2u9fgmrsfdo0si0516.apps.googleusercontent.com",
+          "client_id": "874175987764-s6jcd0u1v2h9gl1dc3sk1eatr0teq962.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCoXsphcjG43DnE9t2898zDnjUMKfAErcQ"
+          "current_key": "AIzaSyAxKCHV6dO3CYFDt_JnVEElxY-PkKo9ovU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "359911567385-607eg2b1manbtr2u9fgmrsfdo0si0516.apps.googleusercontent.com",
+              "client_id": "874175987764-s6jcd0u1v2h9gl1dc3sk1eatr0teq962.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
