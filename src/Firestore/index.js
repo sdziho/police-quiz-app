@@ -69,7 +69,17 @@ export const getCollection = async ({collection, condition, orderBy}) => {
 export const getMixedCollection = async ({collection, condition, orderBy}) => {
   let query = firestore().collection(collection);
   let subquery = firestore().collection(collection);
-
+  function shuffleArray(array) {
+    const shuffledArray = [...array];
+    for (let i = shuffledArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledArray[i], shuffledArray[j]] = [
+        shuffledArray[j],
+        shuffledArray[i],
+      ];
+    }
+    return shuffledArray;
+  }
   if (condition) {
     query = query.where(...condition[0]);
     subquery = subquery.where(...condition[1]);
@@ -114,8 +124,13 @@ export const getMixedCollection = async ({collection, condition, orderBy}) => {
           return categoryData.id == subcategoryData.id;
         });
       });
-
-      return combinedData;
+      let returnedValues = [];
+      for (let data of combinedData) {
+        primaryData = data;
+        primaryData.answers = shuffleArray(primaryData.answers);
+        returnedValues.push(primaryData);
+      }
+      return returnedValues;
     })
     .catch(error => {
       console.log('Error:', error);
