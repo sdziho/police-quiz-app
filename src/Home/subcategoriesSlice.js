@@ -4,41 +4,41 @@ import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {getCollection} from '../Firestore';
 import {STATUS_TYPES} from '../utils/constants';
 
-export const getCategories = createAsyncThunk(
-  'user/getCategories',
+export const getSubcategories = createAsyncThunk(
+  'user/getSubcategories',
   async (payload, {dispatch}) => {
     return getCollection({
-      collection: 'categories',
+      collection: 'subcategories',
     }).then(response => {
-      dispatch(setCategories(response));
+      dispatch(setSubcategories(response));
     });
   },
 );
 
-export const categoriesSlice = createSlice({
-  name: 'categories',
+export const subcategoriesSlice = createSlice({
+  name: 'subcategories',
   initialState: {
     data: null,
     status: STATUS_TYPES.PENDING,
   },
   reducers: {
-    setCategories: (state, action) => {
+    setSubcategories: (state, action) => {
       state.data = action.payload;
     },
   },
   extraReducers: {
-    [getCategories.pending]: state => {
+    [getSubcategories.pending]: state => {
       state.status = STATUS_TYPES.PENDING;
     },
-    [getCategories.fulfilled]: state => {
+    [getSubcategories.fulfilled]: state => {
       state.status = STATUS_TYPES.SUCCESS;
     },
-    [getCategories.rejected]: state => {
+    [getSubcategories.rejected]: state => {
       state.status = STATUS_TYPES.REJECT;
     },
   },
 });
 
-export const {setCategories} = categoriesSlice.actions;
+export const {setSubcategories} = subcategoriesSlice.actions;
 
-export default categoriesSlice.reducer;
+export default subcategoriesSlice.reducer;

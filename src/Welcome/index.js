@@ -1,38 +1,41 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {
-  useState, useCallback, useEffect, useLayoutEffect,
-} from 'react';
-import {
-  View, StyleSheet, TouchableOpacity,
-} from 'react-native';
-import {
-  TextInput, useTheme, Button, Text,
-} from 'react-native-paper';
+import React, {useState, useCallback, useEffect, useLayoutEffect} from 'react';
+import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {TextInput, useTheme, Button, Text} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { setFirestoreUser } from './userSlice';
-import { validateEmail, validatePhoneNumber } from '../utils/helpers';
+import {setFirestoreUser} from './userSlice';
+import {validateEmail, validatePhoneNumber} from '../utils/helpers';
 
-function Welcome({ navigation }) {
-  const { colors } = useTheme();
+function Welcome({navigation}) {
+  const {colors} = useTheme();
   const dispatch = useDispatch();
-  const { data: user } = useSelector(state => state.user) ?? {};
+  const {data: user} = useSelector(state => state.user) ?? {};
   const {
-    firstName: stateFirstName, lastName: stateLastName, birhtDate: stateBirthDate, email: stateEmail, phoneNumber: statePhoneNumber, gender: stateGender, isPremium,
+    firstName: stateFirstName,
+    lastName: stateLastName,
+    birhtDate: stateBirthDate,
+    email: stateEmail,
+    phoneNumber: statePhoneNumber,
+    gender: stateGender,
+    isPremium,
   } = user ?? {};
 
   const [firstName, setFirstName] = useState(stateFirstName);
   const [lastName, setLasttName] = useState(stateLastName);
   const [birhtDate, setBirthDate] = useState(stateBirthDate);
-  const [birthString, setBirthString] = useState(stateBirthDate ? moment(stateBirthDate.seconds * 1000).format('DD.MM.YYYY.') : null);
+  const [birthString, setBirthString] = useState(
+    stateBirthDate
+      ? moment(stateBirthDate.seconds * 1000).format('DD.MM.YYYY.')
+      : null,
+  );
   const [email, setEmail] = useState(stateEmail);
   const [phoneNumber, setPhoneNumber] = useState(statePhoneNumber);
   const [gender, setGender] = useState(stateGender);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log({ isModalOpen });
 
   const onNextPress = useCallback(() => {
     const userObject = {
@@ -46,9 +49,19 @@ function Welcome({ navigation }) {
     };
     dispatch(setFirestoreUser(userObject));
     navigation.replace('Home');
-  }, [birhtDate, dispatch, email, firstName, gender, isPremium, lastName, navigation, phoneNumber]);
+  }, [
+    birhtDate,
+    dispatch,
+    email,
+    firstName,
+    gender,
+    isPremium,
+    lastName,
+    navigation,
+    phoneNumber,
+  ]);
 
-  const onConfirmDate = useCallback((dateObject) => {
+  const onConfirmDate = useCallback(dateObject => {
     setIsModalOpen(false);
     setBirthDate(dateObject);
     const string = moment(dateObject).format('DD.MM.YYYY.');
@@ -71,19 +84,27 @@ function Welcome({ navigation }) {
     setPhoneNumber(statePhoneNumber);
     setGender(stateGender);
     if (stateBirthDate) {
-      setBirthString(moment(stateBirthDate.seconds * 1000).format('DD.MM.YYYY.'));
+      setBirthString(
+        moment(stateBirthDate.seconds * 1000).format('DD.MM.YYYY.'),
+      );
     }
-  }, [stateBirthDate, stateEmail, stateFirstName, stateGender, stateLastName, statePhoneNumber]);
+  }, [
+    stateBirthDate,
+    stateEmail,
+    stateFirstName,
+    stateGender,
+    stateLastName,
+    statePhoneNumber,
+  ]);
 
   useEffect(() => {
     if (!user) return;
     navigation.setOptions({
-      headerLeft: (props) => (
+      headerLeft: props => (
         <TouchableOpacity
           {...props}
           style={styles.backButton}
-          onPress={() => navigation.pop()}
-        >
+          onPress={() => navigation.pop()}>
           <MaterialIcons name="arrow-back" size={25} color="black" />
         </TouchableOpacity>
       ),
@@ -91,12 +112,8 @@ function Welcome({ navigation }) {
   }, [navigation, user]);
 
   return (
-    <View
-      style={styles.mainContainer(colors.surface)}
-    >
-      <View
-        style={{ flex: 1 }}
-      >
+    <View style={styles.mainContainer(colors.surface)}>
+      <View style={{flex: 1}}>
         <TextInput
           label="Ime"
           mode="outlined"
@@ -136,32 +153,31 @@ function Welcome({ navigation }) {
           keyboardType="numeric"
           error={phoneNumber && !validatePhoneNumber(phoneNumber)}
         />
-        <View
-          style={{ ...styles.row, marginTop: 10 }}
-        >
+        <View style={{...styles.row, marginTop: 10}}>
           <Button
             mode="outlined"
-            style={styles.button(gender === 'm' ? colors.primary : colors.disabled)}
-            onPress={() => setGender('m')}
-          >
+            style={styles.button(
+              gender === 'm' ? colors.primary : colors.disabled,
+            )}
+            onPress={() => setGender('m')}>
             Muško
           </Button>
           <Button
             mode="outlined"
-            style={styles.button(gender === 'f' ? colors.primary : colors.disabled)}
-            onPress={() => setGender('f')}
-          >
+            style={styles.button(
+              gender === 'f' ? colors.primary : colors.disabled,
+            )}
+            onPress={() => setGender('f')}>
             Žensko
           </Button>
         </View>
-        <View style={{ marginTop: 10 }}>
-          <Text style={{ fontWeight: 'bold' }}>AKTIVNI PAKET: {!isPremium ? 'FREE' : 'PREMIUM'}</Text>
+        <View style={{marginTop: 10}}>
+          <Text style={{fontWeight: 'bold'}}>
+            AKTIVNI PAKET: {!isPremium ? 'FREE' : 'PREMIUM'}
+          </Text>
         </View>
       </View>
-      <Button
-        onPress={onNextPress}
-        mode="contained"
-      >
+      <Button onPress={onNextPress} mode="contained">
         Spremi
       </Button>
       <DatePicker

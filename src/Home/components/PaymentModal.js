@@ -1,21 +1,23 @@
 /* eslint-disable max-len */
 import React from 'react';
-import { View, StyleSheet, Linking } from 'react-native';
-import { Button, Text, useTheme } from 'react-native-paper';
+import {View, StyleSheet, Linking} from 'react-native';
+import {Button, Text, useTheme} from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
-import { PAYMENT_API_URL } from '../../utils/constants';
+import {PAYMENT_API_URL} from '../../utils/constants';
 
-function PaymentModal({ hide, orderNumber, price }) {
-  const { colors } = useTheme();
-  console.log({ orderNumber });
+function PaymentModal({hide, orderNumber, price}) {
+  const {colors} = useTheme();
+
   const onBuyPress = async () => {
     try {
-      const { data } = await axios.post(`${PAYMENT_API_URL}/payment`, {
-        orderNumber,
-      }).catch((err) => {
-        console.log('err', err);
-      });
+      const {data} = await axios
+        .post(`${PAYMENT_API_URL}/payment`, {
+          orderNumber,
+        })
+        .catch(err => {
+          console.log('err', err);
+        });
       if (data) {
         Linking.openURL(data.payment_url);
       }
@@ -27,13 +29,14 @@ function PaymentModal({ hide, orderNumber, price }) {
 
   return (
     <View style={styles.mainContainer}>
-      <AntDesign
-        name="warning"
-        size={80}
-        color={colors.primary}
-      />
-      <Text style={styles.headline}>{`PREMIUM paket \nza samo ${price} KM`}</Text>
-      <Text style={styles.text}>Korištenjem besplatnog paketa Police Quiz aplikacije imate pristup svega 10% ukupnog broja pitanja. Aktivacijom PREMIUM paketa dobivate potpuni pristup svim pitanjima kako bi vaš uspjeh na testu bio zagarantovan! </Text>
+      <AntDesign name="warning" size={80} color={colors.primary} />
+      <Text
+        style={styles.headline}>{`PREMIUM paket \nza samo ${price} KM`}</Text>
+      <Text style={styles.text}>
+        Korištenjem besplatnog paketa Police Quiz aplikacije imate pristup svega
+        10% ukupnog broja pitanja. Aktivacijom PREMIUM paketa dobivate potpuni
+        pristup svim pitanjima kako bi vaš uspjeh na testu bio zagarantovan!{' '}
+      </Text>
       <Button onPress={onBuyPress} style={styles.button}>
         Aktiviraj PREMIUM paket
       </Button>

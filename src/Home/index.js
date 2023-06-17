@@ -1,49 +1,65 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/no-unstable-nested-components */
-import { useFocusEffect } from '@react-navigation/native';
+import {useFocusEffect} from '@react-navigation/native';
 import React, {
-  useCallback, useEffect, useLayoutEffect, useRef, useState,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
 } from 'react';
 import {
-  View, StyleSheet, FlatList, Dimensions, Image, Animated, RefreshControl, StatusBar, Platform,
+  View,
+  StyleSheet,
+  FlatList,
+  Dimensions,
+  Image,
+  Animated,
+  RefreshControl,
+  StatusBar,
+  Platform,
 } from 'react-native';
-import {
-  useTheme, ActivityIndicator, List,
-} from 'react-native-paper';
-import { useDispatch, useSelector } from 'react-redux';
+import {useTheme, ActivityIndicator, List} from 'react-native-paper';
+import {useDispatch, useSelector} from 'react-redux';
 import SideMenu from 'react-native-side-menu';
 import Modal from '../CommonComponents/Modal';
 import NoData from '../CommonComponents/NoData';
 import UserButton from '../CommonComponents/UserButton';
-import { resetAds } from '../Questions/adsSlice';
-import { resetQuestions } from '../Questions/questionsSlice';
-import { STATUS_TYPES } from '../utils/constants';
-import { randomIntFromInterval, replaceAll } from '../utils/helpers';
-import { setFirestoreUser } from '../Welcome/userSlice';
-import { getCategories } from './categoriesSlice';
+import {resetAds} from '../Questions/adsSlice';
+import {resetQuestions} from '../Questions/questionsSlice';
+import {STATUS_TYPES} from '../utils/constants';
+import {randomIntFromInterval, replaceAll} from '../utils/helpers';
+import {setFirestoreUser} from '../Welcome/userSlice';
+import {getCategories} from './categoriesSlice';
+import {getSubcategories} from './subcategoriesSlice';
 import CategoryItem from './components/CategoryItem';
 import PaymentModal from './components/PaymentModal';
 import SuccessModal from './components/SuccessModal';
 import DrawerMenu from './components/DrawerMenu';
 import MenuButton from '../CommonComponents/MenuButton';
-import { getSettings } from '../Settings/settingsSlice';
+import {getSettings} from '../Settings/settingsSlice';
 
-const { height } = Dimensions.get('window');
+const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
 
-function Home({ navigation, route }) {
-  const { colors } = useTheme();
+function Home({navigation, route}) {
+  const {colors} = useTheme();
   const dispatch = useDispatch();
-  const { data, status } = useSelector(state => state.categories);
+  const {data, status} = useSelector(state => state.categories);
+
   const user = useSelector(state => state.user.data);
-  const { paymentSettings } = useSelector(state => state.settings.data) ?? {};
-  const { isPremium, id } = user ?? {};
+  const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
+  const {isPremium, id} = user ?? {};
   const isLoading = status === STATUS_TYPES.PENDING;
 
-  const orderNumber = `${replaceAll(id, '-', '')}_${randomIntFromInterval(100000, 999999)}`;
+  const orderNumber = `${replaceAll(id, '-', '')}_${randomIntFromInterval(
+    100000,
+    999999,
+  )}`;
 
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
-  const [isSuccesPaymentModalVisible, setIsSuccesPaymentModalVisible] = useState(false);
+  const [isSuccesPaymentModalVisible, setIsSuccesPaymentModalVisible] =
+    useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = useCallback(() => {
@@ -53,8 +69,8 @@ function Home({ navigation, route }) {
   const offset = useRef(new Animated.Value(0)).current;
 
   const onScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { y: offset } } }],
-    { useNativeDriver: false },
+    [{nativeEvent: {contentOffset: {y: offset}}}],
+    {useNativeDriver: false},
   );
 
   const headerHeight = offset.interpolate({
@@ -63,35 +79,39 @@ function Home({ navigation, route }) {
     extrapolate: 'clamp',
   });
 
-  const renderItem = useCallback(({ item }) => (
-    <CategoryItem item={item} />
-  ), []);
+  const renderItem = useCallback(({item}) => {
+    return <CategoryItem item={item} />;
+  }, []);
 
-  const keyExtractor = useCallback((item) => item.id, []);
+  const keyExtractor = useCallback(item => item.id, []);
 
   const onRefresh = useCallback(() => {
     dispatch(getCategories());
+    dispatch(getSubcategories());
     dispatch(getSettings());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(getCategories());
+    dispatch(getSubcategories());
     dispatch(getSettings());
   }, [dispatch]);
 
   useEffect(() => {
-    const { status } = route.params ?? {};
-    console.log({ status });
+    const {status} = route.params ?? {};
+
     if (status === 'success') {
-      dispatch(setFirestoreUser({
-        isPremium: true,
-        paymentDetails: {
-          orderNumber,
-          createdAt: new Date(),
-        },
-      }));
+      dispatch(
+        setFirestoreUser({
+          isPremium: true,
+          paymentDetails: {
+            orderNumber,
+            createdAt: new Date(),
+          },
+        }),
+      );
       setIsSuccesPaymentModalVisible(true);
-      navigation.setParams({ status: null });
+      navigation.setParams({status: null});
     }
   }, [dispatch, navigation, orderNumber, route.params, user]);
 
@@ -108,12 +128,17 @@ function Home({ navigation, route }) {
         setIsPaymentModalVisible(false);
       }
     })();
-  }, [isPremium, paymentSettings?.isEnabled, paymentSettings?.isEnabledAndroid, paymentSettings?.isEnabledApple]);
+  }, [
+    isPremium,
+    paymentSettings?.isEnabled,
+    paymentSettings?.isEnabledAndroid,
+    paymentSettings?.isEnabledApple,
+  ]);
 
   useLayoutEffect(() => {
     navigation.setOptions({
-      headerRight: () => (<UserButton />),
-      headerLeft: () => (<MenuButton onPress={toggleMenu} />),
+      headerRight: () => <UserButton />,
+      headerLeft: () => <MenuButton onPress={toggleMenu} />,
     });
   }, [navigation, toggleMenu]);
 
@@ -128,16 +153,9 @@ function Home({ navigation, route }) {
 
   return (
     <SideMenu isOpen={isMenuOpen} menu={menu}>
-      <View
-        style={styles.mainContainer(colors.surface)}
-      >
-        <StatusBar
-          backgroundColor={colors.surface}
-          barStyle="dark-content"
-        />
-        <Animated.View
-          style={styles.logoContainer(headerHeight)}
-        >
+      <View style={styles.mainContainer(colors.surface)}>
+        <StatusBar backgroundColor={colors.surface} barStyle="dark-content" />
+        <Animated.View style={styles.logoContainer(headerHeight)}>
           <Image
             source={require('../assets/pqLogo.png')}
             style={styles.logo}
@@ -146,38 +164,31 @@ function Home({ navigation, route }) {
         </Animated.View>
         {isLoading ? (
           <ActivityIndicator
-            style={{ flex: 1, paddingTop: HEADER_HEIGHT }}
+            style={{flex: 1, paddingTop: HEADER_HEIGHT}}
             size="small"
           />
-        )
-          : (
-
-            <FlatList
-              onScroll={onScroll}
-              stickyHeaderIndices={[0]}
-              ListHeaderComponent={() => (
-                <List.Subheader
-                  style={{ backgroundColor: colors.surface }}
-                >Kategorije
-                </List.Subheader>
-              )}
-              keyExtractor={keyExtractor}
-              data={data}
-              renderItem={renderItem}
-              contentContainerStyle={styles.contentContainer}
-              ListEmptyComponent={() => (<NoData />)}
-              refreshControl={(
-                <RefreshControl
-                  onRefresh={onRefresh}
-                  refreshing={isLoading}
-                />
+        ) : (
+          <FlatList
+            onScroll={onScroll}
+            stickyHeaderIndices={[0]}
+            ListHeaderComponent={() => (
+              <List.Subheader style={{backgroundColor: colors.surface}}>
+                Kategorije
+              </List.Subheader>
             )}
-            />
-          )}
+            keyExtractor={keyExtractor}
+            data={data}
+            renderItem={renderItem}
+            contentContainerStyle={styles.contentContainer}
+            ListEmptyComponent={() => <NoData />}
+            refreshControl={
+              <RefreshControl onRefresh={onRefresh} refreshing={isLoading} />
+            }
+          />
+        )}
         <Modal
           isVisible={isPaymentModalVisible}
-          hideModal={() => setIsPaymentModalVisible(false)}
-        >
+          hideModal={() => setIsPaymentModalVisible(false)}>
           <PaymentModal
             orderNumber={orderNumber}
             price={paymentSettings?.price}
@@ -186,8 +197,7 @@ function Home({ navigation, route }) {
         </Modal>
         <Modal
           isVisible={isSuccesPaymentModalVisible}
-          hideModal={() => setIsSuccesPaymentModalVisible(false)}
-        >
+          hideModal={() => setIsSuccesPaymentModalVisible(false)}>
           <SuccessModal />
         </Modal>
       </View>
@@ -200,7 +210,7 @@ const styles = StyleSheet.create({
     backgroundColor,
     flex: 1,
   }),
-  logoContainer: (height) => ({
+  logoContainer: height => ({
     height,
     justifyContent: 'center',
     alignItems: 'center',
@@ -214,7 +224,6 @@ const styles = StyleSheet.create({
   contentContainer: {
     paddingTop: HEADER_HEIGHT,
   },
-
 });
 
 export default Home;

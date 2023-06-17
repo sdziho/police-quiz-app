@@ -1,10 +1,9 @@
-import {
-  combineReducers, configureStore,
-} from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
+import {combineReducers, configureStore} from '@reduxjs/toolkit';
+import {persistStore, persistReducer} from 'redux-persist';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserReducer from '../Welcome/userSlice';
 import CategoriesReducer from '../Home/categoriesSlice';
+import SubcategoriesReducer from '../Home/subcategoriesSlice';
 import QuestionsReducer from '../Questions/questionsSlice';
 import AdsReducer from '../Questions/adsSlice';
 import SettingsSlice from '../Settings/settingsSlice';
@@ -12,6 +11,7 @@ import SettingsSlice from '../Settings/settingsSlice';
 const appReducer = combineReducers({
   user: UserReducer,
   categories: CategoriesReducer,
+  subcategories: SubcategoriesReducer,
   questions: QuestionsReducer,
   ads: AdsReducer,
   settings: SettingsSlice,
@@ -34,11 +34,12 @@ if (__DEV__) {
 
 const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
-    serializableCheck: false,
-  }).concat(middlewares),
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat(middlewares),
 });
 
 const persistor = persistStore(store);
 
-export { store, persistor };
+export {store, persistor};
