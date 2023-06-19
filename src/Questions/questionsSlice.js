@@ -7,10 +7,12 @@ import {FREE_USER_QUESTIONS_PERCENTAGE, STATUS_TYPES} from '../utils/constants';
 export const getQuestions = createAsyncThunk(
   'user/getQuestions',
   async (
-    {categoryId, isForInspector, isForPoliceman, isPremium},
+    {categoryId, subcategoryId, isForInspector, isForPoliceman, isPremium},
     {dispatch},
   ) => {
     const conditions = [['categories', 'array-contains-any', [categoryId]]];
+    if (subcategoryId != 'TEST')
+      conditions.push(['subcategories', 'array-contains-any', [subcategoryId]]);
     if (isForInspector) {
       conditions.push(['isForInspector', '==', isForInspector]);
     }
@@ -24,7 +26,9 @@ export const getQuestions = createAsyncThunk(
       condition: conditions,
     }).then(response => {
       if (isPremium) {
-        dispatch(setQuestions(response));
+        if (subcategoryId == 'TEST')
+          dispatch(setQuestions(response.slice(0, 50)));
+        else dispatch(setQuestions(response));
       } else {
         const indexAtPercengate = Math.round(
           (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,

@@ -8,10 +8,10 @@ import {useDispatch, useSelector} from 'react-redux';
 import {getAds} from '../../Questions/adsSlice';
 import {getQuestions} from '../../Questions/questionsSlice';
 
-function SubcategoryItem(item) {
-  console.log(item);
-  const {isPoliceman, isInspector} = item ?? {};
-  const {name, hasSubcategory, id} = item.item ?? {};
+function SubcategoryItem(props) {
+  const {item, hasSubcategory, categoryId} = props ?? {};
+
+  //const {name, hasSubcategory, id} = item.item ?? {};
   const subcategoriesData = useSelector(state => state.subcategories.data);
 
   const dispatch = useDispatch();
@@ -30,6 +30,7 @@ function SubcategoryItem(item) {
     }
   }, [expanded, hasSubcategory, onPress]);
   const nameExtractor = useCallback(item => {
+    if (item == 'TEST') return item;
     return subcategoriesData.find(element => {
       return element.id == item;
     }).name;
@@ -37,7 +38,8 @@ function SubcategoryItem(item) {
   const onPress = useCallback(
     ({isForInspector, isForPoliceman}) => {
       const params = {
-        categoryId: id,
+        categoryId: categoryId,
+        subcategoryId: item,
         ...(isForInspector && {isForInspector}),
         ...(isForPoliceman && {isForPoliceman}),
         isPremium,
@@ -46,13 +48,14 @@ function SubcategoryItem(item) {
       dispatch(getAds());
       navigation.navigate('Questions');
     },
-    [dispatch, id, isPremium, navigation],
+    [dispatch, categoryId, isPremium, navigation, item],
   );
 
   return (
     <List.Accordion
       title={nameExtractor(item)}
-      left={props => <List.Icon {...props} icon="record" />}
+      left={props => <List.Icon {...props} icon="equal" />}
+      style={{backgroundColor: colors.surface}}
       right={props => (
         <List.Icon
           {...props}
