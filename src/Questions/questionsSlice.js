@@ -25,7 +25,6 @@ export const getQuestions = createAsyncThunk(
         collection: 'questions',
         condition: conditions,
       }).then(response => {
-        console.log(response);
         if (isPremium) {
           if (subcategoryId == 'TEST')
             dispatch(setQuestions(response.slice(0, 50)));

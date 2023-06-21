@@ -56,7 +56,7 @@ function CategoryItem({item}) {
         ...(isForPoliceman && {isForPoliceman}),
         isPremium,
       };
-      console.log(params);
+
       dispatch(getQuestions(params));
       dispatch(getAds());
       navigation.navigate('Questions');
