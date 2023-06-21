@@ -7,6 +7,7 @@ import SubcategoriesReducer from '../Home/subcategoriesSlice';
 import QuestionsReducer from '../Questions/questionsSlice';
 import AdsReducer from '../Questions/adsSlice';
 import SettingsSlice from '../Settings/settingsSlice';
+import NotificationsReducer from '../Notifications/notificationsSlice';
 
 const appReducer = combineReducers({
   user: UserReducer,
@@ -15,6 +16,7 @@ const appReducer = combineReducers({
   questions: QuestionsReducer,
   ads: AdsReducer,
   settings: SettingsSlice,
+  notifications: NotificationsReducer,
 });
 
 const persistConfig = {

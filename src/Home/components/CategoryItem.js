@@ -24,7 +24,7 @@ const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
 function CategoryItem({item}) {
   const {name, hasSubcategory, id, subcategories} = item ?? {};
-
+  const notifications = useSelector(state => state.notifications);
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {isPremium} = useSelector(state => state.user.data) ?? {};
@@ -45,11 +45,7 @@ function CategoryItem({item}) {
     dispatch(getSettings());
   }, [dispatch]);
   const handlePress = useCallback(() => {
-    if (!hasSubcategory) {
-      onPress({});
-    } else {
-      setExpanded(!expanded);
-    }
+    setExpanded(!expanded);
   }, [expanded, hasSubcategory, onPress]);
 
   const onPress = useCallback(
@@ -60,6 +56,7 @@ function CategoryItem({item}) {
         ...(isForPoliceman && {isForPoliceman}),
         isPremium,
       };
+      console.log(params);
       dispatch(getQuestions(params));
       dispatch(getAds());
       navigation.navigate('Questions');
@@ -78,32 +75,44 @@ function CategoryItem({item}) {
   }, []);
 
   return (
-    <>
-      <List.Accordion
-        title={name}
-        left={props => <List.Icon {...props} icon="record" />}
-        right={props => (
-          <List.Icon
-            {...props}
-            icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}
-          />
-        )}
-        expanded={expanded}
-        onPress={handlePress}>
-        <FlatList
-          onScroll={onScroll}
-          stickyHeaderIndices={[0]}
-          keyExtractor={keyExtractor}
-          data={[...subcategories, 'TEST']}
-          renderItem={renderItem}
-          contentContainerStyle={styles.contentContainer}
-          ListEmptyComponent={() => <NoData />}
-          refreshControl={
-            <RefreshControl onRefresh={onRefresh} refreshing={isLoading} />
-          }
+    <List.Accordion
+      title={name}
+      left={props => <List.Icon {...props} icon="record" />}
+      right={props => (
+        <List.Icon
+          {...props}
+          icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}
         />
-      </List.Accordion>
-    </>
+      )}
+      expanded={expanded}
+      onPress={handlePress}>
+      {notifications.data.map((item, index) => {
+        const nowInSeconds = Math.floor(Date.now() / 1000);
+
+        if (
+          item.category == id &&
+          item.startingAt._seconds < nowInSeconds &&
+          item.endingAt._seconds > nowInSeconds
+        )
+          return (
+            <View style={styles.container}>
+              <Text style={styles.message}>{item.message}</Text>
+            </View>
+          );
+      })}
+      <FlatList
+        onScroll={onScroll}
+        stickyHeaderIndices={[0]}
+        keyExtractor={keyExtractor}
+        data={[...subcategories, 'TEST']}
+        renderItem={renderItem}
+        contentContainerStyle={styles.contentContainer}
+        ListEmptyComponent={() => <NoData />}
+        refreshControl={
+          <RefreshControl onRefresh={onRefresh} refreshing={isLoading} />
+        }
+      />
+    </List.Accordion>
   );
 }
 const styles = StyleSheet.create({
@@ -126,6 +135,17 @@ const styles = StyleSheet.create({
     color: testColor,
     fontWeight: 'bold',
   }),
-  itemContainer: {},
+  container: {
+    backgroundColor: '#e5f4f9',
+    borderRadius: 14,
+    padding: 10,
+    marginRight: 5,
+    marginLeft: 5,
+    marginBottom: 3,
+  },
+  message: {
+    color: '#005a76',
+    paddingRight: 15,
+  },
 });
 export default CategoryItem;

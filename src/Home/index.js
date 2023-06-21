@@ -38,6 +38,7 @@ import SuccessModal from './components/SuccessModal';
 import DrawerMenu from './components/DrawerMenu';
 import MenuButton from '../CommonComponents/MenuButton';
 import {getSettings} from '../Settings/settingsSlice';
+import {getNotifications} from '../Notifications/notificationsSlice';
 
 const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
@@ -80,6 +81,7 @@ function Home({navigation, route}) {
   });
 
   const renderItem = useCallback(({item}) => {
+    console.log(item);
     return <CategoryItem item={item} />;
   }, []);
 
@@ -95,6 +97,7 @@ function Home({navigation, route}) {
     dispatch(getCategories());
     dispatch(getSubcategories());
     dispatch(getSettings());
+    dispatch(getNotifications());
   }, [dispatch]);
 
   useEffect(() => {
@@ -150,6 +153,15 @@ function Home({navigation, route}) {
   useFocusEffect(onFocus);
 
   const menu = <DrawerMenu navigation={navigation} />;
+  useEffect(() => {
+    if (!isPremium) {
+      //pogkedat kad se runa na androidu
+      const timer = setInterval(() => {
+        setIsPaymentModalVisible(true);
+      }, 1000 * 60 * 2);
+      return () => clearInterval(timer);
+    }
+  }, [isPremium, isPaymentModalVisible]);
 
   return (
     <SideMenu isOpen={isMenuOpen} menu={menu}>

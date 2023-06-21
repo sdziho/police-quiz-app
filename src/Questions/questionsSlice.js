@@ -1,7 +1,7 @@
 /* eslint-disable no-plusplus */
 /* eslint-disable no-param-reassign */
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
-import {getMixedCollection} from '../Firestore';
+import {getMixedCollection, getCollection} from '../Firestore';
 import {FREE_USER_QUESTIONS_PERCENTAGE, STATUS_TYPES} from '../utils/constants';
 
 export const getQuestions = createAsyncThunk(
@@ -20,22 +20,40 @@ export const getQuestions = createAsyncThunk(
     if (isForPoliceman) {
       conditions.push(['isForPoliceman', '==', isForPoliceman]);
     }
-
-    return getMixedCollection({
-      collection: 'questions',
-      condition: conditions,
-    }).then(response => {
-      if (isPremium) {
-        if (subcategoryId == 'TEST')
-          dispatch(setQuestions(response.slice(0, 50)));
-        else dispatch(setQuestions(response));
-      } else {
-        const indexAtPercengate = Math.round(
-          (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,
-        );
-        dispatch(setQuestions(response.slice(0, indexAtPercengate)));
-      }
-    });
+    if (conditions.length > 1) {
+      return getMixedCollection({
+        collection: 'questions',
+        condition: conditions,
+      }).then(response => {
+        console.log(response);
+        if (isPremium) {
+          if (subcategoryId == 'TEST')
+            dispatch(setQuestions(response.slice(0, 50)));
+          else dispatch(setQuestions(response));
+        } else {
+          const indexAtPercengate = Math.round(
+            (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,
+          );
+          dispatch(setQuestions(response.slice(0, indexAtPercengate)));
+        }
+      });
+    } else {
+      return getCollection({
+        collection: 'questions',
+        condition: conditions,
+      }).then(response => {
+        if (isPremium) {
+          if (subcategoryId == 'TEST')
+            dispatch(setQuestions(response.slice(0, 50)));
+          else dispatch(setQuestions(response));
+        } else {
+          const indexAtPercengate = Math.round(
+            (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,
+          );
+          dispatch(setQuestions(response.slice(0, indexAtPercengate)));
+        }
+      });
+    }
   },
 );
 
