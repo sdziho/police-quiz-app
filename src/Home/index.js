@@ -52,7 +52,6 @@ function Home({navigation, route}) {
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
   const {isPremium, id} = user ?? {};
   const isLoading = status === STATUS_TYPES.PENDING;
-
   const orderNumber = `${replaceAll(id, '-', '')}_${randomIntFromInterval(
     100000,
     999999,
@@ -81,7 +80,6 @@ function Home({navigation, route}) {
   });
 
   const renderItem = useCallback(({item}) => {
-    console.log(item);
     return <CategoryItem item={item} />;
   }, []);
 
@@ -174,7 +172,7 @@ function Home({navigation, route}) {
             resizeMode="contain"
           />
         </Animated.View>
-        {isLoading ? (
+        {isLoading && data ? (
           <ActivityIndicator
             style={{flex: 1, paddingTop: HEADER_HEIGHT}}
             size="small"

@@ -19,11 +19,14 @@ import {getSubcategories} from '../subcategoriesSlice';
 import {getSettings} from '../../Settings/settingsSlice';
 import {STATUS_TYPES} from '../../utils/constants';
 import SubcategoryItem from './SubcategoryItem';
+import NoData from '../../CommonComponents/NoData';
 
 const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
 function CategoryItem({item}) {
   const {name, hasSubcategory, id, subcategories} = item ?? {};
+  let subcategoryData = subcategories;
+  if (!subcategories) subcategoryData = [];
   const notifications = useSelector(state => state.notifications);
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -104,7 +107,7 @@ function CategoryItem({item}) {
         onScroll={onScroll}
         stickyHeaderIndices={[0]}
         keyExtractor={keyExtractor}
-        data={[...subcategories, 'TEST']}
+        data={[...subcategoryData, 'TEST']}
         renderItem={renderItem}
         contentContainerStyle={styles.contentContainer}
         ListEmptyComponent={() => <NoData />}

@@ -1,9 +1,9 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { useSelector } from 'react-redux';
+import React, {useEffect, useLayoutEffect, useState} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import {useSelector} from 'react-redux';
 import Welcome from '../Welcome';
-import { commonNavigationOptions, linking } from './settings';
+import {commonNavigationOptions, linking} from './settings';
 import Home from '../Home';
 import Questions from '../Questions';
 import TermsOfService from '../TermsOfService';
@@ -12,7 +12,7 @@ import About from '../About';
 const Stack = createStackNavigator();
 
 function MainNavigator() {
-  const { data } = useSelector(state => state.user) ?? {};
+  const {data} = useSelector(state => state.user) ?? {};
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -26,8 +26,7 @@ function MainNavigator() {
     <NavigationContainer linking={linking}>
       <Stack.Navigator
         screenOptions={commonNavigationOptions}
-        initialRouteName={data ? 'Home' : 'Welcome'}
-      >
+        initialRouteName={data ? 'Home' : 'Welcome'}>
         <Stack.Screen
           name="Welcome"
           component={Welcome}
