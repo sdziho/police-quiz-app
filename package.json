@@ -5,6 +5,8 @@
   "scripts": {
     "android": "react-native run-android",
     "android:clean": "cd android && ./gradlew clean && cd .. && react-native run-android",
+    "android:release":"cp release-google-services.json android/app && cd android/app && rm -f google-services.json && mv release-google-services.json google-services.json && cd .. && ./gradlew clean && cd .. && react-native run-android",
+    "android:dev":"cp dev-google-services.json android/app && cd android/app && rm -f google-services.json && mv dev-google-services.json google-services.json && cd .. && ./gradlew clean && cd .. && react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",

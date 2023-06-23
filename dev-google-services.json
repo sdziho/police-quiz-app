@@ -1,0 +1,39 @@
+{
+    "project_info": {
+      "project_number": "874175987764",
+      "project_id": "policequiz-v2",
+      "storage_bucket": "policequiz-v2.appspot.com"
+    },
+    "client": [
+      {
+        "client_info": {
+          "mobilesdk_app_id": "1:874175987764:android:31f51086261cc4f8964a61",
+          "android_client_info": {
+            "package_name": "com.policequiz"
+          }
+        },
+        "oauth_client": [
+          {
+            "client_id": "874175987764-s6jcd0u1v2h9gl1dc3sk1eatr0teq962.apps.googleusercontent.com",
+            "client_type": 3
+          }
+        ],
+        "api_key": [
+          {
+            "current_key": "AIzaSyAxKCHV6dO3CYFDt_JnVEElxY-PkKo9ovU"
+          }
+        ],
+        "services": {
+          "appinvite_service": {
+            "other_platform_oauth_client": [
+              {
+                "client_id": "874175987764-s6jcd0u1v2h9gl1dc3sk1eatr0teq962.apps.googleusercontent.com",
+                "client_type": 3
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "configuration_version": "1"
+  }

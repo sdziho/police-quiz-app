@@ -7,29 +7,42 @@ import {List, Text, useTheme} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAds} from '../../Questions/adsSlice';
 import {getQuestions} from '../../Questions/questionsSlice';
+import {randomIntFromInterval, replaceAll} from '../../utils/helpers';
+import Modal from '../../CommonComponents/Modal';
+import PaymentModal from './PaymentModal';
 
 function SubcategoryItem(props) {
   const {item, hasSubcategory, categoryId} = props ?? {};
+  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
+  const user = useSelector(state => state.user.data);
+  const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
+  const {isPremium, id} = user ?? {};
 
+  const orderNumber = `${replaceAll(id, '-', '')}_${randomIntFromInterval(
+    100000,
+    999999,
+  )}`;
   //const {name, hasSubcategory, id} = item.item ?? {};
   const subcategoriesData = useSelector(state => state.subcategories.data);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {isPremium} = useSelector(state => state.user.data) ?? {};
 
   const [expanded, setExpanded] = useState(false);
 
   const {colors} = useTheme();
 
   const handlePress = useCallback(() => {
-    if (!(!isPremium && item == 'TEST'))
+    if (!(!isPremium && item == 'TEST')) {
       if (!hasSubcategory) {
         onPress({});
       } else {
         setExpanded(!expanded);
       }
-  }, [expanded, hasSubcategory, onPress]);
+    } else {
+      setIsPaymentModalVisible(true);
+    }
+  }, [expanded, hasSubcategory, onPress, isPaymentModalVisible]);
   const nameExtractor = useCallback(item => {
     if (item == 'TEST') return item;
     return subcategoriesData.find(element => {
@@ -54,50 +67,61 @@ function SubcategoryItem(props) {
   );
 
   return (
-    <List.Accordion
-      title={nameExtractor(item)}
-      left={props => <List.Icon {...props} icon="equal" />}
-      style={{backgroundColor: colors.surface}}
-      right={props => {
-        let showLock = false;
-        if (!isPremium && item == 'TEST') showLock = true;
-        return (
-          <View style={styles.main}>
-            {showLock && (
-              <View style={styles.container}>
-                <Text style={styles.message}>PREMIUM</Text>
-              </View>
-            )}
-            <List.Icon
-              {...props}
-              icon={
-                showLock
-                  ? 'lock'
-                  : props.isExpanded
-                  ? 'chevron-down'
-                  : 'chevron-right'
-              }
+    <>
+      <List.Accordion
+        title={nameExtractor(item)}
+        left={props => <List.Icon {...props} icon="equal" />}
+        style={{backgroundColor: colors.surface}}
+        right={props => {
+          let showLock = false;
+          if (!isPremium && item == 'TEST') showLock = true;
+          return (
+            <View style={styles.main}>
+              {showLock && (
+                <View style={styles.container}>
+                  <Text style={styles.message}>PREMIUM</Text>
+                </View>
+              )}
+              <List.Icon
+                {...props}
+                icon={
+                  showLock
+                    ? 'lock'
+                    : props.isExpanded
+                    ? 'chevron-down'
+                    : 'chevron-right'
+                }
+              />
+            </View>
+          );
+        }}
+        expanded={expanded}
+        onPress={handlePress}>
+        {hasSubcategory ? (
+          <View>
+            <List.Item
+              onPress={() => onPress({isForInspector: true})}
+              style={{backgroundColor: colors.surface}}
+              title="Za inspektora"
+            />
+            <List.Item
+              onPress={() => onPress({isForPoliceman: true})}
+              style={{backgroundColor: colors.surface}}
+              title="Za policajca"
             />
           </View>
-        );
-      }}
-      expanded={expanded}
-      onPress={handlePress}>
-      {hasSubcategory ? (
-        <View>
-          <List.Item
-            onPress={() => onPress({isForInspector: true})}
-            style={{backgroundColor: colors.surface}}
-            title="Za inspektora"
-          />
-          <List.Item
-            onPress={() => onPress({isForPoliceman: true})}
-            style={{backgroundColor: colors.surface}}
-            title="Za policajca"
-          />
-        </View>
-      ) : null}
-    </List.Accordion>
+        ) : null}
+      </List.Accordion>
+      <Modal
+        isVisible={isPaymentModalVisible}
+        hideModal={() => setIsPaymentModalVisible(false)}>
+        <PaymentModal
+          orderNumber={orderNumber}
+          price={paymentSettings?.price}
+          hide={() => setIsPaymentModalVisible(false)}
+        />
+      </Modal>
+    </>
   );
 }
 const styles = StyleSheet.create({

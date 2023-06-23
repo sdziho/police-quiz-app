@@ -66,6 +66,37 @@ export const getCollection = async ({collection, condition, orderBy}) => {
   });
 };
 
+/* export const updateCollection = async () => {
+  let query = firestore().collection('questions');
+  query = query.where('categories', 'array-contains-any', [
+    'YdoMJHN3emtMRQtFoGIe',
+  ]);
+  //kFbYdXw46hckF2ROib60 opce znanje potkategorija
+  // ZDNcM28hUYNVLmNg6DvH   KATEGORIJA opce znanje
+
+  //------release------
+  //H4s4f2fXl5S6vvwLDaWU opce znanje potkategorija
+  // mNDk6XBaWgUe40w6KTqA   MUP PK kategorija
+  console.log('kveri', query);
+  return query.get().then(querySnapshot => {
+    querySnapshot.forEach(doc => {
+      console.log('data', doc);
+      // Access the array field you want to update
+      // let array = doc.data().subcategories;
+      //if (!array) array = []; 
+      let array = [];
+      // Add the new element to the array
+      array.push('H4s4f2fXl5S6vvwLDaWU');
+
+      // Update the document with the modified array
+      doc.ref.update({subcategories: array});
+
+      return array;
+    });
+  });
+}; 
+*/
+
 export const getMixedCollection = async ({collection, condition, orderBy}) => {
   let query = firestore().collection(collection);
   let subquery = firestore().collection(collection);

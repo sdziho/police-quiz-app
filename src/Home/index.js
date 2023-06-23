@@ -39,6 +39,7 @@ import DrawerMenu from './components/DrawerMenu';
 import MenuButton from '../CommonComponents/MenuButton';
 import {getSettings} from '../Settings/settingsSlice';
 import {getNotifications} from '../Notifications/notificationsSlice';
+import {updateCollection} from '../Firestore';
 
 const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
