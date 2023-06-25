@@ -10,7 +10,7 @@ import {
   FlatList,
   RefreshControl,
 } from 'react-native';
-import {List, Text, useTheme} from 'react-native-paper';
+import {Button, List, Modal, Text, useTheme} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {getAds} from '../../Questions/adsSlice';
 import {getQuestions} from '../../Questions/questionsSlice';
@@ -23,8 +23,9 @@ import NoData from '../../CommonComponents/NoData';
 
 const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
-function CategoryItem({item}) {
+function CategoryItem({item, notificationModal}) {
   const {name, hasSubcategory, id, subcategories} = item ?? {};
+
   let subcategoryData = subcategories;
   if (!subcategories) subcategoryData = [];
   const notifications = useSelector(state => state.notifications);
@@ -38,18 +39,34 @@ function CategoryItem({item}) {
   );
   const keyExtractor = useCallback(item => item.id, []);
   const [expanded, setExpanded] = useState(false);
-
   const subctg = useSelector(state => state.subcategories);
   const isLoading = subctg.status === STATUS_TYPES.PENDING;
-
   const onRefresh = useCallback(() => {
     dispatch(getCategories());
     dispatch(getSubcategories());
     dispatch(getSettings());
   }, [dispatch]);
   const handlePress = useCallback(() => {
-    setExpanded(!expanded);
-  }, [expanded, hasSubcategory, onPress]);
+    setExpanded(prevExpanded => {
+      const newExpanded = !prevExpanded;
+      notifications.data?.forEach((item, index) => {
+        const nowInSeconds = Math.floor(Date.now() / 1000);
+
+        if (
+          item.category === id &&
+          item.startingAt._seconds < nowInSeconds &&
+          item.endingAt._seconds > nowInSeconds
+        ) {
+          console.log(newExpanded);
+          if (newExpanded) {
+            notificationModal(item.message);
+          }
+        }
+      });
+
+      return newExpanded;
+    });
+  }, [id, notifications.data, notificationModal]);
 
   const onPress = useCallback(
     ({isForInspector, isForPoliceman}) => {
@@ -78,44 +95,32 @@ function CategoryItem({item}) {
   }, []);
 
   return (
-    <List.Accordion
-      title={name}
-      left={props => <List.Icon {...props} icon="record" />}
-      right={props => (
-        <List.Icon
-          {...props}
-          icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}
+    <>
+      <List.Accordion
+        title={name}
+        left={props => <List.Icon {...props} icon="record" />}
+        right={props => (
+          <List.Icon
+            {...props}
+            icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}
+          />
+        )}
+        expanded={expanded}
+        onPress={handlePress}>
+        <FlatList
+          onScroll={onScroll}
+          stickyHeaderIndices={[0]}
+          keyExtractor={keyExtractor}
+          data={[...subcategoryData, 'TEST']}
+          renderItem={renderItem}
+          contentContainerStyle={styles.contentContainer}
+          ListEmptyComponent={() => <NoData />}
+          refreshControl={
+            <RefreshControl onRefresh={onRefresh} refreshing={isLoading} />
+          }
         />
-      )}
-      expanded={expanded}
-      onPress={handlePress}>
-      {notifications.data.map((item, index) => {
-        const nowInSeconds = Math.floor(Date.now() / 1000);
-
-        if (
-          item.category == id &&
-          item.startingAt._seconds < nowInSeconds &&
-          item.endingAt._seconds > nowInSeconds
-        )
-          return (
-            <View style={styles.container}>
-              <Text style={styles.message}>{item.message}</Text>
-            </View>
-          );
-      })}
-      <FlatList
-        onScroll={onScroll}
-        stickyHeaderIndices={[0]}
-        keyExtractor={keyExtractor}
-        data={[...subcategoryData, 'TEST']}
-        renderItem={renderItem}
-        contentContainerStyle={styles.contentContainer}
-        ListEmptyComponent={() => <NoData />}
-        refreshControl={
-          <RefreshControl onRefresh={onRefresh} refreshing={isLoading} />
-        }
-      />
-    </List.Accordion>
+      </List.Accordion>
+    </>
   );
 }
 const styles = StyleSheet.create({
@@ -138,6 +143,9 @@ const styles = StyleSheet.create({
     color: testColor,
     fontWeight: 'bold',
   }),
+  modal: {
+    position: 'relative',
+  },
   container: {
     backgroundColor: '#e5f4f9',
     borderRadius: 14,
@@ -149,6 +157,24 @@ const styles = StyleSheet.create({
   message: {
     color: '#005a76',
     paddingRight: 15,
+  },
+  mainModalContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headline: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  text: {
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  button: {
+    marginTop: 20,
   },
 });
 export default CategoryItem;

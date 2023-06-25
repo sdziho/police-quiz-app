@@ -43,6 +43,7 @@ function SubcategoryItem(props) {
       setIsPaymentModalVisible(true);
     }
   }, [expanded, hasSubcategory, onPress, isPaymentModalVisible]);
+
   const nameExtractor = useCallback(item => {
     if (item == 'TEST') return item;
     return subcategoriesData.find(element => {
@@ -70,7 +71,8 @@ function SubcategoryItem(props) {
     <>
       <List.Accordion
         title={nameExtractor(item)}
-        left={props => <List.Icon {...props} icon="equal" />}
+        titleNumberOfLines={2}
+        left={props => <List.Icon {...props} icon="record" />}
         style={{backgroundColor: colors.surface}}
         right={props => {
           let showLock = false;
@@ -142,6 +144,21 @@ const styles = StyleSheet.create({
   message: {
     color: 'white',
     fontSize: 10,
+  },
+  customAccordionTitle: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    backgroundColor: 'red',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'no-wrap',
+    height: 100,
+    WebkitBoxOrient: 'vertical',
+    WebkitLineClamp: 2,
   },
 });
 export default SubcategoryItem;

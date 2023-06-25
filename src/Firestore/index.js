@@ -69,7 +69,11 @@ export const getCollection = async ({collection, condition, orderBy}) => {
 /* export const updateCollection = async () => {
   let query = firestore().collection('questions');
   query = query.where('categories', 'array-contains-any', [
-    'YdoMJHN3emtMRQtFoGIe',
+    'J0fA8k6BwHc2GZlUzWiT',
+    'l4KQdVW9NNbRmpLUgmUx',
+    'n6ChtYFu0OH9SumtFXDU',
+    'pXQDHyXTXo5kMIip6k6s',
+    'rV0yfxpJIm0VApzb4iYd',
   ]);
   //kFbYdXw46hckF2ROib60 opce znanje potkategorija
   // ZDNcM28hUYNVLmNg6DvH   KATEGORIJA opce znanje
@@ -77,16 +81,17 @@ export const getCollection = async ({collection, condition, orderBy}) => {
   //------release------
   //H4s4f2fXl5S6vvwLDaWU opce znanje potkategorija
   // mNDk6XBaWgUe40w6KTqA   MUP PK kategorija
-  console.log('kveri', query);
+
   return query.get().then(querySnapshot => {
     querySnapshot.forEach(doc => {
-      console.log('data', doc);
       // Access the array field you want to update
-      // let array = doc.data().subcategories;
-      //if (!array) array = []; 
-      let array = [];
+      let array = doc.data().subcategories;
+      if (!array) array = [];
+      //if (!array) array = [];
+      //let array = [];
       // Add the new element to the array
-      array.push('H4s4f2fXl5S6vvwLDaWU');
+      if (!array.includes('H4s4f2fXl5S6vvwLDaWU'))
+        array.push('H4s4f2fXl5S6vvwLDaWU');
 
       // Update the document with the modified array
       doc.ref.update({subcategories: array});
@@ -94,8 +99,7 @@ export const getCollection = async ({collection, condition, orderBy}) => {
       return array;
     });
   });
-}; 
-*/
+}; */
 
 export const getMixedCollection = async ({collection, condition, orderBy}) => {
   let query = firestore().collection(collection);

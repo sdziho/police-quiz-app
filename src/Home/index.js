@@ -18,8 +18,16 @@ import {
   RefreshControl,
   StatusBar,
   Platform,
+  Pressable,
+  TouchableOpacity,
 } from 'react-native';
-import {useTheme, ActivityIndicator, List} from 'react-native-paper';
+import {
+  useTheme,
+  ActivityIndicator,
+  List,
+  Text,
+  Button,
+} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import SideMenu from 'react-native-side-menu';
 import Modal from '../CommonComponents/Modal';
@@ -62,11 +70,25 @@ function Home({navigation, route}) {
   const [isSuccesPaymentModalVisible, setIsSuccesPaymentModalVisible] =
     useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  const [isNotificationModal, setIsNotificationModal] = useState(false);
+  const [items, setItems] = useState([]);
   const toggleMenu = useCallback(() => {
     setIsMenuOpen(!isMenuOpen);
   }, [isMenuOpen]);
 
+  const toggleNotificationModal = useCallback(
+    status => {
+      if (status.length > 0) {
+        setIsNotificationModal(true);
+        setItems(prevItems => {
+          const newItems = new Set(prevItems); // Create a new Set from the previous items
+          newItems.add(status); // Add the new item to the Set
+          return Array.from(newItems); // Convert the Set back to an array
+        });
+      }
+    },
+    [isNotificationModal, setIsNotificationModal],
+  );
   const offset = useRef(new Animated.Value(0)).current;
 
   const onScroll = Animated.event(
@@ -80,9 +102,14 @@ function Home({navigation, route}) {
     extrapolate: 'clamp',
   });
 
-  const renderItem = useCallback(({item}) => {
-    return <CategoryItem item={item} />;
-  }, []);
+  const renderItem = useCallback(
+    ({item}) => {
+      return (
+        <CategoryItem item={item} notificationModal={toggleNotificationModal} />
+      );
+    },
+    [toggleNotificationModal],
+  );
 
   const keyExtractor = useCallback(item => item.id, []);
 
@@ -101,7 +128,7 @@ function Home({navigation, route}) {
 
   useEffect(() => {
     const {status} = route.params ?? {};
-
+    //updateCollection();
     if (status === 'success') {
       dispatch(
         setFirestoreUser({
@@ -119,6 +146,7 @@ function Home({navigation, route}) {
 
   useEffect(() => {
     (async () => {
+      setIsPaymentModalVisible(false);
       if (!isPremium) {
         if (Platform.OS === 'android' && paymentSettings?.isEnabledAndroid) {
           setIsPaymentModalVisible(true);
@@ -211,6 +239,25 @@ function Home({navigation, route}) {
           hideModal={() => setIsSuccesPaymentModalVisible(false)}>
           <SuccessModal />
         </Modal>
+        <Modal
+          isVisible={isNotificationModal}
+          hideModal={() => setIsNotificationModal(false)}
+          style={styles.modal}>
+          <View style={styles.mainModalContainer}>
+            <Text style={styles.headline}>{`OBAVJEŠTENJE`}</Text>
+            {items.map((item, index) => (
+              <Text key={index} style={styles.text}>
+                {item}
+              </Text>
+            ))}
+
+            <Button
+              onPress={() => setIsNotificationModal(false)}
+              style={styles.button}>
+              Close
+            </Button>
+          </View>
+        </Modal>
       </View>
     </SideMenu>
   );
@@ -234,6 +281,36 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     paddingTop: HEADER_HEIGHT,
+  },
+  container: {
+    backgroundColor: '#e5f4f9',
+    borderRadius: 14,
+    padding: 10,
+    marginRight: 5,
+    marginLeft: 5,
+    marginBottom: 3,
+  },
+  message: {
+    color: '#005a76',
+    paddingRight: 15,
+  },
+  mainModalContainer: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headline: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  text: {
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  button: {
+    marginTop: 20,
   },
 });
 
