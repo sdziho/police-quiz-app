@@ -127,15 +127,27 @@ function Home({navigation, route}) {
   }, [dispatch]);
 
   useEffect(() => {
-    const {status} = route.params ?? {};
     //updateCollection();
+    const {status} = route.params ?? {};
+
+    const categoryIdRegex = /category=([^&]+)/;
+
+    const match = route.path?.match(categoryIdRegex);
+    if (match) console.log('match', match[1]);
+
+    const categories = user?.paymentDetails?.categories
+      ? [...user?.paymentDetails?.categories]
+      : [];
     if (status === 'success') {
+      categories.push(match[1]);
+      console.log(categories);
       dispatch(
         setFirestoreUser({
           isPremium: true,
           paymentDetails: {
             orderNumber,
             createdAt: new Date(),
+            categories,
           },
         }),
       );

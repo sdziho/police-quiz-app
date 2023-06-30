@@ -14,6 +14,7 @@ function PaymentModal({hide, orderNumber, price}) {
       const {data} = await axios
         .post(`${PAYMENT_API_URL}/payment`, {
           orderNumber,
+          price: 5000,
         })
         .catch(err => {
           console.log('err', err);

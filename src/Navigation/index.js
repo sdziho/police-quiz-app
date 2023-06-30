@@ -8,6 +8,7 @@ import Home from '../Home';
 import Questions from '../Questions';
 import TermsOfService from '../TermsOfService';
 import About from '../About';
+import Payment from '../Payment';
 
 const Stack = createStackNavigator();
 
@@ -60,6 +61,13 @@ function MainNavigator() {
           component={Questions}
           options={{
             title: 'Pitanje',
+          }}
+        />
+        <Stack.Screen
+          name="Payment"
+          component={Payment}
+          options={{
+            title: 'Postani PREMIUM član',
           }}
         />
       </Stack.Navigator>

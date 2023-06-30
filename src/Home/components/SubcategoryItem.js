@@ -16,7 +16,7 @@ function SubcategoryItem(props) {
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   const user = useSelector(state => state.user.data);
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
-  const {isPremium, id} = user ?? {};
+  const {isPremium, id, paymentDetails} = user ?? {};
 
   const orderNumber = `${replaceAll(id, '-', '')}_${randomIntFromInterval(
     100000,
@@ -58,6 +58,7 @@ function SubcategoryItem(props) {
         ...(isForInspector && {isForInspector}),
         ...(isForPoliceman && {isForPoliceman}),
         isPremium,
+        paymentDetails,
       };
 
       dispatch(getQuestions(params));
@@ -76,7 +77,9 @@ function SubcategoryItem(props) {
         style={{backgroundColor: colors.surface}}
         right={props => {
           let showLock = false;
-          if (!isPremium && item == 'TEST') showLock = true;
+          console.log(paymentDetails);
+          if (item == 'TEST' && !paymentDetails.categories.includes(categoryId))
+            showLock = true;
           return (
             <View style={styles.main}>
               {showLock && (

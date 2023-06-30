@@ -7,7 +7,14 @@ import {FREE_USER_QUESTIONS_PERCENTAGE, STATUS_TYPES} from '../utils/constants';
 export const getQuestions = createAsyncThunk(
   'user/getQuestions',
   async (
-    {categoryId, subcategoryId, isForInspector, isForPoliceman, isPremium},
+    {
+      categoryId,
+      subcategoryId,
+      isForInspector,
+      isForPoliceman,
+      isPremium,
+      paymentDetails,
+    },
     {dispatch},
   ) => {
     const conditions = [['categories', 'array-contains-any', [categoryId]]];
@@ -25,7 +32,8 @@ export const getQuestions = createAsyncThunk(
         collection: 'questions',
         condition: conditions,
       }).then(response => {
-        if (isPremium) {
+        console.log(paymentDetails.categories, categoryId);
+        if (isPremium && paymentDetails.categories.includes(categoryId)) {
           if (subcategoryId == 'TEST')
             dispatch(setQuestions(response.slice(0, 50)));
           else dispatch(setQuestions(response));
@@ -33,6 +41,8 @@ export const getQuestions = createAsyncThunk(
           const indexAtPercengate = Math.round(
             (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,
           );
+          console.log(indexAtPercengate);
+
           dispatch(setQuestions(response.slice(0, indexAtPercengate)));
         }
       });
@@ -41,7 +51,7 @@ export const getQuestions = createAsyncThunk(
         collection: 'questions',
         condition: conditions,
       }).then(response => {
-        if (isPremium) {
+        if (isPremium && paymentDetails.categories.includes(categoryId)) {
           if (subcategoryId == 'TEST')
             dispatch(setQuestions(response.slice(0, 50)));
           else dispatch(setQuestions(response));

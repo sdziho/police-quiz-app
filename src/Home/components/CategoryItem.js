@@ -31,7 +31,8 @@ function CategoryItem({item, notificationModal}) {
   const notifications = useSelector(state => state.notifications);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const {isPremium} = useSelector(state => state.user.data) ?? {};
+  const {isPremium, paymentDetails} =
+    useSelector(state => state.user.data) ?? {};
   const offset = useRef(new Animated.Value(0)).current;
   const onScroll = Animated.event(
     [{nativeEvent: {contentOffset: {y: offset}}}],
@@ -99,12 +100,26 @@ function CategoryItem({item, notificationModal}) {
       <List.Accordion
         title={name}
         left={props => <List.Icon {...props} icon="record" />}
-        right={props => (
-          <List.Icon
-            {...props}
-            icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}
-          />
-        )}
+        right={props => {
+          let showPremium = false;
+          if (isPremium && paymentDetails.categories.includes(id))
+            showPremium = true;
+          return (
+            <View style={styles.main}>
+              {showPremium && (
+                <View style={styles.premium}>
+                  <List.Icon {...props} icon={'diamond-stone'} />
+                  <Text style={styles.premiumText}>PREMIUM</Text>
+                  <Text style={styles.premiumSubtext}>DOSTUPAN</Text>
+                </View>
+              )}
+              <List.Icon
+                {...props}
+                icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}
+              />
+            </View>
+          );
+        }}
         expanded={expanded}
         onPress={handlePress}>
         <FlatList
@@ -128,6 +143,11 @@ const styles = StyleSheet.create({
     backgroundColor,
     flex: 1,
   }),
+  main: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   logoContainer: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -175,6 +195,18 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
+  },
+  premium: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  premiumText: {
+    fontSize: 6,
+    marginTop: -15,
+  },
+  premiumSubtext: {
+    fontSize: 6,
   },
 });
 export default CategoryItem;
