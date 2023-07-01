@@ -43,10 +43,12 @@ function Payment({navigation}) {
       999999,
     )}`;
     try {
-      let _price = paymentSettings.price;
-      if (selectedValue.price) _price = selectedValue.price;
-      let _category = 'ALL';
-      if (selectedValue.id) _category = 'ALL';
+      const _price = selectedValue.price
+        ? selectedValue.price
+        : paymentSettings.price;
+
+      const _category = selectedValue.id ? selectedValue.id : 'ALL';
+
       const {data} = await axios
         .post(`${PAYMENT_API_URL}/payment`, {
           orderNumber,

@@ -153,7 +153,7 @@ function Home({navigation, route}) {
       : [];
 
     if (status === 'success') {
-      if (match[1] == 'ALL') {
+      if (match[1] === 'ALL') {
         data.forEach(category => {
           if (!categories.includes(category.id)) categories.push(category.id);
         });
