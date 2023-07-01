@@ -120,6 +120,19 @@ function Home({navigation, route}) {
   }, [dispatch]);
 
   useEffect(() => {
+    const nowInSeconds = Math.floor(Date.now() / 1000);
+    const oneMonthInSeconds = 30 * 24 * 60 * 60; // 30 days * 24 hours * 60 minutes * 60 seconds
+    const expired =
+      nowInSeconds >
+      user?.paymentDetails.createdAt._seconds + oneMonthInSeconds;
+
+    if (expired) {
+      dispatch(
+        setFirestoreUser({
+          isPremium: false,
+        }),
+      );
+    }
     dispatch(getCategories());
     dispatch(getSubcategories());
     dispatch(getSettings());
@@ -128,19 +141,25 @@ function Home({navigation, route}) {
 
   useEffect(() => {
     //updateCollection();
+
     const {status} = route.params ?? {};
 
     const categoryIdRegex = /category=([^&]+)/;
 
     const match = route.path?.match(categoryIdRegex);
-    if (match) console.log('match', match[1]);
 
     const categories = user?.paymentDetails?.categories
       ? [...user?.paymentDetails?.categories]
       : [];
+
     if (status === 'success') {
-      categories.push(match[1]);
-      console.log(categories);
+      if (match[1] == 'ALL') {
+        data.forEach(category => {
+          if (!categories.includes(category.id)) categories.push(category.id);
+        });
+      }
+      if (!categories.includes(match[1])) categories.push(match[1]);
+
       dispatch(
         setFirestoreUser({
           isPremium: true,

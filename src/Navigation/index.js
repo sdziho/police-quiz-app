@@ -9,6 +9,7 @@ import Questions from '../Questions';
 import TermsOfService from '../TermsOfService';
 import About from '../About';
 import Payment from '../Payment';
+import Laws from '../Laws';
 
 const Stack = createStackNavigator();
 
@@ -61,6 +62,13 @@ function MainNavigator() {
           component={Questions}
           options={{
             title: 'Pitanje',
+          }}
+        />
+        <Stack.Screen
+          name="Laws"
+          component={Laws}
+          options={{
+            title: 'Zakoni',
           }}
         />
         <Stack.Screen

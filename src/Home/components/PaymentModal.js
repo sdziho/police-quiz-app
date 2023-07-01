@@ -5,27 +5,14 @@ import {Button, Text, useTheme} from 'react-native-paper';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import axios from 'axios';
 import {PAYMENT_API_URL} from '../../utils/constants';
+import {useNavigation} from '@react-navigation/native';
 
 function PaymentModal({hide, orderNumber, price}) {
+  const navigation = useNavigation();
   const {colors} = useTheme();
 
   const onBuyPress = async () => {
-    try {
-      const {data} = await axios
-        .post(`${PAYMENT_API_URL}/payment`, {
-          orderNumber,
-          price: 5000,
-        })
-        .catch(err => {
-          console.log('err', err);
-        });
-      if (data) {
-        Linking.openURL(data.payment_url);
-      }
-      hide();
-    } catch (error) {
-      console.log('catch err', error);
-    }
+    navigation.navigate('Payment');
   };
 
   return (

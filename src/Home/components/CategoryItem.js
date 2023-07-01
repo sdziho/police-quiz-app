@@ -24,13 +24,13 @@ import NoData from '../../CommonComponents/NoData';
 const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
 function CategoryItem({item, notificationModal}) {
-  const {name, hasSubcategory, id, subcategories} = item ?? {};
+  const {name, hasSubcategory, id, subcategories, law} = item ?? {};
 
   let subcategoryData = subcategories;
   if (!subcategories) subcategoryData = [];
   const notifications = useSelector(state => state.notifications);
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+
   const {isPremium, paymentDetails} =
     useSelector(state => state.user.data) ?? {};
   const offset = useRef(new Animated.Value(0)).current;
@@ -58,7 +58,6 @@ function CategoryItem({item, notificationModal}) {
           item.startingAt._seconds < nowInSeconds &&
           item.endingAt._seconds > nowInSeconds
         ) {
-          console.log(newExpanded);
           if (newExpanded) {
             notificationModal(item.message);
           }
@@ -69,28 +68,13 @@ function CategoryItem({item, notificationModal}) {
     });
   }, [id, notifications.data, notificationModal]);
 
-  const onPress = useCallback(
-    ({isForInspector, isForPoliceman}) => {
-      const params = {
-        categoryId: id,
-        ...(isForInspector && {isForInspector}),
-        ...(isForPoliceman && {isForPoliceman}),
-        isPremium,
-      };
-
-      dispatch(getQuestions(params));
-      dispatch(getAds());
-      navigation.navigate('Questions');
-    },
-    [dispatch, id, isPremium, navigation],
-  );
-
   const renderItem = useCallback(({item}) => {
     return (
       <SubcategoryItem
         item={item}
         hasSubcategory={hasSubcategory}
         categoryId={id}
+        law={law}
       />
     );
   }, []);
@@ -126,7 +110,7 @@ function CategoryItem({item, notificationModal}) {
           onScroll={onScroll}
           stickyHeaderIndices={[0]}
           keyExtractor={keyExtractor}
-          data={[...subcategoryData, 'TEST']}
+          data={[...subcategoryData, 'TEST', 'Zakoni']}
           renderItem={renderItem}
           contentContainerStyle={styles.contentContainer}
           ListEmptyComponent={() => <NoData />}

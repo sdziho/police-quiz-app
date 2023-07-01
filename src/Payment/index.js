@@ -21,8 +21,7 @@ function Payment({navigation}) {
   const {data, status} = useSelector(state => state.categories);
   const user = useSelector(state => state.user.data);
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
-  const {isPremium, id} = user ?? {};
-  const isLoading = status === STATUS_TYPES.PENDING;
+  const {id} = user ?? {};
 
   const {colors} = useTheme();
 
@@ -39,17 +38,20 @@ function Payment({navigation}) {
     });
   }, [navigation]);
   const onBuyPress = async () => {
-    console.log(selectedValue);
     const orderNumber = `${replaceAll(id, '-', '')}_${randomIntFromInterval(
       100000,
       999999,
     )}`;
     try {
+      let _price = paymentSettings.price;
+      if (selectedValue.price) _price = selectedValue.price;
+      let _category = 'ALL';
+      if (selectedValue.id) _category = 'ALL';
       const {data} = await axios
         .post(`${PAYMENT_API_URL}/payment`, {
           orderNumber,
-          price: selectedValue.price * 100,
-          category: selectedValue.id,
+          price: _price * 100,
+          category: _category,
         })
         .catch(err => {
           console.log('err', err);
@@ -71,11 +73,17 @@ function Payment({navigation}) {
       </Text>
       <Text style={styles.headline}>Kategorija:</Text>
       <SelectDropdown
-        data={data}
+        data={[...data, 'Sve kategorije']}
         onSelect={selectedItem => setSelectedValue(selectedItem)}
         defaultButtonText="Izaberite kategoriju"
-        buttonTextAfterSelection={selectedItem => selectedItem.name}
-        rowTextForSelection={item => item.name}
+        buttonTextAfterSelection={selectedItem => {
+          if (selectedItem === 'Sve kategorije') return selectedItem;
+          else return selectedItem.name;
+        }}
+        rowTextForSelection={item => {
+          if (item === 'Sve kategorije') return item;
+          else return item.name;
+        }}
         buttonStyle={styles.dropdownBtnStyle}
         buttonTextStyle={styles.dropdownBtnTxtStyle}
         renderDropdownIcon={isOpened => {
@@ -92,8 +100,11 @@ function Payment({navigation}) {
         rowStyle={styles.dropdownRowStyle}
         rowTextStyle={styles.dropdownRowTxtStyle}
       />
-      {selectedValue != '' && (
+      {selectedValue != '' && selectedValue != 'Sve kategorije' && (
         <Text style={styles.text}>Cijena: {selectedValue.price} KM</Text>
+      )}
+      {selectedValue != '' && selectedValue == 'Sve kategorije' && (
+        <Text style={styles.text}>Cijena: {paymentSettings.price} KM</Text>
       )}
       <Button
         onPress={onBuyPress}

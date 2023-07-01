@@ -12,6 +12,7 @@ import Modal from '../../CommonComponents/Modal';
 import PaymentModal from './PaymentModal';
 
 function SubcategoryItem(props) {
+  const {law} = props ?? {};
   const {item, hasSubcategory, categoryId} = props ?? {};
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   const user = useSelector(state => state.user.data);
@@ -33,7 +34,9 @@ function SubcategoryItem(props) {
   const {colors} = useTheme();
 
   const handlePress = useCallback(() => {
-    if (!(!isPremium && item == 'TEST')) {
+    if (item == 'Zakoni') {
+      navigation.navigate('Laws', {law: law});
+    } else if (!(!isPremium && item == 'TEST')) {
       if (!hasSubcategory) {
         onPress({});
       } else {
@@ -45,7 +48,7 @@ function SubcategoryItem(props) {
   }, [expanded, hasSubcategory, onPress, isPaymentModalVisible]);
 
   const nameExtractor = useCallback(item => {
-    if (item == 'TEST') return item;
+    if (item == 'TEST' || item == 'Zakoni') return item;
     return subcategoriesData.find(element => {
       return element.id == item;
     }).name;
@@ -73,16 +76,18 @@ function SubcategoryItem(props) {
       <List.Accordion
         title={nameExtractor(item)}
         titleNumberOfLines={2}
-        left={props => <List.Icon {...props} icon="record" />}
+        left={props => (
+          <List.Icon {...props} icon={item == 'Zakoni' ? 'gavel' : 'record'} />
+        )}
         style={{backgroundColor: colors.surface}}
         right={props => {
           let showLock = false;
-          console.log(paymentDetails);
+
           if (item == 'TEST' && !paymentDetails.categories.includes(categoryId))
             showLock = true;
           return (
             <View style={styles.main}>
-              {showLock && (
+              {isPremium && showLock && (
                 <View style={styles.container}>
                   <Text style={styles.message}>PREMIUM</Text>
                 </View>
