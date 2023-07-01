@@ -124,7 +124,7 @@ function Home({navigation, route}) {
     const oneMonthInSeconds = 30 * 24 * 60 * 60; // 30 days * 24 hours * 60 minutes * 60 seconds
     const expired =
       nowInSeconds >
-      user?.paymentDetails.createdAt._seconds + oneMonthInSeconds;
+      user?.paymentDetails?.createdAt._seconds + oneMonthInSeconds;
 
     if (expired) {
       dispatch(

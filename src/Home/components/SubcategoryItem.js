@@ -83,11 +83,14 @@ function SubcategoryItem(props) {
         right={props => {
           let showLock = false;
 
-          if (item == 'TEST' && !paymentDetails.categories.includes(categoryId))
+          if (
+            item == 'TEST' &&
+            !paymentDetails?.categories.includes(categoryId)
+          )
             showLock = true;
           return (
             <View style={styles.main}>
-              {isPremium && showLock && (
+              {showLock && (
                 <View style={styles.container}>
                   <Text style={styles.message}>PREMIUM</Text>
                 </View>
