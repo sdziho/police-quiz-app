@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-unstable-nested-components */
-import {useNavigation} from '@react-navigation/native';
+
 import React, {useCallback, useRef, useState} from 'react';
 import {
   Animated,
@@ -10,10 +10,8 @@ import {
   FlatList,
   RefreshControl,
 } from 'react-native';
-import {Button, List, Modal, Text, useTheme} from 'react-native-paper';
+import {List, Text} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
-import {getAds} from '../../Questions/adsSlice';
-import {getQuestions} from '../../Questions/questionsSlice';
 import {getCategories} from '../categoriesSlice';
 import {getSubcategories} from '../subcategoriesSlice';
 import {getSettings} from '../../Settings/settingsSlice';
@@ -52,16 +50,17 @@ function CategoryItem({item, notificationModal}) {
       const newExpanded = !prevExpanded;
       notifications.data?.forEach((item, index) => {
         const nowInSeconds = Math.floor(Date.now() / 1000);
-
-        if (
-          item.category === id &&
-          item.startingAt._seconds < nowInSeconds &&
-          item.endingAt._seconds > nowInSeconds
-        ) {
-          if (newExpanded) {
-            notificationModal(item.message);
+        item.category.forEach(element => {
+          if (
+            element === id &&
+            item.startingAt._seconds < nowInSeconds &&
+            item.endingAt._seconds > nowInSeconds
+          ) {
+            if (newExpanded) {
+              notificationModal(item.message);
+            }
           }
-        }
+        });
       });
 
       return newExpanded;
