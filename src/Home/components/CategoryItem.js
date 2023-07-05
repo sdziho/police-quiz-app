@@ -78,6 +78,9 @@ function CategoryItem({item, notificationModal}) {
       />
     );
   }, []);
+  const dataList = [...subcategoryData];
+  dataList.push('TEST');
+  if (law && law != '') dataList.push('Zakoni');
 
   return (
     <>
@@ -110,7 +113,7 @@ function CategoryItem({item, notificationModal}) {
           onScroll={onScroll}
           stickyHeaderIndices={[0]}
           keyExtractor={keyExtractor}
-          data={[...subcategoryData, 'TEST', 'Zakoni']}
+          data={dataList}
           renderItem={renderItem}
           contentContainerStyle={styles.contentContainer}
           ListEmptyComponent={() => <NoData />}

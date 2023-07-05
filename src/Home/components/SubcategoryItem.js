@@ -36,15 +36,15 @@ function SubcategoryItem(props) {
   const handlePress = useCallback(() => {
     if (item == 'Zakoni') {
       navigation.navigate('Laws', {law: law});
-    } else if (!(!isPremium && item == 'TEST')) {
+    }
+    if (!isPremium) setIsPaymentModalVisible(true);
+
+    if (!(item == 'TEST' && !paymentDetails?.categories.includes(categoryId)))
       if (!hasSubcategory) {
         onPress({});
       } else {
         setExpanded(!expanded);
       }
-    } else {
-      setIsPaymentModalVisible(true);
-    }
   }, [expanded, hasSubcategory, onPress, isPaymentModalVisible]);
 
   const nameExtractor = useCallback(item => {
@@ -111,7 +111,7 @@ function SubcategoryItem(props) {
         expanded={expanded}
         onPress={handlePress}>
         {hasSubcategory ? (
-          <View>
+          <View style={{backgroundColor: colors.surface}}>
             <List.Item
               onPress={() => onPress({isForInspector: true})}
               style={{backgroundColor: colors.surface}}

@@ -19,10 +19,16 @@ function Payment({navigation}) {
     );
   };
   const {data, status} = useSelector(state => state.categories);
-  const user = useSelector(state => state.user.data);
-  const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
-  const {id} = user ?? {};
+  const categoriesWithoutMUP = data.filter(item => {
+    const firstThreeLetters = item.name.slice(0, 3);
+    return firstThreeLetters !== 'MUP';
+  });
 
+  const user = useSelector(state => state.user.data);
+  const {paymentSettings, mupSettings} =
+    useSelector(state => state.settings.data) ?? {};
+  const {id} = user ?? {};
+  console.log(mupSettings);
   const {colors} = useTheme();
 
   useLayoutEffect(() => {
@@ -45,9 +51,15 @@ function Payment({navigation}) {
     try {
       const _price = selectedValue.price
         ? selectedValue.price
+        : selectedValue == 'Sve kategorije'
+        ? paymentSettings.mupPrice
         : paymentSettings.price;
 
-      const _category = selectedValue.id ? selectedValue.id : 'ALL';
+      const _category = selectedValue.id
+        ? selectedValue.id
+        : selectedValue == 'Sve kategorije'
+        ? 'ALL'
+        : 'MUP';
 
       const {data} = await axios
         .post(`${PAYMENT_API_URL}/payment`, {
@@ -75,15 +87,19 @@ function Payment({navigation}) {
       </Text>
       <Text style={styles.headline}>Kategorija:</Text>
       <SelectDropdown
-        data={[...data, 'Sve kategorije']}
+        data={[...categoriesWithoutMUP, 'Svi MUP-ovi', 'Sve kategorije']}
         onSelect={selectedItem => setSelectedValue(selectedItem)}
         defaultButtonText="Izaberite kategoriju"
         buttonTextAfterSelection={selectedItem => {
-          if (selectedItem === 'Sve kategorije') return selectedItem;
+          if (
+            selectedItem === 'Sve kategorije' ||
+            selectedItem == 'Svi MUP-ovi'
+          )
+            return selectedItem;
           else return selectedItem.name;
         }}
         rowTextForSelection={item => {
-          if (item === 'Sve kategorije') return item;
+          if (item === 'Sve kategorije' || item == 'Svi MUP-ovi') return item;
           else return item.name;
         }}
         buttonStyle={styles.dropdownBtnStyle}
@@ -102,12 +118,21 @@ function Payment({navigation}) {
         rowStyle={styles.dropdownRowStyle}
         rowTextStyle={styles.dropdownRowTxtStyle}
       />
-      {selectedValue != '' && selectedValue != 'Sve kategorije' && (
-        <Text style={styles.text}>Cijena: {selectedValue.price} KM</Text>
-      )}
-      {selectedValue != '' && selectedValue == 'Sve kategorije' && (
-        <Text style={styles.text}>Cijena: {paymentSettings.price} KM</Text>
-      )}
+      {selectedValue != '' &&
+        selectedValue != 'Sve kategorije' &&
+        selectedValue != 'Svi MUP-ovi' && (
+          <Text style={styles.text}>Cijena: {selectedValue.price} KM</Text>
+        )}
+      {selectedValue != '' &&
+        selectedValue == 'Sve kategorije' &&
+        selectedValue != 'Svi MUP-ovi' && (
+          <Text style={styles.text}>Cijena: {paymentSettings.price} KM</Text>
+        )}
+      {selectedValue != '' &&
+        selectedValue != 'Sve kategorije' &&
+        selectedValue == 'Svi MUP-ovi' && (
+          <Text style={styles.text}>Cijena: {paymentSettings.mupPrice} KM</Text>
+        )}
       <Button
         onPress={onBuyPress}
         style={styles.button}

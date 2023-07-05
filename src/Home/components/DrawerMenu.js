@@ -34,6 +34,13 @@ function DrawerMenu({navigation}) {
           )}
         />
         <DrawerItem
+          onPress={() => navigation.navigate('Invoice')}
+          text="Pošalji uplatnicu"
+          IconComponent={() => (
+            <AntDesign name="filetext1" size={20} color={colors.text} />
+          )}
+        />
+        <DrawerItem
           onPress={() => navigation.navigate('TermsOfService')}
           text="Uslovi korištenja"
           IconComponent={() => (

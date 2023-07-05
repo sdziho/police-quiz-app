@@ -121,10 +121,10 @@ function Home({navigation, route}) {
 
   useEffect(() => {
     const nowInSeconds = Math.floor(Date.now() / 1000);
-    const oneMonthInSeconds = 30 * 24 * 60 * 60; // 30 days * 24 hours * 60 minutes * 60 seconds
+    const threeMonthInSeconds = 30 * 24 * 60 * 60 * 3; // 30 days * 24 hours * 60 minutes * 60 seconds * 3 months
     const expired =
       nowInSeconds >
-      user?.paymentDetails?.createdAt._seconds + oneMonthInSeconds;
+      user?.paymentDetails?.createdAt._seconds + threeMonthInSeconds;
 
     if (expired) {
       dispatch(
@@ -157,8 +157,15 @@ function Home({navigation, route}) {
         data.forEach(category => {
           if (!categories.includes(category.id)) categories.push(category.id);
         });
-      }
-      if (!categories.includes(match[1])) categories.push(match[1]);
+      } else if (match[1] === 'MUP') {
+        data.forEach(category => {
+          if (
+            !categories.includes(category.id) &&
+            category.name.includes('MUP')
+          )
+            categories.push(category.id);
+        });
+      } else if (!categories.includes(match[1])) categories.push(match[1]);
 
       dispatch(
         setFirestoreUser({

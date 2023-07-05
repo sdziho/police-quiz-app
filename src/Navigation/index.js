@@ -10,6 +10,7 @@ import TermsOfService from '../TermsOfService';
 import About from '../About';
 import Payment from '../Payment';
 import Laws from '../Laws';
+import Invoice from '../Invoice';
 
 const Stack = createStackNavigator();
 
@@ -76,6 +77,13 @@ function MainNavigator() {
           component={Payment}
           options={{
             title: 'Postani PREMIUM član',
+          }}
+        />
+        <Stack.Screen
+          name="Invoice"
+          component={Invoice}
+          options={{
+            title: 'Pošaljice uplatnicu',
           }}
         />
       </Stack.Navigator>
