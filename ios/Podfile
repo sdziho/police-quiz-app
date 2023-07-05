@@ -5,6 +5,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 platform :ios, '11.0'
 install! 'cocoapods', :deterministic_uuids => false
 
+
 target 'policeQuiz' do
   config = use_native_modules!
   # use_frameworks!
@@ -22,7 +23,6 @@ target 'policeQuiz' do
 
   # pod 'react-native-randombytes', :path => '../node_modules/react-native-randombytes'
 
-  pod 'RNScreens', :path => '../node_modules/react-native-screens'
 
   target 'policeQuizTests' do
     inherit! :complete

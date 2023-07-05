@@ -27,6 +27,7 @@ export const getQuestions = createAsyncThunk(
     if (isForPoliceman) {
       conditions.push(['isForPoliceman', '==', isForPoliceman]);
     }
+
     if (conditions.length > 1) {
       return getMixedCollection({
         collection: 'questions',
@@ -58,7 +59,7 @@ export const getQuestions = createAsyncThunk(
         collection: 'questions',
         condition: conditions,
       }).then(response => {
-        if (isPremium && paymentDetails.categories.includes(categoryId)) {
+        if (isPremium && paymentDetails?.categories.includes(categoryId)) {
           if (subcategoryId == 'TEST')
             dispatch(setQuestions(response.slice(0, 50)));
           else dispatch(setQuestions(response));

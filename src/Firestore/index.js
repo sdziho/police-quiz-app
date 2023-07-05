@@ -102,6 +102,7 @@ export const getCollection = async ({collection, condition, orderBy}) => {
 export const getMixedCollection = async ({collection, condition, orderBy}) => {
   let query = firestore().collection(collection);
   let subquery = firestore().collection(collection);
+
   function shuffleArray(array) {
     const shuffledArray = [...array];
     for (let i = shuffledArray.length - 1; i > 0; i--) {
@@ -117,7 +118,7 @@ export const getMixedCollection = async ({collection, condition, orderBy}) => {
     query = query.where(...condition[0]);
     subquery = subquery.where(...condition[1]);
     condition.splice(0, 2);
-
+    console.log(condition);
     condition.forEach(c => {
       if (Array.isArray(c)) {
         query = query.where(...c);
@@ -138,17 +139,26 @@ export const getMixedCollection = async ({collection, condition, orderBy}) => {
     querySnapshot.forEach(documentSnapshot => {
       data.push(documentSnapshot.data());
     });
-
+    console.log(data);
     return data;
   });
-  subcatPromise = subquery.get().then(querySnapshot => {
-    const data = [];
-    querySnapshot.forEach(documentSnapshot => {
-      data.push(documentSnapshot.data());
+
+  console.log(subquery);
+
+  subcatPromise = subquery
+    .get()
+    .then(querySnapshot => {
+      const data = [];
+
+      querySnapshot.forEach(documentSnapshot => {
+        data.push(documentSnapshot.data());
+      });
+      console.log('dd2', data);
+      return data;
+    })
+    .catch(error => {
+      console.log('Error:', error);
     });
-
-    return data;
-  });
   const combinedPromise = Promise.all([catPromise, subcatPromise]);
   return combinedPromise
     .then(([catData, subcatData]) => {

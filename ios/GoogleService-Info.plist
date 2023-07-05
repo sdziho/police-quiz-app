@@ -3,23 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>359911567385-7911d3vdgot0n8m11bn81a2ag3f2os1o.apps.googleusercontent.com</string>
+	<string>564900068930-813bjbmvk02m3pnbufge4pi60uqt5saq.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.359911567385-7911d3vdgot0n8m11bn81a2ag3f2os1o</string>
-	<key>ANDROID_CLIENT_ID</key>
-	<string>359911567385-ohuegcniibfihncn02522s829ae76vj4.apps.googleusercontent.com</string>
+	<string>com.googleusercontent.apps.564900068930-813bjbmvk02m3pnbufge4pi60uqt5saq</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAzPUk_QNOVuKQ4qDSq-BzaATHBHjd8Ln8</string>
+	<string>AIzaSyC_wbXojgx2tde4hUZJOTK6ZtotTTtnO1I</string>
 	<key>GCM_SENDER_ID</key>
-	<string>359911567385</string>
+	<string>564900068930</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.policequiz</string>
 	<key>PROJECT_ID</key>
-	<string>policequiz-581ea</string>
+	<string>policequiz-v2-2039b</string>
 	<key>STORAGE_BUCKET</key>
-	<string>policequiz-581ea.appspot.com</string>
+	<string>policequiz-v2-2039b.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -31,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:359911567385:ios:4f32fb215310602c543a88</string>
+	<string>1:564900068930:ios:24f3718e6ff9c49cc137db</string>
 </dict>
 </plist>
