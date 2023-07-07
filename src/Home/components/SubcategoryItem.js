@@ -39,7 +39,7 @@ function SubcategoryItem(props) {
     }
     if (!isPremium) setIsPaymentModalVisible(true);
 
-    if (!(item == 'TEST' && !paymentDetails?.categories.includes(categoryId)))
+    if (!(item == 'TEST' && !isPremium))
       if (!hasSubcategory) {
         onPress({});
       } else {
@@ -83,11 +83,7 @@ function SubcategoryItem(props) {
         right={props => {
           let showLock = false;
 
-          if (
-            item == 'TEST' &&
-            !paymentDetails?.categories.includes(categoryId)
-          )
-            showLock = true;
+          if (item == 'TEST' && !isPremium) showLock = true;
           return (
             <View style={styles.main}>
               {showLock && (

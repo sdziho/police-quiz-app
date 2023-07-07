@@ -11,6 +11,11 @@ import {useSelector} from 'react-redux';
 import axios from 'axios';
 import {PAYMENT_API_URL, STATUS_TYPES} from '../utils/constants';
 import {randomIntFromInterval, replaceAll} from '../utils/helpers';
+import ImageViewer from 'react-native-image-zoom-viewer';
+
+const ONLINE_PAYMENT = 'Online plaćanje';
+const INVOICE_PAYMENT = 'Plaćanje putem uplatnice';
+
 function Payment({navigation}) {
   const [selectedValue, setSelectedValue] = useState('');
   const openEmail = () => {
@@ -18,17 +23,26 @@ function Payment({navigation}) {
       'mailto:policequizbih@gmail.com?subject=Police Quiz - Upit korisnika',
     );
   };
-  const {data, status} = useSelector(state => state.categories);
-  const categoriesWithoutMUP = data.filter(item => {
+  const openNumber = () => {
+    let number = '';
+    if (Platform.OS === 'ios') {
+      number = 'telprompt:${38761809244}';
+    } else {
+      number = 'tel:${38761809244}';
+    }
+    Linking.openURL(number);
+  };
+  /*const {data, status} = useSelector(state => state.categories);
+   const categoriesWithoutMUP = data.filter(item => {
     const firstThreeLetters = item.name.slice(0, 3);
     return firstThreeLetters !== 'MUP';
-  });
+  }); */
 
   const user = useSelector(state => state.user.data);
   const {paymentSettings, mupSettings} =
     useSelector(state => state.settings.data) ?? {};
   const {id} = user ?? {};
-  console.log(mupSettings);
+
   const {colors} = useTheme();
 
   useLayoutEffect(() => {
@@ -49,7 +63,7 @@ function Payment({navigation}) {
       999999,
     )}`;
     try {
-      const _price = selectedValue.price
+      /* const _price = selectedValue.price
         ? selectedValue.price
         : selectedValue == 'Sve kategorije'
         ? paymentSettings.mupPrice
@@ -59,13 +73,13 @@ function Payment({navigation}) {
         ? selectedValue.id
         : selectedValue == 'Sve kategorije'
         ? 'ALL'
-        : 'MUP';
+        : 'MUP'; */
 
       const {data} = await axios
         .post(`${PAYMENT_API_URL}/payment`, {
           orderNumber,
-          price: _price * 100,
-          category: _category,
+          price: paymentSettings.price * 100,
+          category: 'ALL',
         })
         .catch(err => {
           console.log('err', err);
@@ -85,22 +99,23 @@ function Payment({navigation}) {
         10% ukupnog broja pitanja. Aktivacijom PREMIUM paketa dobivate potpuni
         pristup svim pitanjima kako bi vaš uspjeh na testu bio zagarantovan!{' '}
       </Text>
-      <Text style={styles.headline}>Kategorija:</Text>
+      <Text style={styles.headline}>Način plaćanja:</Text>
       <SelectDropdown
-        data={[...categoriesWithoutMUP, 'Svi MUP-ovi', 'Sve kategorije']}
+        data={[ONLINE_PAYMENT, INVOICE_PAYMENT]}
         onSelect={selectedItem => setSelectedValue(selectedItem)}
-        defaultButtonText="Izaberite kategoriju"
+        defaultButtonText="Izaberite način plaćanja"
         buttonTextAfterSelection={selectedItem => {
-          if (
+          /* if (
             selectedItem === 'Sve kategorije' ||
             selectedItem == 'Svi MUP-ovi'
-          )
-            return selectedItem;
-          else return selectedItem.name;
+          ) */
+          return selectedItem;
+          //else return selectedItem.name;
         }}
         rowTextForSelection={item => {
-          if (item === 'Sve kategorije' || item == 'Svi MUP-ovi') return item;
-          else return item.name;
+          //if (item === 'Sve kategorije' || item == 'Svi MUP-ovi') return item;
+          //else return item.name;
+          return item;
         }}
         buttonStyle={styles.dropdownBtnStyle}
         buttonTextStyle={styles.dropdownBtnTxtStyle}
@@ -118,37 +133,47 @@ function Payment({navigation}) {
         rowStyle={styles.dropdownRowStyle}
         rowTextStyle={styles.dropdownRowTxtStyle}
       />
-      {selectedValue != '' &&
-        selectedValue != 'Sve kategorije' &&
-        selectedValue != 'Svi MUP-ovi' && (
-          <Text style={styles.text}>Cijena: {selectedValue.price} KM</Text>
-        )}
-      {selectedValue != '' &&
-        selectedValue == 'Sve kategorije' &&
-        selectedValue != 'Svi MUP-ovi' && (
-          <Text style={styles.text}>Cijena: {paymentSettings.price} KM</Text>
-        )}
-      {selectedValue != '' &&
-        selectedValue != 'Sve kategorije' &&
-        selectedValue == 'Svi MUP-ovi' && (
-          <Text style={styles.text}>Cijena: {paymentSettings.mupPrice} KM</Text>
-        )}
-      <Button
-        onPress={onBuyPress}
-        style={styles.button}
-        disabled={selectedValue == ''}>
-        Aktiviraj PREMIUM paket
-      </Button>
-      <View style={styles.bottomTextContainer}>
-        <Text style={styles.bottomText}>
-          *U slučaju neuspješne uplate novca preko Monri aplikacije, pošaljite
-          uplatnicu sa ličnim podacima{' '}
-          <Text onPress={openEmail} style={{color: colors.primary}}>
-            klikom ovdje
+
+      {selectedValue == ONLINE_PAYMENT && (
+        <View>
+          <Text>Cijena paketa je {paymentSettings.price} KM.</Text>
+          <Button
+            onPress={onBuyPress}
+            style={styles.button}
+            disabled={selectedValue == ''}>
+            Aktiviraj PREMIUM paket
+          </Button>
+        </View>
+      )}
+      {selectedValue == INVOICE_PAYMENT && (
+        <>
+          <Text style={styles.text}>
+            U slučaju neuspješne uplate novca preko Monri aplikacije, pošaljite
+            uplatnicu sa ličnim podacima na mail{' '}
+            <Text onPress={openEmail} style={{color: colors.primary}}>
+              policequizbih@gmail.com{' '}
+            </Text>
+            ili Viberom na broj
+            <Text onPress={openNumber} style={{color: colors.primary}}>
+              {' '}
+              +38761809244
+            </Text>
           </Text>
-          .
-        </Text>
-      </View>
+          <Text style={styles.headline}>Primjer uplatnice:</Text>
+          <ImageViewer
+            style={styles.image}
+            imageUrls={[
+              {
+                url: '',
+                props: {
+                  // Or you can set source directory.
+                  source: require('../assets/uplatnica.png'),
+                },
+              },
+            ]}
+          />
+        </>
+      )}
     </ScrollView>
   );
 }
@@ -190,7 +215,9 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
   },
-
+  image: {
+    marginTop: 10,
+  },
   dropdownBtnStyle: {
     marginTop: 10,
     width: '100%',

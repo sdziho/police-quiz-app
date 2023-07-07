@@ -92,13 +92,13 @@ function CategoryItem({item, notificationModal}) {
             showPremium = true;
           return (
             <View style={styles.main}>
-              {showPremium && (
+              {/* {showPremium && (
                 <View style={styles.premium}>
                   <List.Icon {...props} icon={'diamond-stone'} />
                   <Text style={styles.premiumText}>PREMIUM</Text>
                   <Text style={styles.premiumSubtext}>DOSTUPAN</Text>
                 </View>
-              )}
+              )} */}
               <List.Icon
                 {...props}
                 icon={props.isExpanded ? 'chevron-down' : 'chevron-right'}

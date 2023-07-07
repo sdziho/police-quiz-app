@@ -39,11 +39,7 @@ export const getQuestions = createAsyncThunk(
           nowInSeconds >
           paymentDetails?.createdAt._seconds + threeMonthInSeconds;
 
-        if (
-          isPremium &&
-          paymentDetails.categories.includes(categoryId) &&
-          !expired
-        ) {
+        if (isPremium && !expired) {
           if (subcategoryId == 'TEST')
             dispatch(setQuestions(response.slice(0, 50)));
           else dispatch(setQuestions(response));
@@ -60,7 +56,13 @@ export const getQuestions = createAsyncThunk(
         collection: 'questions',
         condition: conditions,
       }).then(response => {
-        if (isPremium && paymentDetails?.categories.includes(categoryId)) {
+        const nowInSeconds = Math.floor(Date.now() / 1000);
+        const threeMonthInSeconds = 30 * 24 * 60 * 60 * 3; // 30 days * 24 hours * 60 minutes * 60 seconds
+        const expired =
+          nowInSeconds >
+          paymentDetails?.createdAt._seconds + threeMonthInSeconds;
+
+        if (isPremium && !expired) {
           if (subcategoryId == 'TEST')
             dispatch(setQuestions(response.slice(0, 50)));
           else dispatch(setQuestions(response));
@@ -68,6 +70,7 @@ export const getQuestions = createAsyncThunk(
           const indexAtPercengate = Math.round(
             (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,
           );
+
           dispatch(setQuestions(response.slice(0, indexAtPercengate)));
         }
       });
