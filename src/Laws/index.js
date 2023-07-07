@@ -6,6 +6,8 @@ import {ScrollView, StyleSheet} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTheme, Text} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Linkify from 'react-linkify';
+import HyperlinkedText from 'react-native-hyperlinked-text';
 function Laws({navigation, route}) {
   const {law} = route.params;
 
@@ -26,7 +28,7 @@ function Laws({navigation, route}) {
 
   return (
     <ScrollView contentContainerStyle={styles.contentContainer(colors.surface)}>
-      <Text style={styles.text}>{law}</Text>
+      <HyperlinkedText style={styles.text}>{law}</HyperlinkedText>
     </ScrollView>
   );
 }
