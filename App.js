@@ -19,6 +19,7 @@ function App() {
   useEffect(() => {
     getUser()
       .then(response => {
+        console.log('response', response);
         dispatch(setUser(response.data()));
       })
       .finally(() => {

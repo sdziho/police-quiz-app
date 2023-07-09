@@ -227,7 +227,17 @@ function Home({navigation, route}) {
       return () => clearInterval(timer);
     }
   }, [isPremium, isPaymentModalVisible]);
-
+  let filteredData = [...data];
+  filteredData.sort((a, b) => {
+    if ('order' in a && 'order' in b) {
+      return a?.order - b?.order;
+    } else if ('order' in a) {
+      return -1;
+    } else if ('order' in b) {
+      return 1;
+    }
+    return 0;
+  });
   return (
     <SideMenu isOpen={isMenuOpen} menu={menu}>
       <View style={styles.mainContainer(colors.surface)}>
@@ -254,7 +264,7 @@ function Home({navigation, route}) {
               </List.Subheader>
             )}
             keyExtractor={keyExtractor}
-            data={data}
+            data={filteredData}
             renderItem={renderItem}
             contentContainerStyle={styles.contentContainer}
             ListEmptyComponent={() => <NoData />}

@@ -77,7 +77,20 @@ function CategoryItem({item, notificationModal}) {
       />
     );
   }, []);
-  const dataList = [...subcategoryData];
+  let dataList = [...subcategoryData];
+
+  dataList.sort(function (a, b) {
+    var nameA = subctg.data.find(obj => obj.id === a).name.toUpperCase();
+    var nameB = subctg.data.find(obj => obj.id === b).name.toUpperCase();
+
+    if (nameA < nameB) {
+      return -1; // Sort a before b
+    }
+    if (nameA > nameB) {
+      return 1; // Sort b before a
+    }
+    return 0; // Names are equal, no sorting needed
+  });
   dataList.push('TEST');
   if (law && law != '') dataList.push('Zakoni');
 
@@ -87,9 +100,9 @@ function CategoryItem({item, notificationModal}) {
         title={name}
         left={props => <List.Icon {...props} icon="record" />}
         right={props => {
-          let showPremium = false;
-          if (isPremium && paymentDetails.categories.includes(id))
-            showPremium = true;
+          /* let showPremium = false;
+          if (isPremium)
+            showPremium = true; */
           return (
             <View style={styles.main}>
               {/* {showPremium && (
