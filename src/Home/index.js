@@ -55,9 +55,10 @@ const HEADER_HEIGHT = height * 0.4;
 function Home({navigation, route}) {
   const {colors} = useTheme();
   const dispatch = useDispatch();
-  const {data, status} = useSelector(state => state.categories);
+  const {data, status} = useSelector(state => state.categories) ?? {};
 
   const user = useSelector(state => state.user.data);
+
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
   const {isPremium, id} = user ?? {};
   const isLoading = status === STATUS_TYPES.PENDING;
@@ -78,7 +79,7 @@ function Home({navigation, route}) {
 
   const toggleNotificationModal = useCallback(
     status => {
-      if (status.length > 0) {
+      if (status?.length > 0) {
         setIsNotificationModal(true);
         setItems(prevItems => {
           const newItems = new Set(prevItems); // Create a new Set from the previous items
@@ -221,23 +222,27 @@ function Home({navigation, route}) {
   useEffect(() => {
     if (!isPremium) {
       //pogkedat kad se runa na androidu
+
       const timer = setInterval(() => {
         setIsPaymentModalVisible(true);
       }, 1000 * 60 * 2);
       return () => clearInterval(timer);
     }
   }, [isPremium, isPaymentModalVisible]);
-  let filteredData = [...data];
-  filteredData.sort((a, b) => {
+
+  let filteredData = data ? [...data] : [];
+
+  filteredData?.sort((a, b) => {
     if ('order' in a && 'order' in b) {
       return a?.order - b?.order;
-    } else if ('order' in a) {
+    } else if (a?.order) {
       return -1;
-    } else if ('order' in b) {
+    } else if (b?.order) {
       return 1;
     }
     return 0;
   });
+
   return (
     <SideMenu isOpen={isMenuOpen} menu={menu}>
       <View style={styles.mainContainer(colors.surface)}>
@@ -293,7 +298,7 @@ function Home({navigation, route}) {
           style={styles.modal}>
           <View style={styles.mainModalContainer}>
             <Text style={styles.headline}>{`OBAVJEŠTENJE`}</Text>
-            {items.map((item, index) => (
+            {items?.map((item, index) => (
               <Text key={index} style={styles.text}>
                 {item}
               </Text>

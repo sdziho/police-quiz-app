@@ -19,19 +19,25 @@ export const updateDocuments = async ({collection, data}) => {
 };
 
 export const setUser = async data => {
-  const prepData = undefinedToNull(data);
-  const uid = getUniqueId();
-  const docId = uid.includes('-') ? replaceAll(uid, '-', '') : uid;
-  const user = await firestore().collection('users').doc(docId).get();
-  if (user.data()) {
-    await firestore().collection('users').doc(docId).update(prepData);
-  } else {
-    await firestore()
-      .collection('users')
-      .doc(docId)
-      .set({...prepData, id: docId, createdAt: new Date()});
+  try {
+    const prepData = undefinedToNull(data);
+    const uid = getUniqueId();
+    const docId = uid.includes('-') ? replaceAll(uid, '-', '') : uid;
+
+    const user = await firestore().collection('users').doc(docId).get();
+
+    if (user?.data()) {
+      await firestore().collection('users').doc(docId).update(prepData);
+    } else {
+      await firestore()
+        .collection('users')
+        .doc(docId)
+        .set({...prepData, id: docId, createdAt: new Date()});
+    }
+    return firestore().collection('users').doc(docId).get();
+  } catch (error) {
+    console.log('error', error);
   }
-  return firestore().collection('users').doc(docId).get();
 };
 
 export const getUser = async () => {

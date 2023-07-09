@@ -1036,6 +1036,8 @@ PODS:
     - Firebase/Firestore (= 8.15.0)
     - React-Core
     - RNFBApp
+  - RNFS (2.20.0):
+    - React-Core
   - RNGestureHandler (2.5.0):
     - React-Core
   - RNScreens (3.20.0):
@@ -1089,6 +1091,7 @@ DEPENDENCIES:
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBFirestore (from `../node_modules/@react-native-firebase/firestore`)"
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNSVG (from `../node_modules/react-native-svg`)
@@ -1197,6 +1200,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-firebase/auth"
   RNFBFirestore:
     :path: "../node_modules/@react-native-firebase/firestore"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
   RNScreens:
@@ -1265,11 +1270,12 @@ SPEC CHECKSUMS:
   RNFBApp: 6881d4dfc42e76da97230f63551636cae62ef171
   RNFBAuth: c9b55303a472993ac19726bb1d4a6584dc2b1e87
   RNFBFirestore: 696040c7990c3e538a530c7e956d83812d7f5a38
+  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: bad495418bcbd3ab47017a38d93d290ebd406f50
   RNScreens: 218801c16a2782546d30bd2026bb625c0302d70f
   RNSVG: 3dd44d99d1c18e1342aee4bfa53ab3f6a8c4865f
   Yoga: 17cd9a50243093b547c1e539c749928dd68152da
 
-PODFILE CHECKSUM: 96532ba0318777173c6ada200299ff9b53458da7
+PODFILE CHECKSUM: 4b4a8b4b6151b114f02c2897b5b3ffb6976a6fe7
 
 COCOAPODS: 1.12.1

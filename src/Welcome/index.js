@@ -14,6 +14,7 @@ function Welcome({navigation}) {
   const {colors} = useTheme();
   const dispatch = useDispatch();
   const {data: user} = useSelector(state => state.user) ?? {};
+
   const {
     firstName: stateFirstName,
     lastName: stateLastName,
@@ -47,6 +48,7 @@ function Welcome({navigation}) {
       gender,
       isPremium,
     };
+
     dispatch(setFirestoreUser(userObject));
     navigation.replace('Home');
   }, [
