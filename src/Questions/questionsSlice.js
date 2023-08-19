@@ -3,6 +3,7 @@
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import {getMixedCollection, getCollection} from '../Firestore';
 import {FREE_USER_QUESTIONS_PERCENTAGE, STATUS_TYPES} from '../utils/constants';
+import {shuffle} from '../utils/helpers';
 
 export const getQuestions = createAsyncThunk(
   'user/getQuestions',
@@ -40,9 +41,10 @@ export const getQuestions = createAsyncThunk(
           paymentDetails?.createdAt._seconds + threeMonthInSeconds;
 
         if (isPremium && !expired) {
-          if (subcategoryId == 'TEST')
-            dispatch(setQuestions(response.slice(0, 50)));
-          else dispatch(setQuestions(response));
+          if (subcategoryId == 'TEST') {
+            shuffledResponse = shuffle(response);
+            dispatch(setQuestions(shuffledResponse.slice(0, 50)));
+          } else dispatch(setQuestions(response));
         } else {
           const indexAtPercengate = Math.round(
             (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,
@@ -63,9 +65,10 @@ export const getQuestions = createAsyncThunk(
           paymentDetails?.createdAt._seconds + threeMonthInSeconds;
 
         if (isPremium && !expired) {
-          if (subcategoryId == 'TEST')
-            dispatch(setQuestions(response.slice(0, 50)));
-          else dispatch(setQuestions(response));
+          if (subcategoryId == 'TEST') {
+            shuffledResponse = shuffle(response);
+            dispatch(setQuestions(shuffledResponse.slice(0, 50)));
+          } else dispatch(setQuestions(response));
         } else {
           const indexAtPercengate = Math.round(
             (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,

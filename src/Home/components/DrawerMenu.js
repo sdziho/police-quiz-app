@@ -2,10 +2,10 @@
 import React from 'react';
 import {View, StyleSheet, Linking, Image, Platform} from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {useTheme} from 'react-native-paper';
+import {Text, useTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import DrawerItem from './DrawerItem';
-
+import {default as versionInfo} from '../../../version.json';
 function DrawerMenu({navigation}) {
   const {colors} = useTheme();
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
@@ -54,7 +54,9 @@ function DrawerMenu({navigation}) {
             <AntDesign name="mail" size={20} color={colors.text} />
           )}
         />
+        <Text>Verzija: {versionInfo.version}</Text>
       </View>
+
       {(paymentSettings?.isEnabledAndroid && Platform.OS === 'android') ||
       (paymentSettings?.isEnabledApple && Platform.OS === 'ios') ? (
         <Image

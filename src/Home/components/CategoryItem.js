@@ -80,8 +80,8 @@ function CategoryItem({item, notificationModal}) {
   let dataList = [...subcategoryData];
 
   dataList.sort(function (a, b) {
-    var nameA = subctg.data.find(obj => obj.id === a).name.toUpperCase();
-    var nameB = subctg.data.find(obj => obj.id === b).name.toUpperCase();
+    var nameA = subctg.data?.find(obj => obj.id === a)?.name.toUpperCase();
+    var nameB = subctg.data?.find(obj => obj.id === b)?.name.toUpperCase();
 
     if (nameA < nameB) {
       return -1; // Sort a before b

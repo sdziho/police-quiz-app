@@ -42,12 +42,13 @@ import {getCategories} from './categoriesSlice';
 import {getSubcategories} from './subcategoriesSlice';
 import CategoryItem from './components/CategoryItem';
 import PaymentModal from './components/PaymentModal';
+import UpdateModal from './components/UpdateModal';
 import SuccessModal from './components/SuccessModal';
 import DrawerMenu from './components/DrawerMenu';
 import MenuButton from '../CommonComponents/MenuButton';
 import {getSettings} from '../Settings/settingsSlice';
 import {getNotifications} from '../Notifications/notificationsSlice';
-import {updateCollection} from '../Firestore';
+import {default as versionInfo} from '../../version.json';
 
 const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
@@ -66,7 +67,7 @@ function Home({navigation, route}) {
     100000,
     999999,
   )}`;
-
+  console.log(paymentSettings.deprecatedVersions, versionInfo.version);
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   const [isSuccesPaymentModalVisible, setIsSuccesPaymentModalVisible] =
     useState(false);
@@ -126,7 +127,7 @@ function Home({navigation, route}) {
     const expired =
       nowInSeconds >
       user?.paymentDetails?.createdAt._seconds + threeMonthInSeconds;
-
+    //updateUsers();
     if (expired) {
       dispatch(
         setFirestoreUser({
@@ -278,6 +279,12 @@ function Home({navigation, route}) {
             }
           />
         )}
+        <Modal
+          isVisible={paymentSettings.deprecatedVersions.includes(
+            versionInfo.version,
+          )}>
+          <UpdateModal />
+        </Modal>
         <Modal
           isVisible={isPaymentModalVisible}
           hideModal={() => setIsPaymentModalVisible(false)}>

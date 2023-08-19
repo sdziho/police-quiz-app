@@ -35,7 +35,8 @@ function Laws({navigation, route}) {
 
 const styles = StyleSheet.create({
   contentContainer: backgroundColor => ({
-    flex: 1,
+    overflow: 'scroll',
+    flexGrow: 1,
     padding: 20,
     backgroundColor,
   }),

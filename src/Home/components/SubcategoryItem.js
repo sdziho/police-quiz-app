@@ -36,6 +36,7 @@ function SubcategoryItem(props) {
   const handlePress = useCallback(() => {
     if (item == 'Zakoni') {
       navigation.navigate('Laws', {law: law});
+      return;
     }
     if (!isPremium) setIsPaymentModalVisible(true);
 
@@ -49,9 +50,10 @@ function SubcategoryItem(props) {
 
   const nameExtractor = useCallback(item => {
     if (item == 'TEST' || item == 'Zakoni') return item;
-    return subcategoriesData.find(element => {
-      return element.id == item;
-    }).name;
+
+    return subcategoriesData?.find(element => {
+      return element?.id == item;
+    })?.name;
   }, []);
   const onPress = useCallback(
     ({isForInspector, isForPoliceman}) => {
