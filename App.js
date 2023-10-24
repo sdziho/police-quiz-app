@@ -12,7 +12,13 @@ import {getUser} from './src/Firestore';
 import MainNavigator from './src/Navigation';
 import {setUser} from './src/Welcome/userSlice';
 import {getSettings} from './src/Settings/settingsSlice';
-
+import {
+  setCustomView,
+  setCustomTextInput,
+  setCustomText,
+  setCustomImage,
+  setCustomTouchableOpacity,
+} from 'react-native-global-props';
 function App() {
   const {colors} = useTheme();
   const dispatch = useDispatch();
@@ -28,7 +34,11 @@ function App() {
         }, 1000);
       });
   }, [dispatch]);
-
+  setCustomText({
+    style: {
+      fontFamily: 'Roboto-Regular',
+    },
+  });
   const theme = {
     ...DefaultTheme,
     colors: {
@@ -36,9 +46,11 @@ function App() {
       primary: '#2074B9',
       accent: '#81c88d',
       error: '#e76b6f',
+      orange: '#FFA500',
+      lighterShade: '#a9e2b9',
+      darkerShade: '#599d68',
     },
   };
-
   return (
     <PaperProvider theme={theme}>
       <StatusBar backgroundColor={colors.surface} barStyle="dark-content" />

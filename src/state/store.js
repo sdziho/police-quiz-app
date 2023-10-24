@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import UserReducer from '../Welcome/userSlice';
 import CategoriesReducer from '../Home/categoriesSlice';
 import SubcategoriesReducer from '../Home/subcategoriesSlice';
+import KonkursiReducer from '../Home/konkursiSlice';
 import QuestionsReducer from '../Questions/questionsSlice';
 import AdsReducer from '../Questions/adsSlice';
 import SettingsSlice from '../Settings/settingsSlice';
@@ -17,6 +18,7 @@ const appReducer = combineReducers({
   ads: AdsReducer,
   settings: SettingsSlice,
   notifications: NotificationsReducer,
+  konkursi: KonkursiReducer,
 });
 
 const persistConfig = {

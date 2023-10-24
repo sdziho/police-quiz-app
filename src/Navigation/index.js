@@ -11,14 +11,76 @@ import About from '../About';
 import Payment from '../Payment';
 import Laws from '../Laws';
 import Invoice from '../Invoice';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import Profile from '../Profile/Profile';
+import {useTheme} from 'react-native-paper';
+
+const Tab = createBottomTabNavigator();
 
 const Stack = createStackNavigator();
+const MainTabNavigator = () => (
+  <Tab.Navigator
+    screenOptions={({route}) => ({
+      tabBarIcon: ({focused, color, size}) => {
+        let iconName;
 
+        if (route.name === 'Početna') {
+          iconName = focused ? 'home-sharp' : 'home-outline';
+        } else if (route.name === 'Obavjesti') {
+          iconName = focused ? 'notifications' : 'notifications-outline';
+        } else if (route.name === 'Uputstvo') {
+          iconName = focused ? 'newspaper' : 'newspaper-outline';
+        } else if (route.name === 'Profil') {
+          iconName = focused ? 'person' : 'person-outline';
+        }
+
+        // You can return any component that you like here!
+        return <Ionicons name={iconName} size={20} color={color} />;
+      },
+      tabBarActiveTintColor: '#2074B9',
+      tabBarInactiveTintColor: 'gray',
+      tabBarStyle: {
+        paddingBottom: 5,
+      },
+    })}>
+    <Tab.Screen
+      name="Početna"
+      component={Home}
+      options={{headerShown: false}}
+    />
+    <Tab.Screen
+      name="Obavjesti"
+      component={About}
+      options={{headerShown: false}}
+    />
+    <Tab.Screen
+      name="Uputstvo"
+      component={TermsOfService}
+      options={{headerShown: false}}
+    />
+    <Tab.Screen
+      name="Profil"
+      component={Profile}
+      options={{headerShown: false}}
+    />
+  </Tab.Navigator>
+);
 function MainNavigator() {
   const {data} = useSelector(state => state.user) ?? {};
-
+  const {colors} = useTheme();
   const [isLoading, setIsLoading] = useState(true);
-
+  const headerStyle = {
+    borderBottomWidth: 1,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  };
   useLayoutEffect(() => {
     if (data !== null) {
       setIsLoading(false);
@@ -29,12 +91,13 @@ function MainNavigator() {
     <NavigationContainer linking={linking}>
       <Stack.Navigator
         screenOptions={commonNavigationOptions}
-        initialRouteName={data ? 'Home' : 'Welcome'}>
+        initialRouteName={data ? 'MainTab' : 'Welcome'}>
         <Stack.Screen
           name="Welcome"
           component={Welcome}
           options={{
             title: 'Više o Vama',
+            headerStyle,
           }}
         />
         <Stack.Screen
@@ -62,7 +125,8 @@ function MainNavigator() {
           name="Questions"
           component={Questions}
           options={{
-            title: 'Pitanje',
+            title: 'Pitanja',
+            headerStyle,
           }}
         />
         <Stack.Screen
@@ -77,6 +141,7 @@ function MainNavigator() {
           component={Payment}
           options={{
             title: 'Postani PREMIUM član',
+            headerStyle,
           }}
         />
         <Stack.Screen
@@ -85,6 +150,11 @@ function MainNavigator() {
           options={{
             title: 'Pošaljice uplatnicu',
           }}
+        />
+        <Stack.Screen
+          name="MainTab"
+          component={MainTabNavigator}
+          options={{headerShown: false}}
         />
       </Stack.Navigator>
     </NavigationContainer>

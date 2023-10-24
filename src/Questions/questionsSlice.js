@@ -15,6 +15,7 @@ export const getQuestions = createAsyncThunk(
       isForPoliceman,
       isPremium,
       paymentDetails,
+      numberOfQuestions = 50,
     },
     {dispatch},
   ) => {
@@ -43,7 +44,9 @@ export const getQuestions = createAsyncThunk(
         if (isPremium && !expired) {
           if (subcategoryId == 'TEST') {
             shuffledResponse = shuffle(response);
-            dispatch(setQuestions(shuffledResponse.slice(0, 50)));
+            dispatch(
+              setQuestions(shuffledResponse.slice(0, numberOfQuestions)),
+            );
           } else dispatch(setQuestions(response));
         } else {
           const indexAtPercengate = Math.round(

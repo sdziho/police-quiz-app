@@ -1,54 +1,44 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React from 'react';
-import {
-  StyleSheet, Modal, TouchableOpacity,
-} from 'react-native';
-import { useTheme, Text, Button } from 'react-native-paper';
+import {StyleSheet, Modal, TouchableOpacity} from 'react-native';
+import {useTheme, Text, Button} from 'react-native-paper';
 import * as Progress from 'react-native-progress';
 
-function ResultsModal({ isVisible, progress, onHide }) {
-  const { colors } = useTheme();
+function ResultsModal({isVisible, progress, onHide}) {
+  const {colors} = useTheme();
   const navigation = useNavigation();
 
   const onButtonPress = () => {
     onHide();
     setTimeout(() => {
-      navigation.pop();
+      navigation.replace('MainTab');
     }, 300);
   };
 
   return (
-    <Modal
-      transparent
-      visible={isVisible}
-      animationType="slide"
-    >
+    <Modal transparent visible={isVisible} animationType="slide">
       <TouchableOpacity
         onPress={onHide}
         activeOpacity={1}
-        style={styles.mainContainer}
-      >
+        style={styles.mainContainer}>
         <TouchableOpacity
           activeOpacity={1}
-          style={styles.contentContainer(colors.surface)}
-        >
-
+          style={styles.contentContainer(colors.surface)}>
           {isVisible && (
-          <Progress.Circle
-            progress={progress || 0}
-            size={200}
-            color={colors.primary}
-            animated={false}
-            borderWidth={2}
-            thickness={10}
-            showsText
-          />
+            <Progress.Circle
+              progress={progress || 0}
+              size={200}
+              color={colors.primary}
+              animated={false}
+              borderWidth={2}
+              thickness={10}
+              showsText
+            />
           )}
 
-          <Text
-            style={styles.detailsText}
-          >
-            Rezultat iznad označava postotak tačnih odgovora na već odgovorena pitanja.
+          <Text style={styles.detailsText}>
+            Rezultat iznad označava postotak tačnih odgovora na već odgovorena
+            pitanja.
           </Text>
 
           {/* <Text
@@ -60,13 +50,10 @@ function ResultsModal({ isVisible, progress, onHide }) {
           <Button
             onPress={onButtonPress}
             mode="contained"
-            style={styles.button}
-          >
+            style={styles.button}>
             Nazad na kategorije
           </Button>
-
         </TouchableOpacity>
-
       </TouchableOpacity>
     </Modal>
   );
@@ -83,7 +70,7 @@ const styles = StyleSheet.create({
     backgroundColor,
     elevation: 5,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.8,
     shadowRadius: 1,
     borderRadius: 5,

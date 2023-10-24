@@ -50,7 +50,7 @@ function Welcome({navigation}) {
     };
 
     dispatch(setFirestoreUser(userObject));
-    navigation.replace('Home');
+    navigation.replace('MainTab');
   }, [
     birhtDate,
     dispatch,
@@ -112,33 +112,39 @@ function Welcome({navigation}) {
       ),
     });
   }, [navigation, user]);
-
+  const isFormValid = () => {
+    return (
+      firstName.length > 0 &&
+      lastName.length > 0 &&
+      email &&
+      validateEmail(email) &&
+      gender
+    );
+  };
   return (
     <View style={styles.mainContainer(colors.surface)}>
       <View style={{flex: 1}}>
         <TextInput
-          label="Ime"
+          style={styles.inputElement}
+          label="Ime*"
           mode="outlined"
           value={firstName}
           onChangeText={setFirstName}
           maxLength={50}
+          error={firstName && firstName.length == 0}
         />
         <TextInput
-          label="Prezime"
+          style={styles.inputElement}
+          label="Prezime*"
           mode="outlined"
           value={lastName}
           onChangeText={setLasttName}
           maxLength={50}
+          error={lastName && lastName.length == 0}
         />
         <TextInput
-          onPressIn={openDateModal}
-          label="Datum rođenja"
-          mode="outlined"
-          value={birthString}
-          onKeyPress={() => {}}
-        />
-        <TextInput
-          label="Email"
+          style={styles.inputElement}
+          label="Email*"
           mode="outlined"
           value={email}
           onChangeText={setEmail}
@@ -147,7 +153,17 @@ function Welcome({navigation}) {
           error={email && !validateEmail(email)}
         />
         <TextInput
+          style={styles.inputElement}
+          onPressIn={openDateModal}
+          label="Datum rođenja"
+          mode="outlined"
+          value={birthString}
+          onKeyPress={() => {}}
+        />
+
+        <TextInput
           label="Broj telefona"
+          style={styles.inputElement}
           mode="outlined"
           value={phoneNumber}
           onChangeText={setPhoneNumber}
@@ -155,31 +171,41 @@ function Welcome({navigation}) {
           keyboardType="numeric"
           error={phoneNumber && !validatePhoneNumber(phoneNumber)}
         />
+        <Text style={{color: 'grey'}}>Spol*</Text>
         <View style={{...styles.row, marginTop: 10}}>
           <Button
-            mode="outlined"
-            style={styles.button(
-              gender === 'm' ? colors.primary : colors.disabled,
-            )}
+            style={[
+              styles.button(gender === 'm' ? colors.primary : 'white'),
+              styles.shadowBox,
+            ]}
             onPress={() => setGender('m')}>
-            Muško
+            <Text
+              style={styles.textColor(
+                gender === 'm' ? 'white' : colors.primary,
+              )}>
+              Muško
+            </Text>
           </Button>
           <Button
-            mode="outlined"
-            style={styles.button(
-              gender === 'f' ? colors.primary : colors.disabled,
-            )}
+            style={[
+              styles.button(gender === 'f' ? colors.primary : 'white'),
+              styles.shadowBox,
+            ]}
             onPress={() => setGender('f')}>
-            Žensko
+            <Text
+              style={styles.textColor(
+                gender === 'f' ? 'white' : colors.primary,
+              )}>
+              Žensko
+            </Text>
           </Button>
         </View>
-        <View style={{marginTop: 10}}>
-          <Text style={{fontWeight: 'bold'}}>
-            AKTIVNI PAKET: {!isPremium ? 'FREE' : 'PREMIUM'}
-          </Text>
-        </View>
       </View>
-      <Button onPress={onNextPress} mode="contained">
+      <Button
+        onPress={onNextPress}
+        mode="contained"
+        disabled={!isFormValid()}
+        style={styles.shadowBox}>
         Spremi
       </Button>
       <DatePicker
@@ -200,6 +226,11 @@ const styles = StyleSheet.create({
     backgroundColor,
     padding: 20,
   }),
+  inputElement: {
+    backgroundColor: 'white',
+    marginBottom: 10,
+    height: 35,
+  },
   text: {
     marginVertical: 5,
     fontSize: 16,
@@ -209,13 +240,27 @@ const styles = StyleSheet.create({
     aligItems: 'center',
     justifyContent: 'space-between',
   },
-  button: borderColor => ({
-    borderColor,
+  button: backgroundColor => ({
+    backgroundColor,
     flex: 0.48,
-    borderWidth: 1,
+    borderRadius: 15,
+  }),
+  textColor: txtColor => ({
+    color: txtColor,
   }),
   backButton: {
     marginLeft: 20,
+  },
+  shadowBox: {
+    borderRadius: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });
 

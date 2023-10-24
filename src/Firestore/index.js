@@ -48,7 +48,6 @@ export const getUser = async () => {
 
 export const getCollection = async ({collection, condition, orderBy}) => {
   let query = firestore().collection(collection);
-
   if (condition) {
     condition.forEach(c => {
       if (Array.isArray(c)) {

@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/no-unstable-nested-components */
-import {useFocusEffect} from '@react-navigation/native';
+import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
 import React, {
   useCallback,
   useEffect,
@@ -48,16 +48,23 @@ import DrawerMenu from './components/DrawerMenu';
 import MenuButton from '../CommonComponents/MenuButton';
 import {getSettings} from '../Settings/settingsSlice';
 import {getNotifications} from '../Notifications/notificationsSlice';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {default as versionInfo} from '../../version.json';
+import About from '../About';
+import HomeCard from './components/HomeCard';
+import {ScrollView} from 'react-native-gesture-handler';
+import {getKonkursi} from './konkursiSlice';
 
 const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
+const Tab = createBottomTabNavigator();
 
 function Home({navigation, route}) {
   const {colors} = useTheme();
   const dispatch = useDispatch();
   const {data, status} = useSelector(state => state.categories) ?? {};
-
+  const konkursi = useSelector(state => state.konkursi.data);
+  console.log(konkursi);
   const user = useSelector(state => state.user.data);
 
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
@@ -67,7 +74,6 @@ function Home({navigation, route}) {
     100000,
     999999,
   )}`;
-  console.log(paymentSettings.deprecatedVersions, versionInfo.version);
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   const [isSuccesPaymentModalVisible, setIsSuccesPaymentModalVisible] =
     useState(false);
@@ -91,35 +97,6 @@ function Home({navigation, route}) {
     },
     [isNotificationModal, setIsNotificationModal],
   );
-  const offset = useRef(new Animated.Value(0)).current;
-
-  const onScroll = Animated.event(
-    [{nativeEvent: {contentOffset: {y: offset}}}],
-    {useNativeDriver: false},
-  );
-
-  const headerHeight = offset.interpolate({
-    inputRange: [0, HEADER_HEIGHT],
-    outputRange: [HEADER_HEIGHT, 0],
-    extrapolate: 'clamp',
-  });
-
-  const renderItem = useCallback(
-    ({item}) => {
-      return (
-        <CategoryItem item={item} notificationModal={toggleNotificationModal} />
-      );
-    },
-    [toggleNotificationModal],
-  );
-
-  const keyExtractor = useCallback(item => item.id, []);
-
-  const onRefresh = useCallback(() => {
-    dispatch(getCategories());
-    dispatch(getSubcategories());
-    dispatch(getSettings());
-  }, [dispatch]);
 
   useEffect(() => {
     const nowInSeconds = Math.floor(Date.now() / 1000);
@@ -139,6 +116,7 @@ function Home({navigation, route}) {
     dispatch(getSubcategories());
     dispatch(getSettings());
     dispatch(getNotifications());
+    dispatch(getKonkursi());
   }, [dispatch]);
 
   useEffect(() => {
@@ -205,12 +183,12 @@ function Home({navigation, route}) {
     paymentSettings?.isEnabledApple,
   ]);
 
-  useLayoutEffect(() => {
+  /* useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => <UserButton />,
       headerLeft: () => <MenuButton onPress={toggleMenu} />,
     });
-  }, [navigation, toggleMenu]);
+  }, [navigation, toggleMenu]); */
 
   const onFocus = useCallback(() => {
     dispatch(resetQuestions());
@@ -219,7 +197,6 @@ function Home({navigation, route}) {
 
   useFocusEffect(onFocus);
 
-  const menu = <DrawerMenu navigation={navigation} />;
   useEffect(() => {
     if (!isPremium) {
       //pogkedat kad se runa na androidu
@@ -245,42 +222,29 @@ function Home({navigation, route}) {
   });
 
   return (
-    <SideMenu isOpen={isMenuOpen} menu={menu}>
+    <>
       <View style={styles.mainContainer(colors.surface)}>
         <StatusBar backgroundColor={colors.surface} barStyle="dark-content" />
-        <Animated.View style={styles.logoContainer(headerHeight)}>
-          <Image
-            source={require('../assets/pqLogo.png')}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-        </Animated.View>
+
         {isLoading && data ? (
           <ActivityIndicator
             style={{flex: 1, paddingTop: HEADER_HEIGHT}}
             size="small"
           />
         ) : (
-          <FlatList
-            onScroll={onScroll}
-            stickyHeaderIndices={[0]}
-            ListHeaderComponent={() => (
-              <List.Subheader style={{backgroundColor: colors.surface}}>
-                Kategorije
-              </List.Subheader>
-            )}
-            keyExtractor={keyExtractor}
-            data={filteredData}
-            renderItem={renderItem}
-            contentContainerStyle={styles.contentContainer}
-            ListEmptyComponent={() => <NoData />}
-            refreshControl={
-              <RefreshControl onRefresh={onRefresh} refreshing={isLoading} />
-            }
-          />
+          <ScrollView>
+            <HomeCard data={filteredData} title="Kategorije" />
+            <HomeCard data={filteredData} title="Test" />
+            <HomeCard data={filteredData} title="Zakoni" />
+            <HomeCard data={konkursi} title="Aktuelni konkursi" />
+            <HomeCard data={filteredData} title="Video fizičke spreme" />
+            <HomeCard data={filteredData} title="Uplata premium paketa" />
+            <HomeCard data={filteredData} title="Priprema fizičke spreme" />
+            <HomeCard data={filteredData} title="Plan ishrane" />
+          </ScrollView>
         )}
         <Modal
-          isVisible={paymentSettings.deprecatedVersions.includes(
+          isVisible={paymentSettings?.deprecatedVersions?.includes(
             versionInfo.version,
           )}>
           <UpdateModal />
@@ -319,7 +283,7 @@ function Home({navigation, route}) {
           </View>
         </Modal>
       </View>
-    </SideMenu>
+    </>
   );
 }
 
