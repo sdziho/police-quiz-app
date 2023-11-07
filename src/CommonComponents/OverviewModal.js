@@ -19,6 +19,7 @@ export default function ({
   title = '',
   imageVisible = true,
   subtitle = '',
+  headerImage,
 }) {
   const {colors} = useTheme();
   const image = {uri: 'https://legacy.reactjs.org/logo-og.png'};
@@ -37,7 +38,7 @@ export default function ({
         {imageVisible && (
           <View style={styles.imageWrapper}>
             <ImageBackground
-              source={image}
+              source={{uri: headerImage ?? image.uri}}
               style={styles.backgroundImage}></ImageBackground>
             <Text style={styles.headingTitle}>{title}</Text>
             <Text style={styles.headingSubtitle}>{subtitle}</Text>

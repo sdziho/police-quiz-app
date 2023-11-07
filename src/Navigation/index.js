@@ -15,9 +15,20 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Profile from '../Profile/Profile';
 import {useTheme} from 'react-native-paper';
+import Notifications from '../Notifications';
 
 const Tab = createBottomTabNavigator();
-
+const headerStyle = {
+  borderBottomWidth: 1,
+  shadowColor: '#000',
+  shadowOffset: {
+    width: 0,
+    height: 2,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5,
+};
 const Stack = createStackNavigator();
 const MainTabNavigator = () => (
   <Tab.Navigator
@@ -47,12 +58,18 @@ const MainTabNavigator = () => (
     <Tab.Screen
       name="Početna"
       component={Home}
-      options={{headerShown: false}}
+      options={{
+        title: 'Police Quiz',
+        headerStyle,
+      }}
     />
     <Tab.Screen
       name="Obavjesti"
-      component={About}
-      options={{headerShown: false}}
+      component={Notifications}
+      options={{
+        title: 'Obavijesti',
+        headerStyle,
+      }}
     />
     <Tab.Screen
       name="Uputstvo"
@@ -70,17 +87,7 @@ function MainNavigator() {
   const {data} = useSelector(state => state.user) ?? {};
   const {colors} = useTheme();
   const [isLoading, setIsLoading] = useState(true);
-  const headerStyle = {
-    borderBottomWidth: 1,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  };
+
   useLayoutEffect(() => {
     if (data !== null) {
       setIsLoading(false);

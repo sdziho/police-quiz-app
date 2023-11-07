@@ -7,10 +7,25 @@ import {STATUS_TYPES} from '../utils/constants';
 export const getKonkursi = createAsyncThunk(
   'user/getKonkursi',
   async (payload, {dispatch}) => {
-    return getCollection({
-      collection: 'konkursi',
-    }).then(response => {
-      dispatch(setKonkursi(response));
+    const collectionNames = payload.collections; // Payload should be an object with an array of collection names.
+
+    const fetchDataPromises = collectionNames.map(collectionName => {
+      return getCollection({
+        collection: collectionName,
+      }).then(data => ({
+        name: collectionName,
+        data: data,
+      }));
+    });
+
+    return Promise.all(fetchDataPromises).then(responses => {
+      const konkursiData = {};
+
+      responses.forEach(response => {
+        konkursiData[response.name] = response.data;
+      });
+
+      dispatch(setKonkursi(konkursiData));
     });
   },
 );

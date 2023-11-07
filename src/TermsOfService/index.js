@@ -22,7 +22,6 @@ function TermsOfService({navigation}) {
       ),
     });
   }, [navigation]);
-
   return (
     <ScrollView contentContainerStyle={styles.contentContainer(colors.surface)}>
       <Text>{paymentSettings?.termsOfConditions}</Text>

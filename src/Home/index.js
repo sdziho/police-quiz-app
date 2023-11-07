@@ -57,15 +57,17 @@ import {getKonkursi} from './konkursiSlice';
 
 const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
-const Tab = createBottomTabNavigator();
 
 function Home({navigation, route}) {
   const {colors} = useTheme();
   const dispatch = useDispatch();
   const {data, status} = useSelector(state => state.categories) ?? {};
-  const konkursi = useSelector(state => state.konkursi.data);
-  console.log(konkursi);
+  const cardsData = useSelector(state => state.konkursi.data);
   const user = useSelector(state => state.user.data);
+  const konkursi = cardsData?.konkursi ?? [];
+  const sprema = cardsData?.fizicka_sprema ?? [];
+  const ishrana = cardsData?.plan_ishrane ?? [];
+  const video = cardsData?.video ?? [];
 
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
   const {isPremium, id} = user ?? {};
@@ -116,7 +118,11 @@ function Home({navigation, route}) {
     dispatch(getSubcategories());
     dispatch(getSettings());
     dispatch(getNotifications());
-    dispatch(getKonkursi());
+    dispatch(
+      getKonkursi({
+        collections: ['konkursi', 'fizicka_sprema', 'plan_ishrane'],
+      }),
+    );
   }, [dispatch]);
 
   useEffect(() => {
@@ -220,7 +226,7 @@ function Home({navigation, route}) {
     }
     return 0;
   });
-
+  const drzavni = filteredData.filter(element => element?.isDrzavni);
   return (
     <>
       <View style={styles.mainContainer(colors.surface)}>
@@ -234,13 +240,24 @@ function Home({navigation, route}) {
         ) : (
           <ScrollView>
             <HomeCard data={filteredData} title="Kategorije" />
+            {drzavni.length > 0 && (
+              <HomeCard data={drzavni} title="Državni ispiti" />
+            )}
             <HomeCard data={filteredData} title="Test" />
             <HomeCard data={filteredData} title="Zakoni" />
-            <HomeCard data={konkursi} title="Aktuelni konkursi" />
-            <HomeCard data={filteredData} title="Video fizičke spreme" />
+            {konkursi.length > 0 && (
+              <HomeCard data={konkursi} title="Aktuelni konkursi" />
+            )}
+            {sprema.length > 0 && (
+              <HomeCard data={sprema} title="Video fizičke spreme" />
+            )}
             <HomeCard data={filteredData} title="Uplata premium paketa" />
-            <HomeCard data={filteredData} title="Priprema fizičke spreme" />
-            <HomeCard data={filteredData} title="Plan ishrane" />
+            {video.length > 0 && (
+              <HomeCard data={video} title="Priprema fizičke spreme" />
+            )}
+            {ishrana.length > 0 && (
+              <HomeCard data={ishrana} title="Plan ishrane" />
+            )}
           </ScrollView>
         )}
         <Modal

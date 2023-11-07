@@ -11,7 +11,6 @@ function QuestionItem({item, answerQuestion, number, questionsSize}) {
   const {question, answers, isAnswered, id, answerIndex, isCorrect} =
     item ?? {};
   const {colors} = useTheme();
-  console.log(number, questionsSize);
   const AnswerButton = useCallback(
     ({item, index}) => {
       const borderColor = (() => {
