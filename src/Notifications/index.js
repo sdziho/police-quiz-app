@@ -2,55 +2,71 @@ import React, {useEffect, useLayoutEffect, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Text, useTheme} from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import OverviewModal from '../CommonComponents/OverviewModal';
+import {setFirestoreUser} from '../Welcome/userSlice';
 
 export default function Notifications() {
   const [selectedNotification, setSelectedNotification] = useState(null);
   const {colors} = useTheme();
-
+  const dispatch = useDispatch();
   const user = useSelector(state => state.user.data);
   const notifications = useSelector(state => state.notifications.data);
 
+  const seenNotifications = user?.notificationSeen || [];
   return (
     <ScrollView style={styles.container}>
       <View style={{margin: 5}}>
         {notifications.map(notification => {
-          const isSeen = false;
-          return (
-            <TouchableOpacity
-              style={[styles.shadowBox, styles.action]}
-              onPress={() => setSelectedNotification(notification)}>
-              <View style={styles.flexRow}>
+          const nowInSeconds = Math.floor(Date.now() / 1000);
+          const isSeen = seenNotifications.includes(notification.id);
+          if (nowInSeconds < notification.endingAt.seconds)
+            return (
+              <TouchableOpacity
+                style={[styles.shadowBox, styles.action]}
+                onPress={() => {
+                  if (!isSeen) {
+                    dispatch(
+                      setFirestoreUser({
+                        notificationSeen: [
+                          ...seenNotifications,
+                          notification.id,
+                        ],
+                      }),
+                    );
+                  }
+                  setSelectedNotification(notification);
+                }}>
                 <View style={styles.flexRow}>
-                  <View
-                    style={{
-                      opacity: isSeen ? 0 : 1,
-                      backgroundColor: colors.primary,
-                      borderRadius: 50,
-                      height: 12,
-                      width: 12,
-                    }}></View>
-                  <Text
-                    style={[
-                      styles.secondaryText,
-                      styles.ml,
-                      {
-                        fontWeight: isSeen ? 'normal' : 'bold',
-                      },
-                    ]}>
-                    {notification?.title ?? notification?.message}
-                  </Text>
+                  <View style={styles.flexRow}>
+                    <View
+                      style={{
+                        opacity: isSeen ? 0 : 1,
+                        backgroundColor: colors.primary,
+                        borderRadius: 50,
+                        height: 12,
+                        width: 12,
+                      }}></View>
+                    <Text
+                      style={[
+                        styles.secondaryText,
+                        styles.ml,
+                        {
+                          fontWeight: isSeen ? 'normal' : 'bold',
+                        },
+                      ]}>
+                      {notification?.title ?? notification?.message}
+                    </Text>
+                  </View>
+                  <Ionicons
+                    name="chevron-forward-sharp"
+                    size={20}
+                    color={colors.darkerShade}
+                  />
                 </View>
-                <Ionicons
-                  name="chevron-forward-sharp"
-                  size={20}
-                  color={colors.darkerShade}
-                />
-              </View>
-            </TouchableOpacity>
-          );
+              </TouchableOpacity>
+            );
         })}
       </View>
       <OverviewModal
@@ -58,9 +74,22 @@ export default function Notifications() {
         isVisible={selectedNotification ? true : false}
         hideModal={() => setSelectedNotification(null)}
         children={
-          <View style={styles.flexColumn}>
-            <Text>{selectedNotification?.title}</Text>
-          </View>
+          <ScrollView
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginTop: 30,
+            }}>
+            <Text
+              style={{
+                fontSize: 25,
+                marginBottom: 30,
+                color: '#2074B9',
+              }}>
+              {selectedNotification?.title}
+            </Text>
+            <Text>{selectedNotification?.message}</Text>
+          </ScrollView>
         }
       />
     </ScrollView>

@@ -30,59 +30,74 @@ const headerStyle = {
   elevation: 5,
 };
 const Stack = createStackNavigator();
-const MainTabNavigator = () => (
-  <Tab.Navigator
-    screenOptions={({route}) => ({
-      tabBarIcon: ({focused, color, size}) => {
-        let iconName;
+const MainTabNavigator = () => {
+  const user = useSelector(state => state.user.data);
+  const notifications = useSelector(state => state.notifications.data);
+  const nowInSeconds = Math.floor(Date.now() / 1000);
+  const seenNotifications = user?.notificationSeen || [];
+  const numberOfNotSeenNotifications = notifications.filter(
+    notification =>
+      nowInSeconds < notification.endingAt.seconds &&
+      !seenNotifications.includes(notification.id),
+  ).length;
 
-        if (route.name === 'Početna') {
-          iconName = focused ? 'home-sharp' : 'home-outline';
-        } else if (route.name === 'Obavjesti') {
-          iconName = focused ? 'notifications' : 'notifications-outline';
-        } else if (route.name === 'Uputstvo') {
-          iconName = focused ? 'newspaper' : 'newspaper-outline';
-        } else if (route.name === 'Profil') {
-          iconName = focused ? 'person' : 'person-outline';
-        }
+  return (
+    <Tab.Navigator
+      screenOptions={({route}) => ({
+        tabBarIcon: ({focused, color, size}) => {
+          let iconName;
 
-        // You can return any component that you like here!
-        return <Ionicons name={iconName} size={20} color={color} />;
-      },
-      tabBarActiveTintColor: '#2074B9',
-      tabBarInactiveTintColor: 'gray',
-      tabBarStyle: {
-        paddingBottom: 5,
-      },
-    })}>
-    <Tab.Screen
-      name="Početna"
-      component={Home}
-      options={{
-        title: 'Police Quiz',
-        headerStyle,
-      }}
-    />
-    <Tab.Screen
-      name="Obavjesti"
-      component={Notifications}
-      options={{
-        title: 'Obavijesti',
-        headerStyle,
-      }}
-    />
-    <Tab.Screen
-      name="Uputstvo"
-      component={TermsOfService}
-      options={{headerShown: false}}
-    />
-    <Tab.Screen
-      name="Profil"
-      component={Profile}
-      options={{headerShown: false}}
-    />
-  </Tab.Navigator>
-);
+          if (route.name === 'Početna') {
+            iconName = focused ? 'home-sharp' : 'home-outline';
+          } else if (route.name === 'Obavjesti') {
+            iconName = focused ? 'notifications' : 'notifications-outline';
+          } else if (route.name === 'Uputstvo') {
+            iconName = focused ? 'newspaper' : 'newspaper-outline';
+          } else if (route.name === 'Profil') {
+            iconName = focused ? 'person' : 'person-outline';
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName} size={20} color={color} />;
+        },
+        tabBarActiveTintColor: '#2074B9',
+        tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          paddingBottom: 5,
+        },
+      })}>
+      <Tab.Screen
+        name="Početna"
+        component={Home}
+        options={{
+          title: 'Police Quiz',
+          headerStyle,
+        }}
+      />
+      <Tab.Screen
+        name="Obavjesti"
+        component={Notifications}
+        options={{
+          title: 'Obavijesti',
+          headerStyle,
+          ...(numberOfNotSeenNotifications > 0 && {
+            tabBarBadge: numberOfNotSeenNotifications,
+          }),
+        }}
+      />
+      <Tab.Screen
+        name="Uputstvo"
+        component={TermsOfService}
+        options={{headerShown: false}}
+      />
+      <Tab.Screen
+        name="Profil"
+        component={Profile}
+        options={{headerShown: false}}
+      />
+    </Tab.Navigator>
+  );
+};
 function MainNavigator() {
   const {data} = useSelector(state => state.user) ?? {};
   const {colors} = useTheme();
