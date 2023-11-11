@@ -20,6 +20,7 @@ import {
   Platform,
   Pressable,
   TouchableOpacity,
+  ImageBackground,
 } from 'react-native';
 import {
   useTheme,
@@ -54,6 +55,8 @@ import About from '../About';
 import HomeCard from './components/HomeCard';
 import {ScrollView} from 'react-native-gesture-handler';
 import {getKonkursi} from './konkursiSlice';
+import SwiperFlatList from 'react-native-swiper-flatlist';
+import LinearGradient from 'react-native-linear-gradient';
 
 const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
@@ -102,12 +105,20 @@ function Home({navigation, route}) {
 
   useEffect(() => {
     const nowInSeconds = Math.floor(Date.now() / 1000);
-    const threeMonthInSeconds = 30 * 24 * 60 * 60 * 3; // 30 days * 24 hours * 60 minutes * 60 seconds * 3 months
-    const expired =
-      nowInSeconds >
-      user?.paymentDetails?.createdAt._seconds + threeMonthInSeconds;
-    //updateUsers();
-    if (expired) {
+    const oneMonthInSeconds = 30 * 24 * 60 * 60; // 30 days * 24 hours * 60 minutes * 60 seconds * 3 months
+
+    const expired = nowInSeconds > user?.paymentDetails?.expiresAt?.seconds;
+    if (!user?.paymentDetails?.expiresAt && isPremium) {
+      let dateExpires = new Date(0);
+      dateExpires.setUTCSeconds(nowInSeconds + oneMonthInSeconds);
+      dispatch(
+        setFirestoreUser({
+          paymentDetails: {
+            expiresAt: dateExpires,
+          },
+        }),
+      );
+    } else if (expired) {
       dispatch(
         setFirestoreUser({
           isPremium: false,
@@ -139,20 +150,16 @@ function Home({navigation, route}) {
       : [];
 
     if (status === 'success') {
-      if (match[1] === 'ALL') {
-        data.forEach(category => {
-          if (!categories.includes(category.id)) categories.push(category.id);
-        });
-      } else if (match[1] === 'MUP') {
-        data.forEach(category => {
-          if (
-            !categories.includes(category.id) &&
-            category.name.includes('MUP')
-          )
-            categories.push(category.id);
-        });
-      } else if (!categories.includes(match[1])) categories.push(match[1]);
+      const monthInSeconds = 30 * 24 * 60 * 60;
+      const nowInSeconds = Math.floor(Date.now() / 1000);
+      let expiresAt = nowInSeconds;
+      console.log(match[1]);
+      if (match[1] === 'price30') expiresAt = expiresAt + monthInSeconds;
+      if (match[1] === 'price60') expiresAt = expiresAt + monthInSeconds * 2;
+      if (match[1] === 'price90') expiresAt = expiresAt + monthInSeconds * 3;
 
+      let dateExpires = new Date(0);
+      dateExpires.setUTCSeconds(expiresAt);
       dispatch(
         setFirestoreUser({
           isPremium: true,
@@ -160,11 +167,12 @@ function Home({navigation, route}) {
             orderNumber,
             createdAt: new Date(),
             categories,
+            expiresAt: dateExpires,
           },
         }),
       );
-      setIsSuccesPaymentModalVisible(true);
       navigation.setParams({status: null});
+      setIsSuccesPaymentModalVisible(true);
     }
   }, [dispatch, navigation, orderNumber, route.params, user]);
 
@@ -227,6 +235,8 @@ function Home({navigation, route}) {
     return 0;
   });
   const drzavni = filteredData.filter(element => element?.isDrzavni);
+  const image = {uri: 'https://legacy.reactjs.org/logo-og.png'};
+
   return (
     <>
       <View style={styles.mainContainer(colors.surface)}>
@@ -239,24 +249,78 @@ function Home({navigation, route}) {
           />
         ) : (
           <ScrollView>
-            <HomeCard data={filteredData} title="Kategorije" />
+            <View style={styles.imageWrapper}>
+              <SwiperFlatList
+                data={[
+                  {name: 'prvi', pic: image},
+                  {name: 'drugi', pic: image},
+                  {name: 'treci', pic: image},
+                ]}
+                autoplay
+                autoplayDelay={5}
+                autoplayLoop
+                renderItem={({item}) => (
+                  <TouchableOpacity
+                    style={[styles.child, styles.shadowBox]}
+                    onPress={() => {
+                      setSelectedCategory(item);
+                      setModalVisible(true);
+                    }}>
+                    <ImageBackground
+                      source={{uri: item.pic.uri ?? image.uri}}
+                      style={styles.backgroundImage}>
+                      <Text style={styles.insideSwiper}>{item.name}</Text>
+                      <LinearGradient
+                        colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.5)']}
+                        style={styles.gradientOverlay}
+                      />
+                    </ImageBackground>
+                  </TouchableOpacity>
+                )}
+              />
+            </View>
+            <HomeCard data={filteredData} title="Kategorije" key="Kategorije" />
             {drzavni.length > 0 && (
-              <HomeCard data={drzavni} title="Državni ispiti" />
+              <HomeCard
+                data={drzavni}
+                title="Državni ispiti"
+                key="Državni ispiti"
+              />
             )}
-            <HomeCard data={filteredData} title="Test" />
-            <HomeCard data={filteredData} title="Zakoni" />
+            <HomeCard data={filteredData} title="Test" key="Test" />
+            <HomeCard data={filteredData} title="Zakoni" key="Zakon" />
             {konkursi.length > 0 && (
-              <HomeCard data={konkursi} title="Aktuelni konkursi" />
+              <HomeCard
+                data={konkursi}
+                title="Aktuelni konkursi"
+                key="Aktuelni konkursi"
+              />
             )}
             {sprema.length > 0 && (
-              <HomeCard data={sprema} title="Video fizičke spreme" />
+              <HomeCard
+                data={sprema}
+                title="Video fizičke spreme"
+                key="Video fizičke spreme"
+              />
             )}
-            <HomeCard data={filteredData} title="Uplata premium paketa" />
+            <HomeCard
+              data={filteredData}
+              title="Uplata premium paketa"
+              key="Uplata premium paketa"
+            />
             {video.length > 0 && (
-              <HomeCard data={video} title="Priprema fizičke spreme" />
+              <HomeCard
+                data={video}
+                title="Priprema fizičke spreme"
+                key="Priprema fizičke spreme"
+              />
             )}
             {ishrana.length > 0 && (
-              <HomeCard data={ishrana} title="Plan ishrane" />
+              <HomeCard
+                data={ishrana}
+                title="Plan ishrane"
+                key="Plan ishrane"
+              />
             )}
           </ScrollView>
         )}
@@ -277,7 +341,10 @@ function Home({navigation, route}) {
         </Modal>
         <Modal
           isVisible={isSuccesPaymentModalVisible}
-          hideModal={() => setIsSuccesPaymentModalVisible(false)}>
+          hideModal={() => {
+            setIsSuccesPaymentModalVisible(false);
+            navigation.navigate('MainTab');
+          }}>
           <SuccessModal />
         </Modal>
         <Modal
@@ -303,6 +370,7 @@ function Home({navigation, route}) {
     </>
   );
 }
+const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   mainContainer: backgroundColor => ({
@@ -330,6 +398,22 @@ const styles = StyleSheet.create({
     marginRight: 5,
     marginLeft: 5,
     marginBottom: 3,
+  },
+  child: {
+    width: width * 0.9,
+    justifyContent: 'center',
+    margin: 20,
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    overflow: 'hidden',
+    borderRadius: 10,
+  },
+  imageWrapper: {
+    height: 250,
+    flex: 1,
+    backgroundColor: 'white',
   },
   message: {
     color: '#005a76',

@@ -300,6 +300,7 @@ function HomeCard({data, title}) {
               {data.map(item => {
                 return (
                   <TouchableOpacity
+                    key={item?.name}
                     style={[styles.shadowBox, styles.action]}
                     onPress={() => {
                       Linking.openURL(item?.link);
@@ -332,6 +333,7 @@ function HomeCard({data, title}) {
                   theme={{colors: {background: 'white'}}}
                   style={[styles.shadowBox, {backgroundColor: 'white'}]}
                   title={item?.day}
+                  key={item?.day}
                   left={props => (
                     <List.Icon {...props} icon="calendar-clock" />
                   )}>
@@ -418,6 +420,7 @@ const styles = StyleSheet.create({
     marginLeft: 20,
     marginTop: 10,
     fontSize: 22,
+    fontWeight: 'bold',
   },
   flexRow: {
     display: 'flex',
@@ -432,7 +435,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   child: {
-    width: width * 0.7,
+    width: width * 0.6,
     justifyContent: 'center',
   },
   oneElement: {

@@ -79,12 +79,15 @@ function Payment({navigation}) {
         : selectedValue == 'Sve kategorije'
         ? 'ALL'
         : 'MUP'; */
+      let plan = 'price30';
+      if (selectedPrice === price60) plan = 'price60';
+      if (selectedPrice === price90) plan = 'price90';
 
       const {data} = await axios
         .post(`${PAYMENT_API_URL}/payment`, {
           orderNumber,
           price: selectedPrice * 100,
-          category: 'ALL',
+          category: plan,
         })
         .catch(err => {
           console.log('err', err);
