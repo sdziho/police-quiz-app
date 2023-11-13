@@ -24,18 +24,14 @@ function Profile() {
   const navigateTo = nav => {
     navigation.navigate(nav);
   };
-  const threeMonthInSeconds = 30 * 24 * 60 * 60 * 3; // 30 days * 24 hours * 60 minutes * 60 seconds
-  const paymentDate = format(
-    new Date(user?.paymentDetails.createdAt.seconds * 1000),
-    'dd.MM.yyyy.',
-  );
-  const expireDate = format(
-    new Date(
-      (user?.paymentDetails.createdAt.seconds + threeMonthInSeconds) * 1000,
-    ),
-    'dd.MM.yyyy.',
-  );
-
+  const createdAt = user?.paymentDetails?.createdAt?.seconds;
+  const expiresAt = user?.paymentDetails?.expiresAt?.seconds;
+  const paymentDate = createdAt
+    ? format(new Date(createdAt * 1000), 'dd.MM.yyyy.')
+    : null;
+  const expireDate = expiresAt
+    ? format(new Date(expiresAt * 1000), 'dd.MM.yyyy.')
+    : null;
   return (
     <View style={styles.container}>
       <View style={styles.flexColumn}>
@@ -44,9 +40,9 @@ function Profile() {
 
           <View style={[styles.flexColumn, styles.ml]}>
             <Text style={[styles.primaryText, styles.color(colors.primary)]}>
-              Ime i Prezime
+              {user.firstName} {user.lastName}
             </Text>
-            <Text style={[styles.secondaryText]}>email@gmail.com</Text>
+            <Text style={[styles.secondaryText]}>{user.email}</Text>
           </View>
         </View>
         <View style={styles.flexColumn}>
@@ -56,14 +52,18 @@ function Profile() {
                 <Text style={[styles.secondaryText]}>Status: </Text>
                 <Text>Premium</Text>
               </View>
-              <View style={[styles.flexRow, styles.mb]}>
-                <Text style={[styles.secondaryText]}>Uplaćeno: </Text>
-                <Text>{paymentDate}</Text>
-              </View>
-              <View style={[styles.flexRow, styles.mb]}>
-                <Text style={[styles.secondaryText]}>Ističe: </Text>
-                <Text>{expireDate}</Text>
-              </View>
+              {createdAt && (
+                <View style={[styles.flexRow, styles.mb]}>
+                  <Text style={[styles.secondaryText]}>Uplaćeno: </Text>
+                  <Text>{paymentDate}</Text>
+                </View>
+              )}
+              {expiresAt && (
+                <View style={[styles.flexRow, styles.mb]}>
+                  <Text style={[styles.secondaryText]}>Ističe: </Text>
+                  <Text>{expireDate}</Text>
+                </View>
+              )}
             </>
           ) : (
             <View style={[styles.flexRow, styles.mb]}>

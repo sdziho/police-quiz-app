@@ -1,39 +1,19 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/no-unstable-nested-components */
-import {NavigationContainer, useFocusEffect} from '@react-navigation/native';
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
-  FlatList,
   Dimensions,
-  Image,
-  Animated,
-  RefreshControl,
   StatusBar,
   Platform,
-  Pressable,
   TouchableOpacity,
   ImageBackground,
 } from 'react-native';
-import {
-  useTheme,
-  ActivityIndicator,
-  List,
-  Text,
-  Button,
-} from 'react-native-paper';
+import {useTheme, ActivityIndicator, Text, Button} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
-import SideMenu from 'react-native-side-menu';
 import Modal from '../CommonComponents/Modal';
-import NoData from '../CommonComponents/NoData';
-import UserButton from '../CommonComponents/UserButton';
 import {resetAds} from '../Questions/adsSlice';
 import {resetQuestions} from '../Questions/questionsSlice';
 import {STATUS_TYPES} from '../utils/constants';
@@ -41,17 +21,13 @@ import {randomIntFromInterval, replaceAll} from '../utils/helpers';
 import {setFirestoreUser} from '../Welcome/userSlice';
 import {getCategories} from './categoriesSlice';
 import {getSubcategories} from './subcategoriesSlice';
-import CategoryItem from './components/CategoryItem';
 import PaymentModal from './components/PaymentModal';
 import UpdateModal from './components/UpdateModal';
 import SuccessModal from './components/SuccessModal';
-import DrawerMenu from './components/DrawerMenu';
-import MenuButton from '../CommonComponents/MenuButton';
 import {getSettings} from '../Settings/settingsSlice';
 import {getNotifications} from '../Notifications/notificationsSlice';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {default as versionInfo} from '../../version.json';
-import About from '../About';
+
 import HomeCard from './components/HomeCard';
 import {ScrollView} from 'react-native-gesture-handler';
 import {getKonkursi} from './konkursiSlice';
@@ -74,6 +50,7 @@ function Home({navigation, route}) {
 
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
   const {isPremium, id} = user ?? {};
+  const slideImages = paymentSettings?.images ?? [];
   const isLoading = status === STATUS_TYPES.PENDING;
   const orderNumber = `${replaceAll(id, '-', '')}_${randomIntFromInterval(
     100000,
@@ -153,7 +130,7 @@ function Home({navigation, route}) {
       const monthInSeconds = 30 * 24 * 60 * 60;
       const nowInSeconds = Math.floor(Date.now() / 1000);
       let expiresAt = nowInSeconds;
-      console.log(match[1]);
+
       if (match[1] === 'price30') expiresAt = expiresAt + monthInSeconds;
       if (match[1] === 'price60') expiresAt = expiresAt + monthInSeconds * 2;
       if (match[1] === 'price90') expiresAt = expiresAt + monthInSeconds * 3;
@@ -249,37 +226,34 @@ function Home({navigation, route}) {
           />
         ) : (
           <ScrollView>
-            <View style={styles.imageWrapper}>
-              <SwiperFlatList
-                data={[
-                  {name: 'prvi', pic: image},
-                  {name: 'drugi', pic: image},
-                  {name: 'treci', pic: image},
-                ]}
-                autoplay
-                autoplayDelay={5}
-                autoplayLoop
-                renderItem={({item}) => (
-                  <TouchableOpacity
-                    style={[styles.child, styles.shadowBox]}
-                    onPress={() => {
-                      setSelectedCategory(item);
-                      setModalVisible(true);
-                    }}>
-                    <ImageBackground
-                      source={{uri: item.pic.uri ?? image.uri}}
-                      style={styles.backgroundImage}>
-                      <Text style={styles.insideSwiper}>{item.name}</Text>
-                      <LinearGradient
-                        colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.5)']}
-                        style={styles.gradientOverlay}
-                      />
-                    </ImageBackground>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>
-            <HomeCard data={filteredData} title="Kategorije" key="Kategorije" />
+            {slideImages.length > 0 && (
+              <View style={styles.imageWrapper}>
+                <SwiperFlatList
+                  data={slideImages}
+                  autoplay
+                  autoplayDelay={5}
+                  autoplayLoop
+                  renderItem={({item}) => (
+                    <TouchableOpacity style={[styles.child, styles.shadowBox]}>
+                      <ImageBackground
+                        source={{uri: item}}
+                        style={styles.backgroundImage}>
+                        <Text style={styles.insideSwiper}>{item.name}</Text>
+                        <LinearGradient
+                          colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.5)']}
+                          style={styles.gradientOverlay}
+                        />
+                      </ImageBackground>
+                    </TouchableOpacity>
+                  )}
+                />
+              </View>
+            )}
+            <HomeCard
+              data={filteredData.filter(element => !element?.isDrzavni)}
+              title="Kategorije"
+              key="Kategorije"
+            />
             {drzavni.length > 0 && (
               <HomeCard
                 data={drzavni}
@@ -287,7 +261,7 @@ function Home({navigation, route}) {
                 key="Državni ispiti"
               />
             )}
-            <HomeCard data={filteredData} title="Test" key="Test" />
+            <HomeCard data={filteredData} title={'Test'} key="Test" />
             <HomeCard data={filteredData} title="Zakoni" key="Zakon" />
             {konkursi.length > 0 && (
               <HomeCard

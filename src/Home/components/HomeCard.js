@@ -239,6 +239,8 @@ function HomeCard({data, title}) {
   const image = {uri: 'https://legacy.reactjs.org/logo-og.png'};
   const navigation = useNavigation();
   const colors = useTheme();
+  const user = useSelector(state => state.user.data);
+  const {isPremium} = user ?? {};
   const subctg = useSelector(state => state.subcategories);
   const categoryObject =
     title === 'Kategorije' ||
@@ -259,6 +261,15 @@ function HomeCard({data, title}) {
       );
     switch (title) {
       case 'Kategorije':
+        setSelectedChild(
+          <CategoriesList
+            filteredSubcategories={filteredSubcategories}
+            selectedCategory={selectedCategory}
+            hasButtons={selectedCategory?.hasSubcategory}
+          />,
+        );
+        break;
+      case 'Državni ispiti':
         setSelectedChild(
           <CategoriesList
             filteredSubcategories={filteredSubcategories}
@@ -367,7 +378,22 @@ function HomeCard({data, title}) {
   return (
     <View>
       <View style={styles.container}>
-        <Text style={styles.text}>{title}</Text>
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'baseline',
+          }}>
+          <Text style={styles.text}>{title}</Text>
+          {title === 'Test' && !isPremium && (
+            <Ionicons
+              name="lock-closed"
+              size={18}
+              color={colors.primary}
+              style={{marginLeft: 10}}
+            />
+          )}
+        </View>
         {swipableObject && (
           <SwiperFlatList
             data={data}
@@ -375,6 +401,8 @@ function HomeCard({data, title}) {
               <TouchableOpacity
                 style={[styles.child, styles.shadowBox]}
                 onPress={() => {
+                  if (title === 'Test' && !isPremium) return;
+
                   setSelectedCategory(item);
                   setModalVisible(true);
                 }}>
