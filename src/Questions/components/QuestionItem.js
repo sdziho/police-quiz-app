@@ -3,7 +3,6 @@
 import React, {useCallback} from 'react';
 import {StyleSheet, Dimensions, TouchableOpacity, View} from 'react-native';
 import {useTheme, Text} from 'react-native-paper';
-import CircularProgress from 'react-native-circular-progress-indicator';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
 
 const {width, height} = Dimensions.get('window');
