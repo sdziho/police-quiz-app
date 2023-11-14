@@ -10,18 +10,6 @@ import {useSelector} from 'react-redux';
 function TermsOfService({navigation}) {
   const {colors} = useTheme();
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: props => (
-        <TouchableOpacity
-          {...props}
-          style={styles.backButton}
-          onPress={() => navigation.pop()}>
-          <MaterialIcons name="arrow-back" size={25} color="black" />
-        </TouchableOpacity>
-      ),
-    });
-  }, [navigation]);
   return (
     <ScrollView contentContainerStyle={styles.contentContainer(colors.surface)}>
       <Text>{paymentSettings?.termsOfConditions}</Text>
@@ -33,6 +21,7 @@ const styles = StyleSheet.create({
   contentContainer: backgroundColor => ({
     padding: 20,
     backgroundColor,
+    height: '100%',
   }),
   text: {
     fontSize: 16,

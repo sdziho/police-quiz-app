@@ -33,7 +33,7 @@ function Profile() {
     ? format(new Date(expiresAt * 1000), 'dd.MM.yyyy.')
     : null;
   return (
-    <View style={styles.container}>
+    <View style={styles.container(colors.surface)}>
       <View style={styles.flexColumn}>
         <View style={styles.flexRow}>
           <Ionicons name="person-circle-outline" size={80} />
@@ -149,12 +149,12 @@ const styles = StyleSheet.create({
   mb: {
     marginBottom: 3,
   },
-  container: {
+  container: backgroundColor => ({
     paddingVertical: 10,
     paddingHorizontal: 30,
     flex: 1,
-    backgroundColor: 'white',
-  },
+    backgroundColor,
+  }),
   primaryText: {
     fontSize: 20,
   },

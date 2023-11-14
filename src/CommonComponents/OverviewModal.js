@@ -29,7 +29,7 @@ export default function ({
       transparent={true}
       visible={isVisible}
       onRequestClose={hideModal}>
-      <ScrollView style={styles.modalView}>
+      <ScrollView style={styles.modalView(colors.background)}>
         <View style={styles.buttonClose}>
           <Pressable onPress={hideModal}>
             <Ionicons name="close" size={25} color={'white'} />
@@ -50,8 +50,8 @@ export default function ({
   );
 }
 const styles = StyleSheet.create({
-  modalView: {
-    backgroundColor: 'white',
+  modalView: backgroundColor => ({
+    backgroundColor,
     borderRadius: 20,
     shadowColor: '#000',
     shadowOffset: {
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     height: '100%',
-  },
+  }),
   buttonClose: {
     position: 'absolute',
     top: 20,
@@ -77,7 +77,8 @@ const styles = StyleSheet.create({
     height: 400,
     width: '100%',
     overflow: 'hidden',
-    borderRadius: 20,
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

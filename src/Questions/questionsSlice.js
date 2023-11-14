@@ -36,10 +36,7 @@ export const getQuestions = createAsyncThunk(
         condition: conditions,
       }).then(response => {
         const nowInSeconds = Math.floor(Date.now() / 1000);
-        const threeMonthInSeconds = 30 * 24 * 60 * 60 * 3; // 30 days * 24 hours * 60 minutes * 60 seconds
-        const expired =
-          nowInSeconds >
-          paymentDetails?.createdAt._seconds + threeMonthInSeconds;
+        const expired = nowInSeconds > paymentDetails?.expiresAt._seconds;
 
         if (isPremium && !expired) {
           if (subcategoryId == 'TEST') {
@@ -62,10 +59,7 @@ export const getQuestions = createAsyncThunk(
         condition: conditions,
       }).then(response => {
         const nowInSeconds = Math.floor(Date.now() / 1000);
-        const threeMonthInSeconds = 30 * 24 * 60 * 60 * 3; // 30 days * 24 hours * 60 minutes * 60 seconds
-        const expired =
-          nowInSeconds >
-          paymentDetails?.createdAt._seconds + threeMonthInSeconds;
+        const expired = nowInSeconds > paymentDetails?.expiresAt._seconds;
 
         if (isPremium && !expired) {
           if (subcategoryId == 'TEST') {

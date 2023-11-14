@@ -88,7 +88,10 @@ const MainTabNavigator = () => {
       <Tab.Screen
         name="Uputstvo"
         component={TermsOfService}
-        options={{headerShown: false}}
+        options={{
+          title: 'Uputstvo',
+          headerStyle,
+        }}
       />
       <Tab.Screen
         name="Profil"

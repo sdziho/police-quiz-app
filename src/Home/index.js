@@ -225,10 +225,11 @@ function Home({navigation, route}) {
             size="small"
           />
         ) : (
-          <ScrollView>
+          <ScrollView style={{backgroundColor: colors.background}}>
             {slideImages.length > 0 && (
               <View style={styles.imageWrapper}>
                 <SwiperFlatList
+                  style={{backgroundColor: colors.background}}
                   data={slideImages}
                   autoplay
                   autoplayDelay={5}

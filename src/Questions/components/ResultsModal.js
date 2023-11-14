@@ -14,7 +14,7 @@ function ResultsModal({isVisible, progress, onHide}) {
       navigation.replace('MainTab');
     }, 300);
   };
-
+  //console.log(progress);
   return (
     <Modal transparent visible={isVisible} animationType="slide">
       <TouchableOpacity

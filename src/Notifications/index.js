@@ -1,22 +1,38 @@
 import React, {useEffect, useLayoutEffect, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View, RefreshControl} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {Text, useTheme} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import OverviewModal from '../CommonComponents/OverviewModal';
 import {setFirestoreUser} from '../Welcome/userSlice';
+import {getNotifications} from './notificationsSlice';
 
 export default function Notifications() {
+  const [refreshing, setRefreshing] = useState(false);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const {colors} = useTheme();
   const dispatch = useDispatch();
   const user = useSelector(state => state.user.data);
-  const notifications = useSelector(state => state.notifications.data);
-
+  const rowNotifications = useSelector(state => state.notifications.data);
+  const notifications = [...rowNotifications]?.sort((a, b) => {
+    return a?.startingAt?.seconds < b?.startingAt?.seconds ? 1 : -1;
+  });
   const seenNotifications = user?.notificationSeen || [];
+  const fetchData = () => {
+    dispatch(getNotifications());
+    setRefreshing(false);
+  };
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchData();
+  };
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }>
       <View style={{margin: 5}}>
         {notifications.map(notification => {
           const nowInSeconds = Math.floor(Date.now() / 1000);
@@ -126,7 +142,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 10,
     flex: 1,
-    backgroundColor: 'white',
   },
   primaryText: {
     fontSize: 20,

@@ -34,29 +34,28 @@ function CategoriesList({
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const {colors} = useTheme();
-
   const [selectedButton, setSelectedButton] = useState(
     hasButtons ? 'Za policajca' : null,
   );
+  useEffect(() => {
+    setSelectedButton(hasButtons ? 'Za policajca' : null);
+  }, [hasButtons]);
   const [selectedTestNumber, setSelectedTestNumber] = useState(30);
-  const onPress = useCallback(
-    item => {
-      const params = {
-        categoryId: selectedCategory.id,
-        subcategoryId: isTestSelected ? 'TEST' : item,
-        ...(selectedButton === 'Za inspoktera' && {isForInspector: true}),
-        ...(selectedButton === 'Za policajca' && {isForPoliceman: true}),
-        ...(isTestSelected && {numberOfQuestions: selectedTestNumber}),
-        isPremium,
-        paymentDetails,
-      };
+  const onPress = item => {
+    const params = {
+      categoryId: selectedCategory.id,
+      subcategoryId: isTestSelected ? 'TEST' : item,
+      ...(selectedButton === 'Za inspoktera' && {isForInspector: true}),
+      ...(selectedButton === 'Za policajca' && {isForPoliceman: true}),
+      ...(isTestSelected && {numberOfQuestions: selectedTestNumber}),
+      isPremium,
+      paymentDetails,
+    };
 
-      dispatch(getQuestions(params));
-      dispatch(getAds());
-      navigation.navigate('Questions');
-    },
-    [dispatch],
-  );
+    dispatch(getQuestions(params));
+    dispatch(getAds());
+    navigation.navigate('Questions');
+  };
   const handleButtonPress = buttonName => {
     setSelectedButton(buttonName);
   };
@@ -217,7 +216,7 @@ function CategoriesList({
               borderColor: colors.primary,
             },
           ]}
-          onPress={() => onPress('TEST')}>
+          onPress={() => onPress('TEST', selectedCategory)}>
           <Text
             style={{
               textAlign: 'center',
@@ -377,7 +376,7 @@ function HomeCard({data, title}) {
   };
   return (
     <View>
-      <View style={styles.container}>
+      <View style={styles.container(colors.background)}>
         <View
           style={{
             display: 'flex',
@@ -457,11 +456,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   //box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
-  container: {
+  container: backgroundColor => ({
     height: 250,
     flex: 1,
-    backgroundColor: 'white',
-  },
+    backgroundColor,
+  }),
   child: {
     width: width * 0.6,
     justifyContent: 'center',

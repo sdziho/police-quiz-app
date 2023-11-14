@@ -18,6 +18,10 @@ import {
   Dimensions,
   FlatList,
   ScrollView,
+  ImageBackground,
+  Modal,
+  Pressable,
+  Linking,
 } from 'react-native';
 import {Button, Text, useTheme} from 'react-native-paper';
 import {useSelector} from 'react-redux';
@@ -40,8 +44,11 @@ function Questions({navigation}) {
   );
 
   const {data: adsData, status: adsStatus} = useSelector(state => state.ads);
-
+  const randomizedAds = shuffle(
+    adsData?.filter(item => item?.isQuestionAd) ?? [],
+  ).map(item => ({...item, isAd: true}));
   const [sliderData, setSliderData] = useState([]);
+  const [openAddModal, setOpenAdModal] = useState(null);
   const [permanentAdsData, setPermanentAdsData] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [questionIndex, setQuestionIndex] = useState(0);
@@ -58,26 +65,22 @@ function Questions({navigation}) {
 
     const randomizedQuestions = shuffle(questionsData);
 
-    const randomizedAds = shuffle(
-      adsData.filter(item => item?.isQuestionAd),
-    ).map(item => ({...item, isAd: true}));
-
     let questionCounter = 0;
     let adCounter = 0;
     const finalData = [];
     let i = 0;
     while (questionCounter < randomizedQuestions.length) {
-      if (i && i % 11 === 0) {
+      /* if (i && i % 11 === 0) {
         finalData.push(randomizedAds[adCounter++]);
         if (adCounter === randomizedAds.length) {
           adCounter = 0;
         }
-      } else if (questionCounter < randomizedQuestions.length) {
+      } else  */
+      if (questionCounter < randomizedQuestions.length) {
         finalData.push(randomizedQuestions[questionCounter++]);
       }
       i++;
     }
-
     return finalData;
   }, [adsData, questionsData]);
 
@@ -130,6 +133,10 @@ function Questions({navigation}) {
   };
 
   const onNextPress = useCallback(() => {
+    if ((activeIndex + 1) % 10 === 0) {
+      const randomNumber = Math.floor(Math.random() * randomizedAds.length);
+      setOpenAdModal(randomizedAds[randomNumber]);
+    }
     if (activeIndex < sliderData.length) {
       scrollToIndex(activeIndex + 1);
       if (!sliderData[activeIndex + 1]?.isAd) {
@@ -167,7 +174,9 @@ function Questions({navigation}) {
     questionsStatus === STATUS_TYPES.PENDING ||
     adsStatus === STATUS_TYPES.PENDING;
 
-  const keyExtractor = useCallback(item => item.id, []);
+  const keyExtractor = useCallback(item => {
+    return item?.id;
+  }, []);
   const renderItem = useCallback(
     ({item}) => {
       return item?.isAd ? (
@@ -307,6 +316,39 @@ function Questions({navigation}) {
         onHide={hideResultModal}
         progress={getResult()}
       />
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={openAddModal !== null}
+        onRequestClose={() => {
+          setOpenAdModal(null);
+        }}>
+        <View style={styles.buttonClose}>
+          <Pressable
+            onPress={() => {
+              setOpenAdModal(null);
+            }}>
+            <Ionicons name="close" size={25} color={'white'} />
+          </Pressable>
+        </View>
+        <View style={styles.imageWrapper}>
+          <ImageBackground
+            source={{uri: openAddModal?.imageQuestion.src}}
+            style={styles.backgroundImage}></ImageBackground>
+          <View style={styles.adNameWrapper}>
+            <Text style={styles.adName}>{openAddModal?.name}</Text>
+          </View>
+          <View style={styles.moreButton}>
+            <Button
+              style={styles.viewButton}
+              onPress={() => {
+                Linking.openURL(openAddModal?.reddirectUrl ?? '');
+              }}>
+              VIDI VIŠE
+            </Button>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -320,16 +362,81 @@ const styles = StyleSheet.create({
     // width,
   },
   footer: {
-    height: height * 0.15,
+    height: height * 0.25,
+  },
+  adNameWrapper: {
+    flex: 1,
+    justifyContent: 'flex-start', // align to the top
+    alignItems: 'center',
+    position: 'absolute',
+    top: 20,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
+  adName: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textShadowOffset: {width: 2, height: 2},
+    textShadowColor: 'rgba(0, 0, 0, 0.5)',
+    textShadowRadius: 5,
+  },
+  viewButton: {
+    backgroundColor: 'white',
+    paddingHorizontal: 10,
+    borderRadius: 20,
+  },
+  moreButton: {
+    flex: 1,
+    justifyContent: 'flex-end', // align to the bottom
+    alignItems: 'center',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 10,
   },
   navigationContainer: {
     flexDirection: 'row',
     aligItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
+    paddingVertical: 20,
   },
   backButton: {
     marginLeft: 20,
+  },
+  imageWrapper: {
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    backgroundColor: 'white',
+    overflow: 'hidden',
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  buttonClose: {
+    position: 'absolute',
+    top: 20,
+    left: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 50,
+    zIndex: 1,
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    overflow: 'hidden',
+    backgroundColor: 'red',
   },
   finishButton: borderColor => ({
     color: 'white',
