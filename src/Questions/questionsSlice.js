@@ -11,6 +11,7 @@ export const getQuestions = createAsyncThunk(
     {
       categoryId,
       subcategoryId,
+      superSubcategory,
       isForInspector,
       isForPoliceman,
       isPremium,
@@ -30,49 +31,41 @@ export const getQuestions = createAsyncThunk(
       conditions.push(['isForPoliceman', '==', isForPoliceman]);
     }
 
+    const trimQuestions = response => {
+      const nowInSeconds = Math.floor(Date.now() / 1000);
+      const expired = nowInSeconds > paymentDetails?.expiresAt._seconds;
+      if (superSubcategory) {
+        response = response.filter(question => {
+          return question.subcategories.includes(superSubcategory);
+        });
+      }
+      if (isPremium && !expired) {
+        if (subcategoryId == 'TEST') {
+          shuffledResponse = shuffle(response);
+          dispatch(setQuestions(shuffledResponse.slice(0, numberOfQuestions)));
+        } else dispatch(setQuestions(response));
+      } else {
+        const indexAtPercengate = Math.round(
+          (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,
+        );
+
+        dispatch(setQuestions(response.slice(0, indexAtPercengate)));
+      }
+    };
+
     if (conditions.length > 1) {
       return getMixedCollection({
         collection: 'questions',
         condition: conditions,
       }).then(response => {
-        const nowInSeconds = Math.floor(Date.now() / 1000);
-        const expired = nowInSeconds > paymentDetails?.expiresAt._seconds;
-
-        if (isPremium && !expired) {
-          if (subcategoryId == 'TEST') {
-            shuffledResponse = shuffle(response);
-            dispatch(
-              setQuestions(shuffledResponse.slice(0, numberOfQuestions)),
-            );
-          } else dispatch(setQuestions(response));
-        } else {
-          const indexAtPercengate = Math.round(
-            (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,
-          );
-
-          dispatch(setQuestions(response.slice(0, indexAtPercengate)));
-        }
+        trimQuestions(response);
       });
     } else {
       return getCollection({
         collection: 'questions',
         condition: conditions,
       }).then(response => {
-        const nowInSeconds = Math.floor(Date.now() / 1000);
-        const expired = nowInSeconds > paymentDetails?.expiresAt._seconds;
-
-        if (isPremium && !expired) {
-          if (subcategoryId == 'TEST') {
-            shuffledResponse = shuffle(response);
-            dispatch(setQuestions(shuffledResponse.slice(0, 50)));
-          } else dispatch(setQuestions(response));
-        } else {
-          const indexAtPercengate = Math.round(
-            (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,
-          );
-
-          dispatch(setQuestions(response.slice(0, indexAtPercengate)));
-        }
+        trimQuestions(response);
       });
     }
   },

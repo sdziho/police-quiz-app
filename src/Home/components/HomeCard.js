@@ -37,14 +37,16 @@ function CategoriesList({
   const [selectedButton, setSelectedButton] = useState(
     hasButtons ? 'Za policajca' : null,
   );
+  const [selectSuperType, setSelectedSuperType] = useState(null);
   useEffect(() => {
     setSelectedButton(hasButtons ? 'Za policajca' : null);
   }, [hasButtons]);
   const [selectedTestNumber, setSelectedTestNumber] = useState(30);
-  const onPress = item => {
+  const onPress = (item, superItem = null) => {
     const params = {
       categoryId: selectedCategory.id,
       subcategoryId: isTestSelected ? 'TEST' : item,
+      ...(superItem && {superSubcategory: superItem}),
       ...(selectedButton === 'Za inspoktera' && {isForInspector: true}),
       ...(selectedButton === 'Za policajca' && {isForPoliceman: true}),
       ...(isTestSelected && {numberOfQuestions: selectedTestNumber}),
@@ -122,110 +124,194 @@ function CategoriesList({
           </TouchableOpacity>
         </View>
       )}
-      {!isTestSelected && <Text>Potkategorije: </Text>}
-      {isTestSelected && (
-        <View>
-          <Text>Broj pitanja: </Text>
-          <View style={[buttonStyles.circleWrapper]}>
-            <TouchableOpacity
-              style={[
-                styles.shadowBox,
-                buttonStyles.circle,
-                {
-                  backgroundColor:
-                    selectedTestNumber === 20 ? colors.primary : 'white',
-                },
-              ]}
-              onPress={() => setSelectedTestNumber(20)}>
-              <Text
-                style={[
-                  buttonStyles.circleText,
-                  {
-                    color: selectedTestNumber === 20 ? 'white' : 'black',
-                  },
-                ]}>
-                20
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.shadowBox,
-                buttonStyles.circle,
-                {
-                  backgroundColor:
-                    selectedTestNumber === 30 ? colors.primary : 'white',
-                },
-              ]}
-              onPress={() => setSelectedTestNumber(30)}>
-              <Text
-                style={[
-                  buttonStyles.circleText,
-                  {
-                    color: selectedTestNumber === 30 ? 'white' : 'black',
-                  },
-                ]}>
-                30
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.shadowBox,
-                buttonStyles.circle,
-                {
-                  backgroundColor:
-                    selectedTestNumber === 50 ? colors.primary : 'white',
-                },
-              ]}
-              onPress={() => setSelectedTestNumber(50)}>
-              <Text
-                style={[
-                  buttonStyles.circleText,
-                  {
-                    color: selectedTestNumber === 50 ? 'white' : 'black',
-                  },
-                ]}>
-                50
-              </Text>
-            </TouchableOpacity>
+      {selectedCategory?.isSuperSubcategory && (
+        <View
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'flex-start',
+          }}>
+          <View
+            style={{
+              borderRightWidth: 1,
+              borderRightColor: colors.darkerShade,
+              marginLeft: -20,
+              paddingRight: 15,
+            }}>
+            {filteredSubcategories?.map(subcategory => {
+              return (
+                subcategory.isSuperSubcategory && (
+                  <TouchableOpacity
+                    style={[
+                      styles.shadowBox,
+                      styles.superTypes(
+                        subcategory.id == selectSuperType?.id
+                          ? colors.primary
+                          : colors.surface,
+                      ),
+                    ]}
+                    onPress={() => setSelectedSuperType(subcategory)}>
+                    <Text
+                      key={subcategory.id}
+                      style={styles.superName(
+                        subcategory.id == selectSuperType?.id
+                          ? colors.surface
+                          : colors.primary,
+                      )}>
+                      {subcategory.name}
+                    </Text>
+                  </TouchableOpacity>
+                )
+              );
+            })}
           </View>
+          {selectSuperType ? (
+            <View style={{paddingLeft: 15}}>
+              {filteredSubcategories?.map(subcategory => {
+                const isSubIncluded =
+                  selectSuperType?.superSubcategories?.includes(
+                    subcategory.id,
+                  ) ?? false;
+                return (
+                  !subcategory.isSuperSubcategory &&
+                  isSubIncluded && (
+                    <TouchableOpacity
+                      style={[styles.shadowBox]}
+                      onPress={() => {
+                        onPress(subcategory.id, selectSuperType.id);
+                      }}>
+                      <View
+                        key={subcategory.id}
+                        style={[styles.superSubctg, styles.flexRow]}>
+                        <Text>{subcategory.name}</Text>
+                        <Ionicons
+                          name="chevron-forward-sharp"
+                          size={20}
+                          color={colors.darkerShade}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  )
+                );
+              })}
+            </View>
+          ) : (
+            <View>
+              <Text style={[{padding: 50, fontSize: 20}]}>
+                Izaberite potkategoriju
+              </Text>
+            </View>
+          )}
         </View>
       )}
-      {!isTestSelected &&
-        filteredSubcategories?.map(subcategory => (
-          <TouchableOpacity
-            style={[styles.categories, styles.shadowBox]}
-            onPress={() => onPress(subcategory.id)}>
-            <View key={subcategory.id} style={styles.flexRow}>
-              <Text>{subcategory.name}</Text>
-              <Ionicons
-                name="chevron-forward-sharp"
-                size={20}
-                color={colors.darkerShade}
-              />
+      {!selectedCategory?.isSuperSubcategory && (
+        <>
+          {!isTestSelected && <Text>Potkategorije: </Text>}
+          {isTestSelected && (
+            <View>
+              <Text>Broj pitanja: </Text>
+              <View style={[buttonStyles.circleWrapper]}>
+                <TouchableOpacity
+                  style={[
+                    styles.shadowBox,
+                    buttonStyles.circle,
+                    {
+                      backgroundColor:
+                        selectedTestNumber === 20 ? colors.primary : 'white',
+                    },
+                  ]}
+                  onPress={() => setSelectedTestNumber(20)}>
+                  <Text
+                    style={[
+                      buttonStyles.circleText,
+                      {
+                        color: selectedTestNumber === 20 ? 'white' : 'black',
+                      },
+                    ]}>
+                    20
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.shadowBox,
+                    buttonStyles.circle,
+                    {
+                      backgroundColor:
+                        selectedTestNumber === 30 ? colors.primary : 'white',
+                    },
+                  ]}
+                  onPress={() => setSelectedTestNumber(30)}>
+                  <Text
+                    style={[
+                      buttonStyles.circleText,
+                      {
+                        color: selectedTestNumber === 30 ? 'white' : 'black',
+                      },
+                    ]}>
+                    30
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[
+                    styles.shadowBox,
+                    buttonStyles.circle,
+                    {
+                      backgroundColor:
+                        selectedTestNumber === 50 ? colors.primary : 'white',
+                    },
+                  ]}
+                  onPress={() => setSelectedTestNumber(50)}>
+                  <Text
+                    style={[
+                      buttonStyles.circleText,
+                      {
+                        color: selectedTestNumber === 50 ? 'white' : 'black',
+                      },
+                    ]}>
+                    50
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-          </TouchableOpacity>
-        ))}
-      {isTestSelected && (
-        <TouchableOpacity
-          style={[
-            styles.shadowBox,
-            buttonStyles.test,
-            {
-              backgroundColor: 'white',
-              borderWidth: 1,
-              borderColor: colors.primary,
-            },
-          ]}
-          onPress={() => onPress('TEST', selectedCategory)}>
-          <Text
-            style={{
-              textAlign: 'center',
-              color: colors.primary,
-              fontSize: 20,
-            }}>
-            Pokreni test
-          </Text>
-        </TouchableOpacity>
+          )}
+          {!isTestSelected &&
+            filteredSubcategories?.map(subcategory => (
+              <TouchableOpacity
+                style={[styles.categories, styles.shadowBox]}
+                onPress={() => onPress(subcategory.id)}>
+                <View key={subcategory.id} style={styles.flexRow}>
+                  <Text>{subcategory.name}</Text>
+                  <Ionicons
+                    name="chevron-forward-sharp"
+                    size={20}
+                    color={colors.darkerShade}
+                  />
+                </View>
+              </TouchableOpacity>
+            ))}
+          {isTestSelected && (
+            <TouchableOpacity
+              style={[
+                styles.shadowBox,
+                buttonStyles.test,
+                {
+                  backgroundColor: 'white',
+                  borderWidth: 1,
+                  borderColor: colors.primary,
+                },
+              ]}
+              onPress={() => onPress('TEST', selectedCategory)}>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  color: colors.primary,
+                  fontSize: 20,
+                }}>
+                Pokreni test
+              </Text>
+            </TouchableOpacity>
+          )}
+        </>
       )}
     </>
   );
@@ -461,6 +547,20 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor,
   }),
+  superTypes: backgroundColor => ({
+    backgroundColor,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  }),
+  superName: color => ({
+    color,
+    textAlign: 'center',
+  }),
+  superSubctg: {
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+    width: width * 0.6,
+  },
   child: {
     width: width * 0.6,
     justifyContent: 'center',
@@ -513,7 +613,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   categories: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
     display: 'flex',
     width: width * 0.8,
   },

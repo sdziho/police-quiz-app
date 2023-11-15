@@ -40,8 +40,8 @@ export default function ({
             <ImageBackground
               source={{uri: headerImage ?? image.uri}}
               style={styles.backgroundImage}></ImageBackground>
-            <Text style={styles.headingTitle}>{title}</Text>
-            <Text style={styles.headingSubtitle}>{subtitle}</Text>
+            <Text style={styles.headingTitle}>{subtitle}</Text>
+            <Text style={styles.headingSubtitle}>{title}</Text>
           </View>
         )}
         <View style={styles.child}>{children}</View>
