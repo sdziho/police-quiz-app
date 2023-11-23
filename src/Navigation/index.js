@@ -32,7 +32,7 @@ const headerStyle = {
 const Stack = createStackNavigator();
 const MainTabNavigator = () => {
   const user = useSelector(state => state.user.data);
-  const notifications = useSelector(state => state.notifications.data);
+  const notifications = useSelector(state => state.notifications.data) ?? [];
   const nowInSeconds = Math.floor(Date.now() / 1000);
   const seenNotifications = user?.notificationSeen || [];
   const numberOfNotSeenNotifications = notifications.filter(

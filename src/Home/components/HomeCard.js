@@ -335,7 +335,7 @@ function HomeCard({data, title, pic}) {
   const colors = useTheme();
   const user = useSelector(state => state.user.data);
   const {isPremium} = user ?? {};
-  const subctg = useSelector(state => state.subcategories);
+  const subctg = useSelector(state => state.subcategories) ?? [];
   const categoryObject =
     title === 'Kategorije' ||
     title === 'Zakoni' ||

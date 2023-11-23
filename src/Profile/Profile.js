@@ -156,7 +156,7 @@ function Profile() {
           </Pressable>
         </View>
         <View style={[styles.modal]}>
-          {user?.testHistory.map(element => {
+          {user?.testHistory?.map(element => {
             const date = format(
               new Date(element?.date?._seconds * 1000),
               'dd.MM.yyyy. HH:mm',

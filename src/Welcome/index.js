@@ -114,8 +114,8 @@ function Welcome({navigation}) {
   }, [navigation, user]);
   const isFormValid = () => {
     return (
-      firstName.length > 0 &&
-      lastName.length > 0 &&
+      firstName?.length > 0 &&
+      lastName?.length > 0 &&
       email &&
       validateEmail(email) &&
       gender
@@ -201,11 +201,7 @@ function Welcome({navigation}) {
           </Button>
         </View>
       </View>
-      <Button
-        onPress={onNextPress}
-        mode="contained"
-        disabled={!isFormValid()}
-        style={styles.shadowBox}>
+      <Button onPress={onNextPress} mode="contained" disabled={!isFormValid()}>
         Spremi
       </Button>
       <DatePicker
