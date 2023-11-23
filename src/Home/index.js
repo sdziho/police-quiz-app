@@ -212,7 +212,6 @@ function Home({navigation, route}) {
     return 0;
   });
   const drzavni = filteredData.filter(element => element?.isDrzavni);
-  const image = {uri: 'https://legacy.reactjs.org/logo-og.png'};
 
   return (
     <>
@@ -276,6 +275,7 @@ function Home({navigation, route}) {
                 data={sprema}
                 title="Video fizičke spreme"
                 key="Video fizičke spreme"
+                pic={paymentSettings?.spremaURL}
               />
             )}
             <HomeCard
@@ -295,6 +295,7 @@ function Home({navigation, route}) {
                 data={ishrana}
                 title="Plan ishrane"
                 key="Plan ishrane"
+                pic={paymentSettings?.ishranaURL}
               />
             )}
           </ScrollView>

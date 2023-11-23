@@ -22,7 +22,7 @@ import {getQuestions} from '../../Questions/questionsSlice';
 import {getAds} from '../../Questions/adsSlice';
 import HyperlinkedText from 'react-native-hyperlinked-text';
 import LinearGradient from 'react-native-linear-gradient';
-
+import logo from '../../assets/pqLogo.jpg';
 function CategoriesList({
   filteredSubcategories,
   hasButtons,
@@ -43,6 +43,7 @@ function CategoriesList({
   }, [hasButtons]);
   const [selectedTestNumber, setSelectedTestNumber] = useState(30);
   const onPress = (item, superItem = null) => {
+    console.log(superItem);
     const params = {
       categoryId: selectedCategory.id,
       subcategoryId: isTestSelected ? 'TEST' : item,
@@ -54,9 +55,16 @@ function CategoriesList({
       paymentDetails,
     };
 
+    const mySubctg = isTestSelected
+      ? 'TEST'
+      : filteredSubcategories?.find(subctg => subctg.id == item).name;
+
+    console.log(params);
     dispatch(getQuestions(params));
     dispatch(getAds());
-    navigation.navigate('Questions');
+    navigation.navigate('Questions', {
+      testName: `${selectedCategory.name} - ${mySubctg}`,
+    });
   };
   const handleButtonPress = buttonName => {
     setSelectedButton(buttonName);
@@ -300,7 +308,7 @@ function CategoriesList({
                   borderColor: colors.primary,
                 },
               ]}
-              onPress={() => onPress('TEST', selectedCategory)}>
+              onPress={() => onPress('TEST')}>
               <Text
                 style={{
                   textAlign: 'center',
@@ -317,11 +325,12 @@ function CategoriesList({
   );
 }
 
-function HomeCard({data, title}) {
+function HomeCard({data, title, pic}) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedChild, setSelectedChild] = useState(null);
-  const image = {uri: 'https://legacy.reactjs.org/logo-og.png'};
+  const image = logo;
+  console.log(image);
   const navigation = useNavigation();
   const colors = useTheme();
   const user = useSelector(state => state.user.data);
@@ -426,7 +435,7 @@ function HomeCard({data, title}) {
             {data.map(item => {
               return (
                 <List.Accordion
-                  theme={{colors: {background: 'white'}}}
+                  theme={{colors: {background: colors.background}}}
                   style={[styles.shadowBox, {backgroundColor: 'white'}]}
                   title={item?.day}
                   key={item?.day}
@@ -508,7 +517,9 @@ function HomeCard({data, title}) {
           <TouchableOpacity
             style={[styles.oneElement, styles.shadowBox]}
             onPress={() => handlePressObject()}>
-            <ImageBackground source={image} style={styles.backgroundImage}>
+            <ImageBackground
+              source={pic ? {uri: pic} : image}
+              style={styles.backgroundImage}>
               <Text style={styles.insideSwiper}>{title}</Text>
             </ImageBackground>
           </TouchableOpacity>

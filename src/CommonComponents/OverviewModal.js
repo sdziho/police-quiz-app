@@ -11,6 +11,7 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import {Text, useTheme} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import logo from '../assets/pqLogo.jpg';
 
 export default function ({
   isVisible,
@@ -22,7 +23,7 @@ export default function ({
   headerImage,
 }) {
   const {colors} = useTheme();
-  const image = {uri: 'https://legacy.reactjs.org/logo-og.png'};
+  const image = logo;
   return (
     <Modal
       animationType="slide"
@@ -38,7 +39,7 @@ export default function ({
         {imageVisible && (
           <View style={styles.imageWrapper}>
             <ImageBackground
-              source={{uri: headerImage ?? image.uri}}
+              source={headerImage ? {uri: headerImage} : image}
               style={styles.backgroundImage}></ImageBackground>
             <Text style={styles.headingTitle}>{subtitle}</Text>
             <Text style={styles.headingSubtitle}>{title}</Text>

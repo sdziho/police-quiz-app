@@ -24,7 +24,7 @@ import {
   Linking,
 } from 'react-native';
 import {Button, Text, useTheme} from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {STATUS_TYPES} from '../utils/constants';
 import QuestionItem from './components/QuestionItem';
@@ -34,19 +34,21 @@ import {shuffle} from '../utils/helpers';
 import AdItem from './components/AdItem';
 import AdSlider from './components/AdSlider';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {setFirestoreUser} from '../Welcome/userSlice';
 
 const {height, width} = Dimensions.get('screen');
 
-function Questions({navigation}) {
+function Questions({navigation, route}) {
   const {colors} = useTheme();
   const {data: questionsData, status: questionsStatus} = useSelector(
     state => state.questions,
   );
-
   const {data: adsData, status: adsStatus} = useSelector(state => state.ads);
   const randomizedAds = shuffle(
     adsData?.filter(item => item?.isQuestionAd) ?? [],
   ).map(item => ({...item, isAd: true}));
+  const user = useSelector(state => state.user.data);
+  const dispatch = useDispatch();
   const [sliderData, setSliderData] = useState([]);
   const [openAddModal, setOpenAdModal] = useState(null);
   const [permanentAdsData, setPermanentAdsData] = useState([]);
@@ -155,6 +157,25 @@ function Questions({navigation}) {
   }, [activeIndex, questionIndex, sliderData]);
 
   const onFinishPress = () => {
+    console.log(
+      'zavrsavam test',
+      getResult() * 100 || 0,
+      route.params.testName,
+    );
+    let tests = user?.testHistory ?? [];
+    if (tests.length >= 100) tests.splice(99);
+    dispatch(
+      setFirestoreUser({
+        testHistory: [
+          {
+            name: route.params.testName,
+            result: getResult() * 100 || 0,
+            date: new Date(),
+          },
+          ...tests,
+        ],
+      }),
+    );
     setIsResultsVisible(true);
   };
 
@@ -315,6 +336,7 @@ function Questions({navigation}) {
         isVisible={isResultsVisible}
         onHide={hideResultModal}
         progress={getResult()}
+        name={route.params.testName}
       />
       <Modal
         animationType="slide"

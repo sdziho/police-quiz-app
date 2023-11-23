@@ -5,18 +5,22 @@ import {
   View,
   Text,
   TouchableOpacity,
+  Pressable,
   Dimensions,
+  Modal,
 } from 'react-native';
 import {Button, useTheme} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {default as versionInfo} from '../../version.json';
 import {useSelector} from 'react-redux';
 import {format} from 'date-fns';
+import {AnimatedCircularProgress} from 'react-native-circular-progress';
 
 const {width} = Dimensions.get('window');
 
 function Profile() {
   const {colors} = useTheme();
+  const [historyModal, setHistoryModal] = useState(false);
   const user = useSelector(state => state.user.data);
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
   const {isPremium, id} = user ?? {};
@@ -97,6 +101,23 @@ function Profile() {
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.shadowBox, styles.action]}
+        onPress={() => setHistoryModal(true)}>
+        <View style={styles.flexRow}>
+          <View style={styles.flexRow}>
+            <Ionicons name="bar-chart" size={15} color={colors.darkerShade} />
+            <Text style={[styles.secondaryText, styles.ml]}>
+              Historija testova
+            </Text>
+          </View>
+          <Ionicons
+            name="chevron-forward-sharp"
+            size={20}
+            color={colors.darkerShade}
+          />
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={[styles.shadowBox, styles.action]}
         onPress={() => navigateTo('About')}>
         <View style={styles.flexRow}>
           <View style={styles.flexRow}>
@@ -119,6 +140,62 @@ function Profile() {
           Verzija: {versionInfo.version}
         </Text>
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={historyModal}
+        onRequestClose={() => {
+          setHistoryModal(false);
+        }}>
+        <View style={styles.buttonClose}>
+          <Pressable
+            onPress={() => {
+              setHistoryModal(false);
+            }}>
+            <Ionicons name="close" size={25} color={'white'} />
+          </Pressable>
+        </View>
+        <View style={[styles.modal]}>
+          {user?.testHistory.map(element => {
+            const date = format(
+              new Date(element?.date?._seconds * 1000),
+              'dd.MM.yyyy. HH:mm',
+            );
+            return (
+              <View
+                style={[
+                  styles.shadowBox,
+                  {
+                    padding: 10,
+                    marginTop: 5,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                  },
+                ]}>
+                <View>
+                  <Text style={{color: 'black'}}>{element.name}</Text>
+                  <Text>{date}</Text>
+                </View>
+                <View>
+                  <AnimatedCircularProgress
+                    style={styles.circle}
+                    rotation={0}
+                    size={40}
+                    width={3}
+                    fill={element.result}
+                    tintColor={colors.darkerShade}
+                    backgroundColor="lightgray">
+                    {fill => (
+                      <Text style={{fontSize: 12}}>{element.result}%</Text>
+                    )}
+                  </AnimatedCircularProgress>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -126,6 +203,16 @@ const styles = StyleSheet.create({
   color: backgroundColor => ({
     color: backgroundColor,
   }),
+  modal: {
+    height: '100%',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: 'white',
+    overflow: 'hidden',
+    paddingVertical: 50,
+    paddingHorizontal: 30,
+  },
   action: {
     marginTop: 20,
     paddingHorizontal: 20,
@@ -149,6 +236,14 @@ const styles = StyleSheet.create({
   mb: {
     marginBottom: 3,
   },
+  buttonClose: {
+    position: 'absolute',
+    top: 20,
+    left: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    borderRadius: 50,
+    zIndex: 1,
+  },
   container: backgroundColor => ({
     paddingVertical: 10,
     paddingHorizontal: 30,
@@ -157,6 +252,9 @@ const styles = StyleSheet.create({
   }),
   primaryText: {
     fontSize: 20,
+  },
+  circle: {
+    backgroundColor: 'white',
   },
   secondaryText: {},
   borders: {
