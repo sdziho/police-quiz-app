@@ -28,6 +28,7 @@ function CategoriesList({
   hasButtons,
   isTestSelected = false,
   selectedCategory,
+  hideModal,
 }) {
   const user = useSelector(state => state.user.data);
   const {isPremium, id, paymentDetails} = user ?? {};
@@ -43,7 +44,7 @@ function CategoriesList({
   }, [hasButtons]);
   const [selectedTestNumber, setSelectedTestNumber] = useState(30);
   const onPress = (item, superItem = null) => {
-    console.log(superItem);
+    console.log(item);
     const params = {
       categoryId: selectedCategory.id,
       subcategoryId: isTestSelected ? 'TEST' : item,
@@ -60,6 +61,7 @@ function CategoriesList({
       : filteredSubcategories?.find(subctg => subctg.id == item).name;
 
     console.log(params);
+    hideModal();
     dispatch(getQuestions(params));
     dispatch(getAds());
     navigation.navigate('Questions', {
@@ -349,10 +351,9 @@ function HomeCard({data, title, pic}) {
     title == 'Državni ispiti';
   useEffect(() => {
     let filteredSubcategories;
-    if (categoryObject)
-      filteredSubcategories = subctg.data.filter(category =>
-        selectedCategory?.subcategories.includes(category.id),
-      );
+    filteredSubcategories = subctg?.data?.filter(category =>
+      selectedCategory?.subcategories.includes(category.id),
+    );
     switch (title) {
       case 'Kategorije':
         setSelectedChild(
@@ -360,6 +361,7 @@ function HomeCard({data, title, pic}) {
             filteredSubcategories={filteredSubcategories}
             selectedCategory={selectedCategory}
             hasButtons={selectedCategory?.hasSubcategory}
+            hideModal={() => setModalVisible(false)}
           />,
         );
         break;
@@ -369,15 +371,14 @@ function HomeCard({data, title, pic}) {
             filteredSubcategories={filteredSubcategories}
             selectedCategory={selectedCategory}
             hasButtons={selectedCategory?.hasSubcategory}
+            hideModal={() => setModalVisible(false)}
           />,
         );
         break;
       case 'Zakoni':
         setSelectedChild(
           <ScrollView>
-            <HyperlinkedText>
-              {selectedCategory?.law || 'https://www.facebook.com'}
-            </HyperlinkedText>
+            <HyperlinkedText>{selectedCategory?.law ?? ''}</HyperlinkedText>
           </ScrollView>,
         );
         break;
@@ -387,6 +388,7 @@ function HomeCard({data, title, pic}) {
             isTestSelected={true}
             selectedCategory={selectedCategory}
             hasButtons={selectedCategory?.hasSubcategory}
+            hideModal={() => setModalVisible(false)}
           />,
         );
         break;

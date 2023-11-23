@@ -15,6 +15,7 @@ import {default as versionInfo} from '../../version.json';
 import {useSelector} from 'react-redux';
 import {format} from 'date-fns';
 import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const {width} = Dimensions.get('window');
 
@@ -37,166 +38,168 @@ function Profile() {
     ? format(new Date(expiresAt * 1000), 'dd.MM.yyyy.')
     : null;
   return (
-    <View style={styles.container(colors.surface)}>
-      <View style={styles.flexColumn}>
-        <View style={styles.flexRow}>
-          <Ionicons name="person-circle-outline" size={80} />
-
-          <View style={[styles.flexColumn, styles.ml]}>
-            <Text style={[styles.primaryText, styles.color(colors.primary)]}>
-              {user.firstName} {user.lastName}
-            </Text>
-            <Text style={[styles.secondaryText]}>{user.email}</Text>
-          </View>
-        </View>
+    <SafeAreaView style={{flex: 1, backgroundColor: 'white'}}>
+      <View style={styles.container(colors.surface)}>
         <View style={styles.flexColumn}>
-          {isPremium ? (
-            <>
+          <View style={styles.flexRow}>
+            <Ionicons name="person-circle-outline" size={80} />
+
+            <View style={[styles.flexColumn, styles.ml]}>
+              <Text style={[styles.primaryText, styles.color(colors.primary)]}>
+                {user.firstName} {user.lastName}
+              </Text>
+              <Text style={[styles.secondaryText]}>{user.email}</Text>
+            </View>
+          </View>
+          <View style={styles.flexColumn}>
+            {isPremium ? (
+              <>
+                <View style={[styles.flexRow, styles.mb]}>
+                  <Text style={[styles.secondaryText]}>Status: </Text>
+                  <Text>Premium</Text>
+                </View>
+                {createdAt && (
+                  <View style={[styles.flexRow, styles.mb]}>
+                    <Text style={[styles.secondaryText]}>Uplaćeno: </Text>
+                    <Text>{paymentDate}</Text>
+                  </View>
+                )}
+                {expiresAt && (
+                  <View style={[styles.flexRow, styles.mb]}>
+                    <Text style={[styles.secondaryText]}>Ističe: </Text>
+                    <Text>{expireDate}</Text>
+                  </View>
+                )}
+              </>
+            ) : (
               <View style={[styles.flexRow, styles.mb]}>
                 <Text style={[styles.secondaryText]}>Status: </Text>
-                <Text>Premium</Text>
+                <Text>Besplatna verzija</Text>
               </View>
-              {createdAt && (
-                <View style={[styles.flexRow, styles.mb]}>
-                  <Text style={[styles.secondaryText]}>Uplaćeno: </Text>
-                  <Text>{paymentDate}</Text>
-                </View>
-              )}
-              {expiresAt && (
-                <View style={[styles.flexRow, styles.mb]}>
-                  <Text style={[styles.secondaryText]}>Ističe: </Text>
-                  <Text>{expireDate}</Text>
-                </View>
-              )}
-            </>
-          ) : (
-            <View style={[styles.flexRow, styles.mb]}>
-              <Text style={[styles.secondaryText]}>Status: </Text>
-              <Text>Besplatna verzija</Text>
-            </View>
-          )}
+            )}
+          </View>
         </View>
-      </View>
 
-      <TouchableOpacity
-        style={[styles.shadowBox, styles.action]}
-        onPress={() => navigateTo('Welcome')}>
-        <View style={styles.flexRow}>
+        <TouchableOpacity
+          style={[styles.shadowBox, styles.action]}
+          onPress={() => navigateTo('Welcome')}>
           <View style={styles.flexRow}>
+            <View style={styles.flexRow}>
+              <Ionicons
+                name="pencil-sharp"
+                size={15}
+                color={colors.darkerShade}
+              />
+              <Text style={[styles.secondaryText, styles.ml]}>
+                Ažuriraj profil
+              </Text>
+            </View>
             <Ionicons
-              name="pencil-sharp"
-              size={15}
+              name="chevron-forward-sharp"
+              size={20}
               color={colors.darkerShade}
             />
-            <Text style={[styles.secondaryText, styles.ml]}>
-              Ažuriraj profil
-            </Text>
           </View>
-          <Ionicons
-            name="chevron-forward-sharp"
-            size={20}
-            color={colors.darkerShade}
-          />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.shadowBox, styles.action]}
-        onPress={() => setHistoryModal(true)}>
-        <View style={styles.flexRow}>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.shadowBox, styles.action]}
+          onPress={() => setHistoryModal(isPremium ? true : false)}>
           <View style={styles.flexRow}>
-            <Ionicons name="bar-chart" size={15} color={colors.darkerShade} />
-            <Text style={[styles.secondaryText, styles.ml]}>
-              Historija testova
-            </Text>
-          </View>
-          <Ionicons
-            name="chevron-forward-sharp"
-            size={20}
-            color={colors.darkerShade}
-          />
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={[styles.shadowBox, styles.action]}
-        onPress={() => navigateTo('About')}>
-        <View style={styles.flexRow}>
-          <View style={styles.flexRow}>
+            <View style={styles.flexRow}>
+              <Ionicons name="bar-chart" size={15} color={colors.darkerShade} />
+              <Text style={[styles.secondaryText, styles.ml]}>
+                Historija testova
+              </Text>
+            </View>
             <Ionicons
-              name="information-circle-outline"
-              size={15}
+              name={isPremium ? 'chevron-forward-sharp' : 'lock-closed'}
+              size={20}
               color={colors.darkerShade}
             />
-            <Text style={[styles.secondaryText, styles.ml]}>O nama</Text>
           </View>
-          <Ionicons
-            name="chevron-forward-sharp"
-            size={20}
-            color={colors.darkerShade}
-          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.shadowBox, styles.action]}
+          onPress={() => navigateTo('About')}>
+          <View style={styles.flexRow}>
+            <View style={styles.flexRow}>
+              <Ionicons
+                name="information-circle-outline"
+                size={15}
+                color={colors.darkerShade}
+              />
+              <Text style={[styles.secondaryText, styles.ml]}>O nama</Text>
+            </View>
+            <Ionicons
+              name="chevron-forward-sharp"
+              size={20}
+              color={colors.darkerShade}
+            />
+          </View>
+        </TouchableOpacity>
+        <View style={{position: 'absolute', bottom: 40, width: width}}>
+          <Text style={{textAlign: 'center'}}>
+            Verzija: {versionInfo.version}
+          </Text>
         </View>
-      </TouchableOpacity>
-      <View style={{position: 'absolute', bottom: 40, width: width}}>
-        <Text style={{textAlign: 'center'}}>
-          Verzija: {versionInfo.version}
-        </Text>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={historyModal}
+          onRequestClose={() => {
+            setHistoryModal(false);
+          }}>
+          <View style={styles.buttonClose}>
+            <Pressable
+              onPress={() => {
+                setHistoryModal(false);
+              }}>
+              <Ionicons name="close" size={25} color={'white'} />
+            </Pressable>
+          </View>
+          <View style={[styles.modal]}>
+            {user?.testHistory?.map(element => {
+              const date = format(
+                new Date(element?.date?._seconds * 1000),
+                'dd.MM.yyyy. HH:mm',
+              );
+              return (
+                <View
+                  style={[
+                    styles.shadowBox,
+                    {
+                      padding: 10,
+                      marginTop: 5,
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                    },
+                  ]}>
+                  <View>
+                    <Text style={{color: 'black'}}>{element.name}</Text>
+                    <Text>{date}</Text>
+                  </View>
+                  <View>
+                    <AnimatedCircularProgress
+                      style={styles.circle}
+                      rotation={0}
+                      size={40}
+                      width={3}
+                      fill={element.result}
+                      tintColor={colors.darkerShade}
+                      backgroundColor="lightgray">
+                      {fill => (
+                        <Text style={{fontSize: 12}}>{element.result}%</Text>
+                      )}
+                    </AnimatedCircularProgress>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        </Modal>
       </View>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={historyModal}
-        onRequestClose={() => {
-          setHistoryModal(false);
-        }}>
-        <View style={styles.buttonClose}>
-          <Pressable
-            onPress={() => {
-              setHistoryModal(false);
-            }}>
-            <Ionicons name="close" size={25} color={'white'} />
-          </Pressable>
-        </View>
-        <View style={[styles.modal]}>
-          {user?.testHistory?.map(element => {
-            const date = format(
-              new Date(element?.date?._seconds * 1000),
-              'dd.MM.yyyy. HH:mm',
-            );
-            return (
-              <View
-                style={[
-                  styles.shadowBox,
-                  {
-                    padding: 10,
-                    marginTop: 5,
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                  },
-                ]}>
-                <View>
-                  <Text style={{color: 'black'}}>{element.name}</Text>
-                  <Text>{date}</Text>
-                </View>
-                <View>
-                  <AnimatedCircularProgress
-                    style={styles.circle}
-                    rotation={0}
-                    size={40}
-                    width={3}
-                    fill={element.result}
-                    tintColor={colors.darkerShade}
-                    backgroundColor="lightgray">
-                    {fill => (
-                      <Text style={{fontSize: 12}}>{element.result}%</Text>
-                    )}
-                  </AnimatedCircularProgress>
-                </View>
-              </View>
-            );
-          })}
-        </View>
-      </Modal>
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
@@ -210,7 +213,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: 'white',
     overflow: 'hidden',
-    paddingVertical: 50,
+    paddingTop: 100,
+    paddingBottom: 50,
     paddingHorizontal: 30,
   },
   action: {
@@ -238,8 +242,8 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     position: 'absolute',
-    top: 20,
-    left: 10,
+    top: 40,
+    left: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     borderRadius: 50,
     zIndex: 1,

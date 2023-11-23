@@ -33,7 +33,11 @@ export const getQuestions = createAsyncThunk(
 
     const trimQuestions = response => {
       const nowInSeconds = Math.floor(Date.now() / 1000);
-      const expired = nowInSeconds > paymentDetails?.expiresAt._seconds;
+      console.log('jel premium', isPremium);
+      console.log('super', superSubcategory);
+      console.log('det', paymentDetails?.expiresAt?._seconds || 0);
+      const expired = nowInSeconds > (paymentDetails?.expiresAt?._seconds || 0);
+      console.log('exp', expired);
       if (superSubcategory) {
         response = response.filter(question => {
           return question.subcategories.includes(superSubcategory);
@@ -48,6 +52,7 @@ export const getQuestions = createAsyncThunk(
         const indexAtPercengate = Math.round(
           (response.length * FREE_USER_QUESTIONS_PERCENTAGE) / 100,
         );
+        console.log('response', response.slice(0, indexAtPercengate));
 
         dispatch(setQuestions(response.slice(0, indexAtPercengate)));
       }

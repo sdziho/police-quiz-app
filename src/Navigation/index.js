@@ -16,6 +16,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Profile from '../Profile/Profile';
 import {useTheme} from 'react-native-paper';
 import Notifications from '../Notifications';
+import {
+  SafeAreaProvider,
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+import {View} from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const headerStyle = {
@@ -35,12 +41,14 @@ const MainTabNavigator = () => {
   const notifications = useSelector(state => state.notifications.data) ?? [];
   const nowInSeconds = Math.floor(Date.now() / 1000);
   const seenNotifications = user?.notificationSeen || [];
-  const numberOfNotSeenNotifications = notifications.filter(
+  const numberOfNotSeenNotifications = notifications?.filter(
     notification =>
       nowInSeconds < notification.endingAt.seconds &&
       !seenNotifications.includes(notification.id),
   ).length;
-
+  const insets = useSafeAreaInsets();
+  const bottomPadding = 10 + insets.bottom;
+  const safeHeight = 60 + insets.bottom;
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -63,7 +71,10 @@ const MainTabNavigator = () => {
         tabBarActiveTintColor: '#2074B9',
         tabBarInactiveTintColor: 'gray',
         tabBarStyle: {
-          paddingBottom: 5,
+          position: 'absolute',
+          bottom: 0,
+          paddingBottom: bottomPadding,
+          height: safeHeight,
         },
       })}>
       <Tab.Screen

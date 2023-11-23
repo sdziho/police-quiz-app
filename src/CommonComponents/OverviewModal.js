@@ -12,6 +12,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Text, useTheme} from 'react-native-paper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import logo from '../assets/pqLogo.jpg';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default function ({
   isVisible,
@@ -26,27 +27,30 @@ export default function ({
   const image = logo;
   return (
     <Modal
+      style={{marginTop: 30}}
       animationType="slide"
       transparent={true}
       visible={isVisible}
       onRequestClose={hideModal}>
-      <ScrollView style={styles.modalView(colors.background)}>
-        <View style={styles.buttonClose}>
-          <Pressable onPress={hideModal}>
-            <Ionicons name="close" size={25} color={'white'} />
-          </Pressable>
-        </View>
-        {imageVisible && (
-          <View style={styles.imageWrapper}>
-            <ImageBackground
-              source={headerImage ? {uri: headerImage} : image}
-              style={styles.backgroundImage}></ImageBackground>
-            <Text style={styles.headingTitle}>{subtitle}</Text>
-            <Text style={styles.headingSubtitle}>{title}</Text>
+      <SafeAreaView style={{flex: 1, backgroundColor: 'transparent'}}>
+        <ScrollView style={styles.modalView(colors.background)}>
+          <View style={styles.buttonClose}>
+            <Pressable onPress={hideModal}>
+              <Ionicons name="close" size={25} color={'white'} />
+            </Pressable>
           </View>
-        )}
-        <View style={styles.child}>{children}</View>
-      </ScrollView>
+          {imageVisible && (
+            <View style={styles.imageWrapper}>
+              <ImageBackground
+                source={headerImage ? {uri: headerImage} : image}
+                style={styles.backgroundImage}></ImageBackground>
+              <Text style={styles.headingTitle}>{subtitle}</Text>
+              <Text style={styles.headingSubtitle}>{title}</Text>
+            </View>
+          )}
+          <View style={styles.child}>{children}</View>
+        </ScrollView>
+      </SafeAreaView>
     </Modal>
   );
 }
@@ -66,8 +70,8 @@ const styles = StyleSheet.create({
   }),
   buttonClose: {
     position: 'absolute',
-    top: 20,
-    left: 10,
+    top: 35,
+    left: 15,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     borderRadius: 50,
     zIndex: 1,

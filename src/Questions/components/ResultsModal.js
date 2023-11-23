@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   contentContainer: backgroundColor => ({
-    width: '90%',
+    width: '100%',
     backgroundColor,
     elevation: 5,
     shadowColor: '#000',

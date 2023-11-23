@@ -129,10 +129,10 @@ function Payment({navigation}) {
         buttonTextStyle={styles.dropdownBtnTxtStyle}
         renderDropdownIcon={isOpened => {
           return (
-            <List.Icon
-              icon={isOpened ? 'chevron-up' : 'chevron-down'}
-              color={'#444'}
-              size={18}
+            <Ionicons
+              name="options-outline"
+              size={20}
+              color={colors.darkerShade}
             />
           );
         }}

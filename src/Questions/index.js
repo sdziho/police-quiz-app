@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start', // align to the top
     alignItems: 'center',
     position: 'absolute',
-    top: 20,
+    top: 50,
     left: 0,
     right: 0,
     bottom: 0,
@@ -448,8 +448,8 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     position: 'absolute',
-    top: 20,
-    left: 10,
+    top: 35,
+    left: 20,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     borderRadius: 50,
     zIndex: 1,

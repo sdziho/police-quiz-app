@@ -262,7 +262,11 @@ function Home({navigation, route}) {
               />
             )}
             <HomeCard data={filteredData} title={'Test'} key="Test" />
-            <HomeCard data={filteredData} title="Zakoni" key="Zakon" />
+            <HomeCard
+              data={filteredData?.filter(element => element?.law)}
+              title="Zakoni"
+              key="Zakon"
+            />
             {konkursi.length > 0 && (
               <HomeCard
                 data={konkursi}
@@ -352,6 +356,7 @@ const styles = StyleSheet.create({
   mainContainer: backgroundColor => ({
     backgroundColor,
     flex: 1,
+    marginBottom: 60,
   }),
   logoContainer: height => ({
     height,

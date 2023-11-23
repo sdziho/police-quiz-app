@@ -5,7 +5,7 @@ import {
   Provider as PaperProvider,
   useTheme,
 } from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 import RNBootSplash from 'react-native-bootsplash';
 import {getUser} from './src/Firestore';
@@ -54,7 +54,9 @@ function App() {
   return (
     <PaperProvider theme={theme}>
       <StatusBar backgroundColor={colors.surface} barStyle="dark-content" />
-      <SafeAreaView style={{flex: 1}} forceInset={{top: 'always'}}>
+      <SafeAreaView
+        style={{flex: 1, backgroundColor: 'white'}}
+        forceInset={{top: 'always'}}>
         <MainNavigator />
       </SafeAreaView>
     </PaperProvider>

@@ -32,9 +32,9 @@
 		4A732C1B28CFFDA0007E2A31 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4A732C1A28CFFDA0007E2A31 /* GoogleService-Info.plist */; };
 		4AAFCBD728D149E900A9845F /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4AAFCBD628D149E900A9845F /* BootSplash.storyboard */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		F043064837073C5DAD1640D2 /* libPods-policeQuiz-policeQuizTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EFAEF32895BA0227B9B4298 /* libPods-policeQuiz-policeQuizTests.a */; };
 		D77E4C4B9BE64EBBB99068E3 /* Montserrat.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3E6AF1DF64314A32BA63E7DE /* Montserrat.ttf */; };
 		DC8B74A08699468983CAE252 /* Roboto-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCE3E8BF9A644A5386521103 /* Roboto-Regular.ttf */; };
+		F043064837073C5DAD1640D2 /* libPods-policeQuiz-policeQuizTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2EFAEF32895BA0227B9B4298 /* libPods-policeQuiz-policeQuizTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +60,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = policeQuiz/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = policeQuiz/main.m; sourceTree = "<group>"; };
 		2EFAEF32895BA0227B9B4298 /* libPods-policeQuiz-policeQuizTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-policeQuiz-policeQuizTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3E6AF1DF64314A32BA63E7DE /* Montserrat.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Montserrat.ttf; path = ../src/assets/fonts/Montserrat.ttf; sourceTree = "<group>"; };
 		475A36371FED461C865E9B3C /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = FontAwesome5_Regular.ttf; path = "../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		4A70D76628D36DCB00524400 /* policeQuiz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = policeQuiz.entitlements; path = policeQuiz/policeQuiz.entitlements; sourceTree = "<group>"; };
 		4A732C1A28CFFDA0007E2A31 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -78,14 +79,13 @@
 		A42FBCBF851D436DEDF578D0 /* Pods-policeQuiz.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-policeQuiz.release.xcconfig"; path = "Target Support Files/Pods-policeQuiz/Pods-policeQuiz.release.xcconfig"; sourceTree = "<group>"; };
 		AC65A07E88534790B6D2E186 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		B561E7E5B66F5C4607F76A17 /* libPods-policeQuiz.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-policeQuiz.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		BCE3E8BF9A644A5386521103 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Roboto-Regular.ttf"; path = "../src/assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; };
 		C2774D87222E4E56A30F1E24 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		DD0F62DFB5A54CAE9221BD83 /* Zocial.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Zocial.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Zocial.ttf"; sourceTree = "<group>"; };
 		E642E4BC14734E3DB554AB71 /* AntDesign.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = AntDesign.ttf; path = "../node_modules/react-native-vector-icons/Fonts/AntDesign.ttf"; sourceTree = "<group>"; };
 		ED11D53C33C1407BBC700F23 /* Ionicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Ionicons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F3FCE09EE3AE47768525606C /* Entypo.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Entypo.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Entypo.ttf"; sourceTree = "<group>"; };
-		3E6AF1DF64314A32BA63E7DE /* Montserrat.ttf */ = {isa = PBXFileReference; name = "Montserrat.ttf"; path = "../src/assets/fonts/Montserrat.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		BCE3E8BF9A644A5386521103 /* Roboto-Regular.ttf */ = {isa = PBXFileReference; name = "Roboto-Regular.ttf"; path = "../src/assets/fonts/Roboto-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -554,7 +554,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = policeQuiz/policeQuiz.entitlements;
-				CURRENT_PROJECT_VERSION = 1.6.1;
+				CURRENT_PROJECT_VERSION = 2.0.0;
 				DEVELOPMENT_TEAM = 48427KZ93N;
 				ENABLE_BITCODE = NO;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
@@ -619,7 +619,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-pager-view\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-safe-area-context\"",
 				);
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 2.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -640,7 +640,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = policeQuiz/policeQuiz.entitlements;
-				CURRENT_PROJECT_VERSION = 1.6.1;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2.0.0;
 				DEVELOPMENT_TEAM = 48427KZ93N;
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = policeQuiz/Info.plist;
@@ -704,7 +706,7 @@
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-pager-view\"",
 					"\"${PODS_CONFIGURATION_BUILD_DIR}/react-native-safe-area-context\"",
 				);
-				MARKETING_VERSION = 1.6;
+				MARKETING_VERSION = 2.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -712,6 +714,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.policequiz;
 				PRODUCT_NAME = policeQuiz;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

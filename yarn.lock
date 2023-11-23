@@ -1795,24 +1795,24 @@
   "resolved" "https://registry.npmjs.org/@react-native-community/eslint-plugin/-/eslint-plugin-1.2.0.tgz"
   "version" "1.2.0"
 
-"@react-native-firebase/app@^14.8.0", "@react-native-firebase/app@14.11.1":
-  "integrity" "sha512-fkvOK8c7e8MxIbfb2076kO3GtGUc3ZXNEkPyfamRKBnPgANpmnjQaTVIraXpeuIIOfjj5uDK4uw32znWiDusGA=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/app/-/app-14.11.1.tgz"
-  "version" "14.11.1"
+"@react-native-firebase/app@^14.11.1", "@react-native-firebase/app@14.12.0":
+  "integrity" "sha512-r/4eP96U3StUs9t3QSlNwCIjjZpEAzI0u8GF8VlNNgrFxUKQXmwe63dRXQXVrI03MxnHgg87OpoWgIxhRlC9Rg=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/app/-/app-14.12.0.tgz"
+  "version" "14.12.0"
   dependencies:
     "@expo/config-plugins" "^4.1.5"
     "opencollective-postinstall" "^2.0.1"
     "superstruct" "^0.6.2"
 
-"@react-native-firebase/auth@^14.8.0":
-  "integrity" "sha512-IzgFakon2jkuC4FEP8q9wruz8Yu0yem/Yk0v8IwndV2h/5lYmmij/f5Pyk74U3tadGOr9UrBsGkrWZMceiAjHQ=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-14.11.1.tgz"
-  "version" "14.11.1"
+"@react-native-firebase/auth@^14.11.1":
+  "integrity" "sha512-2XiVpppZuxHSjR1Tjtwg/Aigapk4R2yupqUFJplBSijbg4Mets3XuUWLYURDBQIH/+GuheQuOGHALix4afGpDg=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/auth/-/auth-14.12.0.tgz"
+  "version" "14.12.0"
 
-"@react-native-firebase/firestore@^14.8.0":
-  "integrity" "sha512-1/Ap0EDlAueUDHrH7WxU5ZfEF+qcT1NfUJU4qkFBvcg9pdnMS7cch4nzifRHr6jqyfUYiHgFrRe2wYfqQ0gK+w=="
-  "resolved" "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-14.11.1.tgz"
-  "version" "14.11.1"
+"@react-native-firebase/firestore@^14.11.1":
+  "integrity" "sha512-oMR/eb2z6abxTHAqT+MC+vVYZ11OkboT/D/8olEc5C9PC8JFxu+xgwtj+bojJwJvpeOXJ2PV7QWTqFrECjBeBA=="
+  "resolved" "https://registry.npmjs.org/@react-native-firebase/firestore/-/firestore-14.12.0.tgz"
+  "version" "14.12.0"
 
 "@react-native/assets@1.0.0":
   "integrity" "sha512-KrwSpS1tKI70wuKl68DwJZYEvXktDHdZMG0k2AXD/rJVSlB23/X2CB2cutVR0HwNMJIal9HOUOBB2rVfa6UGtQ=="
@@ -2168,10 +2168,15 @@
     "@typescript-eslint/types" "5.30.7"
     "eslint-visitor-keys" "^3.3.0"
 
+"@xmldom/xmldom@^0.8.8":
+  "integrity" "sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw=="
+  "resolved" "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.8.10.tgz"
+  "version" "0.8.10"
+
 "@xmldom/xmldom@~0.7.0":
-  "integrity" "sha512-UDi3g6Jss/W5FnSzO9jCtQwEpfymt0M+sPPlmLhDH6h2TJ8j4ESE/LpmNPBij15J5NKkk4/cg/qoVMdWI3vnlQ=="
-  "resolved" "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.7.11.tgz"
-  "version" "0.7.11"
+  "integrity" "sha512-lm2GW5PkosIzccsaZIz7tp8cPADSIlIHWDFTR1N0SzfinhhYgeIQjFMz4rYzanCScr3DqQLeomUDArp6MWKm+g=="
+  "resolved" "https://registry.npmjs.org/@xmldom/xmldom/-/xmldom-0.7.13.tgz"
+  "version" "0.7.13"
 
 "abort-controller@^3.0.0":
   "integrity" "sha512-h8lQ8tacZYnR3vNQTgibj+tODHI5/+l06Au2Pcriv/Gmet0eaj4TwWH41sO9wnHDiQsEj19q0drzdWdeAHtweg=="
@@ -6758,10 +6763,11 @@
     "find-up" "^4.0.0"
 
 "plist@^3.0.2", "plist@^3.0.5":
-  "integrity" "sha512-WiIVYyrp8TD4w8yCvyeIr+lkmrGRd5u0VbRnU+tP/aRLxP/YadJUYOMZJ/6hIa3oUyVCsycXvtNRgd5XBJIbiA=="
-  "resolved" "https://registry.npmjs.org/plist/-/plist-3.0.6.tgz"
-  "version" "3.0.6"
+  "integrity" "sha512-uysumyrvkUX0rX/dEVqt8gC3sTBzd4zoWfLeS29nb53imdaXVvLINYXTI2GNqzaMuvacNx4uJQ8+b3zXR0pkgQ=="
+  "resolved" "https://registry.npmjs.org/plist/-/plist-3.1.0.tgz"
+  "version" "3.1.0"
   dependencies:
+    "@xmldom/xmldom" "^0.8.8"
     "base64-js" "^1.5.1"
     "xmlbuilder" "^15.1.1"
 
@@ -7612,9 +7618,9 @@
   "version" "6.3.0"
 
 "semver@^7.3.5":
-  "integrity" "sha512-QBlUtyVk/5EeHbi7X0fw6liDZc7BBmEaSYn01fMU1OUYbf6GPsbTtd8WmnqbI20SeycoHSeiybkE/q1Q+qlThQ=="
-  "resolved" "https://registry.npmjs.org/semver/-/semver-7.5.3.tgz"
-  "version" "7.5.3"
+  "integrity" "sha512-1bCSESV6Pv+i21Hvpxp3Dx+pSD8lIPt8uVjRrxAUt/nbswYc+tK6Y2btiULjd4+fnq15PX+nqQDC7Oft7WkwcA=="
+  "resolved" "https://registry.npmjs.org/semver/-/semver-7.5.4.tgz"
+  "version" "7.5.4"
   dependencies:
     "lru-cache" "^6.0.0"
 
