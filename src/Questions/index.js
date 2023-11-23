@@ -458,7 +458,6 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     overflow: 'hidden',
-    backgroundColor: 'red',
   },
   finishButton: borderColor => ({
     color: 'white',
