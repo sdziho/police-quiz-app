@@ -1,7 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useState, useCallback, useEffect, useLayoutEffect} from 'react';
-import {View, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Keyboard,
+  TouchableWithoutFeedback,
+} from 'react-native';
 import {TextInput, useTheme, Button, Text} from 'react-native-paper';
 import DatePicker from 'react-native-date-picker';
 import moment from 'moment';
@@ -121,98 +127,106 @@ function Welcome({navigation}) {
       gender
     );
   };
+  const handleOutsideClick = () => {
+    Keyboard.dismiss();
+  };
   return (
-    <View style={styles.mainContainer(colors.surface)}>
-      <View style={{flex: 1}}>
-        <TextInput
-          style={styles.inputElement}
-          label="Ime*"
-          mode="outlined"
-          value={firstName}
-          onChangeText={setFirstName}
-          maxLength={50}
-          error={firstName && firstName.length == 0}
-        />
-        <TextInput
-          style={styles.inputElement}
-          label="Prezime*"
-          mode="outlined"
-          value={lastName}
-          onChangeText={setLasttName}
-          maxLength={50}
-          error={lastName && lastName.length == 0}
-        />
-        <TextInput
-          style={styles.inputElement}
-          label="Email*"
-          mode="outlined"
-          value={email}
-          onChangeText={setEmail}
-          maxLength={50}
-          keyboardType="email-address"
-          error={email && !validateEmail(email)}
-        />
-        <TextInput
-          style={styles.inputElement}
-          onPressIn={openDateModal}
-          label="Datum rođenja"
-          mode="outlined"
-          value={birthString}
-          onKeyPress={() => {}}
-        />
+    <TouchableWithoutFeedback onPress={handleOutsideClick}>
+      <View style={styles.mainContainer(colors.surface)}>
+        <View style={{flex: 1}}>
+          <TextInput
+            style={styles.inputElement}
+            label="Ime*"
+            mode="outlined"
+            value={firstName}
+            onChangeText={setFirstName}
+            maxLength={50}
+            error={firstName && firstName.length == 0}
+          />
+          <TextInput
+            style={styles.inputElement}
+            label="Prezime*"
+            mode="outlined"
+            value={lastName}
+            onChangeText={setLasttName}
+            maxLength={50}
+            error={lastName && lastName.length == 0}
+          />
+          <TextInput
+            style={styles.inputElement}
+            label="Email*"
+            mode="outlined"
+            value={email}
+            onChangeText={setEmail}
+            maxLength={50}
+            keyboardType="email-address"
+            error={email && !validateEmail(email)}
+          />
+          <TextInput
+            style={styles.inputElement}
+            onPressIn={openDateModal}
+            label="Datum rođenja"
+            mode="outlined"
+            value={birthString}
+            onKeyPress={() => {}}
+          />
 
-        <TextInput
-          label="Broj telefona"
-          style={styles.inputElement}
-          mode="outlined"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          maxLength={50}
-          keyboardType="numeric"
-          error={phoneNumber && !validatePhoneNumber(phoneNumber)}
-        />
-        <Text style={{color: 'grey'}}>Spol*</Text>
-        <View style={{...styles.row, marginTop: 10}}>
-          <Button
-            style={[
-              styles.button(gender === 'm' ? colors.primary : 'white'),
-              styles.shadowBox,
-            ]}
-            onPress={() => setGender('m')}>
-            <Text
-              style={styles.textColor(
-                gender === 'm' ? 'white' : colors.primary,
-              )}>
-              Muško
-            </Text>
-          </Button>
-          <Button
-            style={[
-              styles.button(gender === 'f' ? colors.primary : 'white'),
-              styles.shadowBox,
-            ]}
-            onPress={() => setGender('f')}>
-            <Text
-              style={styles.textColor(
-                gender === 'f' ? 'white' : colors.primary,
-              )}>
-              Žensko
-            </Text>
-          </Button>
+          <TextInput
+            label="Broj telefona"
+            style={styles.inputElement}
+            mode="outlined"
+            value={phoneNumber}
+            onChangeText={setPhoneNumber}
+            maxLength={50}
+            keyboardType="numeric"
+            error={phoneNumber && !validatePhoneNumber(phoneNumber)}
+          />
+          <Text style={{color: 'grey'}}>Spol*</Text>
+          <View style={{...styles.row, marginTop: 10}}>
+            <Button
+              style={[
+                styles.button(gender === 'm' ? colors.primary : 'white'),
+                styles.shadowBox,
+              ]}
+              onPress={() => setGender('m')}>
+              <Text
+                style={styles.textColor(
+                  gender === 'm' ? 'white' : colors.primary,
+                )}>
+                Muško
+              </Text>
+            </Button>
+            <Button
+              style={[
+                styles.button(gender === 'f' ? colors.primary : 'white'),
+                styles.shadowBox,
+              ]}
+              onPress={() => setGender('f')}>
+              <Text
+                style={styles.textColor(
+                  gender === 'f' ? 'white' : colors.primary,
+                )}>
+                Žensko
+              </Text>
+            </Button>
+          </View>
         </View>
+        <Button
+          onPress={onNextPress}
+          mode="contained"
+          disabled={!isFormValid()}>
+          Spremi
+        </Button>
+        <DatePicker
+          modal
+          open={isModalOpen}
+          date={new Date()}
+          mode="date"
+          onConfirm={onConfirmDate}
+          onCancel={onCancelDate}
+        />
       </View>
-      <Button onPress={onNextPress} mode="contained" disabled={!isFormValid()}>
-        Spremi
-      </Button>
-      <DatePicker
-        modal
-        open={isModalOpen}
-        date={new Date()}
-        mode="date"
-        onConfirm={onConfirmDate}
-        onCancel={onCancelDate}
-      />
-    </View>
+    </TouchableWithoutFeedback>
   );
 }
 

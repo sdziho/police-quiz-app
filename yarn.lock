@@ -7071,6 +7071,16 @@
   "resolved" "https://registry.npmjs.org/react-native-image-pan-zoom/-/react-native-image-pan-zoom-2.1.12.tgz"
   "version" "2.1.12"
 
+"react-native-image-view@^2.1.9":
+  "integrity" "sha512-+DA/+tLM7KHaLs41Hdd+m5UpGX2qtEdMamMZCsXCsJ5J6RwWrqBXQrGVB9Op7dIkZW2DDRVKZTP/FuSNEGtzJg=="
+  "resolved" "https://registry.npmjs.org/react-native-image-view/-/react-native-image-view-2.1.9.tgz"
+  "version" "2.1.9"
+
+"react-native-image-viewing@^0.2.2":
+  "integrity" "sha512-osWieG+p/d2NPbAyonOMubttajtYEYiRGQaJA54slFxZ69j1V4/dCmcrVQry47ktVKy8/qpFwCpW1eT6MH5T2Q=="
+  "resolved" "https://registry.npmjs.org/react-native-image-viewing/-/react-native-image-viewing-0.2.2.tgz"
+  "version" "0.2.2"
+
 "react-native-image-zoom-viewer@^3.0.1":
   "integrity" "sha512-la6s5DNSuq4GCRLsi5CZ29FPjgTpdCuGIRdO5T9rUrAtxrlpBPhhSnHrbmPVxsdtOUvxHacTh2Gfa9+RraMZQA=="
   "resolved" "https://registry.npmjs.org/react-native-image-zoom-viewer/-/react-native-image-zoom-viewer-3.0.1.tgz"
@@ -7177,7 +7187,7 @@
     "prop-types" "^15.7.2"
     "yargs" "^16.1.1"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.70 || 1000.0.0", "react-native@>=0.42.0", "react-native@>=0.46.1", "react-native@>=0.50.0", "react-native@>=0.59", "react-native@>=0.59.0", "react-native@>=0.62.0", "react-native@>=0.63.0", "react-native@>=0.65.0", "react-native@>0.62.0", "react-native@>0.64", "react-native@0.68.1":
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.70 || 1000.0.0", "react-native@>=0.42.0", "react-native@>=0.44.0", "react-native@>=0.46.1", "react-native@>=0.50.0", "react-native@>=0.59", "react-native@>=0.59.0", "react-native@>=0.61.3", "react-native@>=0.62.0", "react-native@>=0.63.0", "react-native@>=0.65.0", "react-native@>0.62.0", "react-native@>0.64", "react-native@0.68.1":
   "integrity" "sha512-5gfvslo5NO2Ece2k/q41eVOK3ca4u1QAOf+qM+auvOiUA4/QR5Yr0WfSGbRpUr2GaFgv7qP11F4+elCravg7uQ=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.68.1.tgz"
   "version" "0.68.1"
@@ -7250,7 +7260,7 @@
     "react-shallow-renderer" "^16.13.1"
     "scheduler" "^0.20.2"
 
-"react@*", "react@^16.0.0 || ^17.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", "react@^18.0.0 || ^17.0.0 || ^16.0.0 || ^15.6.0", "react@>=16.0.0", "react@>=16.3.0", "react@>=16.8", "react@>=17.0.0", "react@>15.6.0", "react@17.0.2":
+"react@*", "react@^16.0.0 || ^17.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^16.9.0 || ^17.0.0 || ^18", "react@^18.0.0 || ^17.0.0 || ^16.0.0 || ^15.6.0", "react@>=15.2.0", "react@>=16.0.0", "react@>=16.11.0", "react@>=16.3.0", "react@>=16.8", "react@>=17.0.0", "react@>15.6.0", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"

@@ -2,7 +2,14 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react/no-unescaped-entities */
 import React, {useLayoutEffect, useState} from 'react';
-import {ScrollView, StyleSheet, Linking, View, Dimensions} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Linking,
+  View,
+  Dimensions,
+  ImageBackground,
+} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useTheme, Text, Button, List} from 'react-native-paper';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -13,11 +20,14 @@ import {PAYMENT_API_URL, STATUS_TYPES} from '../utils/constants';
 import {randomIntFromInterval, replaceAll} from '../utils/helpers';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+//import ImageView from 'react-native-image-viewing';
+import ImageView from 'react-native-image-view';
 
 const ONLINE_PAYMENT = 'Online plaćanje';
 const INVOICE_PAYMENT = 'Plaćanje putem uplatnice';
 
 function Payment({navigation}) {
+  const [visible, setIsVisible] = useState(true);
   const [selectedValue, setSelectedValue] = useState('');
   const [selectedPrice, setSelectedPrice] = useState(null);
   const openEmail = () => {
@@ -99,194 +109,225 @@ function Payment({navigation}) {
       console.log('catch err', error);
     }
   };
-
+  const images = [
+    {
+      source: {
+        uri: 'https://cdn.pixabay.com/photo/2017/08/17/10/47/paris-2650808_960_720.jpg',
+      },
+      title: 'Paris',
+      width: 806,
+      height: 720,
+    },
+  ];
   return (
-    <ScrollView contentContainerStyle={styles.contentContainer(colors.surface)}>
-      <Text style={styles.text}>
-        Korištenjem besplatnog paketa Police Quiz aplikacije imate pristup svega
-        10% ukupnog broja pitanja. Aktivacijom PREMIUM paketa dobivate potpuni
-        pristup svim pitanjima kako bi vaš uspjeh na testu bio zagarantovan!{' '}
-      </Text>
-      <Text style={styles.headline}>Način plaćanja:</Text>
-      <SelectDropdown
-        data={[ONLINE_PAYMENT, INVOICE_PAYMENT]}
-        onSelect={selectedItem => setSelectedValue(selectedItem)}
-        defaultButtonText="Izaberite način plaćanja"
-        buttonTextAfterSelection={selectedItem => {
-          /* if (
+    <>
+      <ScrollView
+        contentContainerStyle={styles.contentContainer(colors.surface)}>
+        <Text style={styles.text}>
+          Korištenjem besplatnog paketa Police Quiz aplikacije imate pristup
+          svega 10% ukupnog broja pitanja. Aktivacijom PREMIUM paketa dobivate
+          potpuni pristup svim pitanjima kako bi vaš uspjeh na testu bio
+          zagarantovan!{' '}
+        </Text>
+        <Text style={styles.headline}>Način plaćanja:</Text>
+        <SelectDropdown
+          data={[ONLINE_PAYMENT, INVOICE_PAYMENT]}
+          onSelect={selectedItem => setSelectedValue(selectedItem)}
+          defaultButtonText="Izaberite način plaćanja"
+          buttonTextAfterSelection={selectedItem => {
+            /* if (
             selectedItem === 'Sve kategorije' ||
             selectedItem == 'Svi MUP-ovi'
           ) */
-          return selectedItem;
-          //else return selectedItem.name;
-        }}
-        rowTextForSelection={item => {
-          //if (item === 'Sve kategorije' || item == 'Svi MUP-ovi') return item;
-          //else return item.name;
-          return item;
-        }}
-        buttonStyle={styles.dropdownBtnStyle}
-        buttonTextStyle={styles.dropdownBtnTxtStyle}
-        renderDropdownIcon={isOpened => {
-          return (
-            <Ionicons
-              name="options-outline"
-              size={20}
-              color={colors.darkerShade}
-            />
-          );
-        }}
-        dropdownIconPosition={'right'}
-        dropdownStyle={styles.dropdownDropdownStyle}
-        rowStyle={styles.dropdownRowStyle}
-        rowTextStyle={styles.dropdownRowTxtStyle}
-      />
+            return selectedItem;
+            //else return selectedItem.name;
+          }}
+          rowTextForSelection={item => {
+            //if (item === 'Sve kategorije' || item == 'Svi MUP-ovi') return item;
+            //else return item.name;
+            return item;
+          }}
+          buttonStyle={styles.dropdownBtnStyle}
+          buttonTextStyle={styles.dropdownBtnTxtStyle}
+          renderDropdownIcon={isOpened => {
+            return (
+              <Ionicons
+                name="options-outline"
+                size={20}
+                color={colors.darkerShade}
+              />
+            );
+          }}
+          dropdownIconPosition={'right'}
+          dropdownStyle={styles.dropdownDropdownStyle}
+          rowStyle={styles.dropdownRowStyle}
+          rowTextStyle={styles.dropdownRowTxtStyle}
+        />
 
-      {selectedValue == ONLINE_PAYMENT && (
-        <>
-          <Text style={styles.headline}>Izaberite plan:</Text>
-          <View
-            style={{
-              marginTop: 30,
-              display: 'flex',
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+        {selectedValue == ONLINE_PAYMENT && (
+          <>
+            <Text style={styles.headline}>Izaberite plan:</Text>
             <View
-              style={[
-                {
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: 20,
-                  width: '100%',
-                },
-              ]}>
-              <TouchableOpacity
-                onPress={() => setSelectedPrice(price30)}
+              style={{
+                marginTop: 30,
+                display: 'flex',
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <View
                 style={[
-                  styles.shadowBox,
                   {
-                    flex: 1,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
                     alignItems: 'center',
-                    backgroundColor:
-                      selectedPrice === price30 ? '#BBBBBB' : 'white',
+                    marginBottom: 20,
+                    width: '100%',
                   },
                 ]}>
-                {selectedPrice === price30 && (
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={40}
-                    color={colors.darkerShade}
-                    style={{marginTop: 10}}
-                  />
+                {price30 > 0 && (
+                  <TouchableOpacity
+                    onPress={() => setSelectedPrice(price30)}
+                    style={[
+                      styles.shadowBox,
+                      {
+                        flex: 1,
+                        alignItems: 'center',
+                        backgroundColor:
+                          selectedPrice === price30 ? '#BBBBBB' : 'white',
+                      },
+                    ]}>
+                    {selectedPrice === price30 && (
+                      <Ionicons
+                        name="checkmark-circle-outline"
+                        size={40}
+                        color={colors.darkerShade}
+                        style={{marginTop: 10}}
+                      />
+                    )}
+                    <View style={styles.price}>
+                      <Text style={[{fontSize: 50, color: colors.primary}]}>
+                        {price30}
+                      </Text>
+                      <Text style={[{color: colors.primary}]}>KM</Text>
+                    </View>
+                    <Text style={[styles.days]}>30 dana</Text>
+                  </TouchableOpacity>
                 )}
-                <View style={styles.price}>
-                  <Text style={[{fontSize: 50, color: colors.primary}]}>
-                    {price30}
-                  </Text>
-                  <Text style={[{color: colors.primary}]}>KM</Text>
-                </View>
-                <Text style={[styles.days]}>30 dana</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => setSelectedPrice(price60)}
-                style={[
-                  styles.shadowBox,
-                  {
-                    flex: 1,
-                    alignItems: 'center',
-                    backgroundColor:
-                      selectedPrice === price60 ? '#BBBBBB' : 'white',
-                  },
-                ]}>
-                {selectedPrice === price60 && (
-                  <Ionicons
-                    name="checkmark-circle-outline"
-                    size={40}
-                    color={colors.darkerShade}
-                    style={{marginTop: 10}}
-                  />
+                {price60 > 0 && (
+                  <TouchableOpacity
+                    onPress={() => setSelectedPrice(price60)}
+                    style={[
+                      styles.shadowBox,
+                      {
+                        flex: 1,
+                        alignItems: 'center',
+                        backgroundColor:
+                          selectedPrice === price60 ? '#BBBBBB' : 'white',
+                      },
+                    ]}>
+                    {selectedPrice === price60 && (
+                      <Ionicons
+                        name="checkmark-circle-outline"
+                        size={40}
+                        color={colors.darkerShade}
+                        style={{marginTop: 10}}
+                      />
+                    )}
+                    <View style={styles.price}>
+                      <Text style={[{fontSize: 50, color: colors.primary}]}>
+                        {price60}
+                      </Text>
+                      <Text style={[{color: colors.primary}]}>KM</Text>
+                    </View>
+                    <Text style={[styles.days]}>60 dana</Text>
+                  </TouchableOpacity>
                 )}
-                <View style={styles.price}>
-                  <Text style={[{fontSize: 50, color: colors.primary}]}>
-                    {price60}
-                  </Text>
-                  <Text style={[{color: colors.primary}]}>KM</Text>
-                </View>
-                <Text style={[styles.days]}>60 dana</Text>
-              </TouchableOpacity>
+              </View>
+              {price90 > 0 && (
+                <TouchableOpacity
+                  style={[
+                    styles.shadowBox,
+                    {
+                      alignItems: 'center',
+                      backgroundColor:
+                        selectedPrice === price90 ? '#BBBBBB' : 'white',
+                    },
+                  ]}
+                  onPress={() => setSelectedPrice(price90)}>
+                  {selectedPrice === price90 && (
+                    <Ionicons
+                      name="checkmark-circle-outline"
+                      size={40}
+                      color={colors.darkerShade}
+                      style={{marginTop: 10}}
+                    />
+                  )}
+                  <View style={styles.price}>
+                    <Text style={[{fontSize: 50, color: colors.primary}]}>
+                      {price90}
+                    </Text>
+                    <Text style={[{color: colors.primary}]}>KM</Text>
+                  </View>
+                  <Text style={[styles.days]}>90 dana</Text>
+                </TouchableOpacity>
+              )}
+
+              <Button
+                onPress={onBuyPress}
+                style={[styles.button(colors.primary)]}
+                disabled={!selectedPrice}>
+                <Text style={{color: selectedPrice ? 'white' : '#BBBBBB'}}>
+                  Plati
+                </Text>
+              </Button>
             </View>
-            <TouchableOpacity
-              style={[
-                styles.shadowBox,
+          </>
+        )}
+        {selectedValue == INVOICE_PAYMENT && (
+          <>
+            <Text style={styles.text}>
+              U slučaju neuspješne uplate novca preko Monri aplikacije,
+              pošaljite uplatnicu sa ličnim podacima na mail{' '}
+              <Text onPress={openEmail} style={{color: colors.primary}}>
+                policequizbih@gmail.com{' '}
+              </Text>
+              ili Viberom na broj
+              <Text onPress={openNumber} style={{color: colors.primary}}>
+                {' '}
+                +38761809244
+              </Text>
+            </Text>
+            <Text style={styles.headline}>Primjer uplatnice:</Text>
+
+            {/* <ImageViewer
+              style={styles.image}
+              imageUrls={[
                 {
-                  alignItems: 'center',
-                  backgroundColor:
-                    selectedPrice === price90 ? '#BBBBBB' : 'white',
+                  url: '',
+                  props: {
+                    // Or you can set source directory.
+                    source: require('../assets/uplatnica.png'),
+                  },
                 },
               ]}
-              onPress={() => setSelectedPrice(price90)}>
-              {selectedPrice === price90 && (
-                <Ionicons
-                  name="checkmark-circle-outline"
-                  size={40}
-                  color={colors.darkerShade}
-                  style={{marginTop: 10}}
-                />
-              )}
-              <View style={styles.price}>
-                <Text style={[{fontSize: 50, color: colors.primary}]}>
-                  {price90}
-                </Text>
-                <Text style={[{color: colors.primary}]}>KM</Text>
-              </View>
-              <Text style={[styles.days]}>90 dana</Text>
-            </TouchableOpacity>
-
-            <Button
-              onPress={onBuyPress}
-              style={[styles.button(colors.primary)]}
-              disabled={!selectedPrice}>
-              <Text style={{color: selectedPrice ? 'white' : '#BBBBBB'}}>
-                Plati
-              </Text>
-            </Button>
-          </View>
-        </>
-      )}
+            /> */}
+          </>
+        )}
+      </ScrollView>
       {selectedValue == INVOICE_PAYMENT && (
-        <>
-          <Text style={styles.text}>
-            U slučaju neuspješne uplate novca preko Monri aplikacije, pošaljite
-            uplatnicu sa ličnim podacima na mail{' '}
-            <Text onPress={openEmail} style={{color: colors.primary}}>
-              policequizbih@gmail.com{' '}
-            </Text>
-            ili Viberom na broj
-            <Text onPress={openNumber} style={{color: colors.primary}}>
-              {' '}
-              +38761809244
-            </Text>
-          </Text>
-          <Text style={styles.headline}>Primjer uplatnice:</Text>
-          <ImageViewer
-            style={styles.image}
-            imageUrls={[
-              {
-                url: '',
-                props: {
-                  // Or you can set source directory.
-                  source: require('../assets/uplatnica.png'),
-                },
-              },
-            ]}
-          />
-        </>
+        <TouchableOpacity
+          onPress={() => {
+            Linking.openURL('https://i.postimg.cc/prT8q6Nz/uplatnica.png');
+          }}>
+          <ImageBackground
+            source={require('../assets/uplatnica.png')}
+            style={styles.backgroundImage}
+            resizeMode="contain"></ImageBackground>
+        </TouchableOpacity>
       )}
-    </ScrollView>
+    </>
   );
 }
 const {width} = Dimensions.get('screen');
@@ -366,6 +407,13 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: '#444',
+  },
+  backgroundImage: {
+    overflow: 'visible',
+    height: 300,
+    resizeMode: 'contain',
+    marginBottom: 10,
+    width,
   },
   shadowBox: {
     backgroundColor: 'white',

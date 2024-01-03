@@ -82,7 +82,7 @@ const MainTabNavigator = () => {
         component={Home}
         options={{
           title: 'Police Quiz',
-          headerStyle,
+          headerShown: false,
         }}
       />
       <Tab.Screen

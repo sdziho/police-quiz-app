@@ -1,25 +1,28 @@
-import React, {
-  useCallback, useEffect, useState, useRef,
-} from 'react';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {
-  FlatList, Dimensions, StyleSheet, Image, TouchableOpacity, Linking,
+  FlatList,
+  Dimensions,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Linking,
 } from 'react-native';
 
-const { width } = Dimensions.get('screen');
+const {width} = Dimensions.get('screen');
 
-function AdSlider({ data }) {
+function AdSlider({data}) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const flatListRef = useRef();
 
-  const onScroll = useCallback((event) => {
+  const onScroll = useCallback(event => {
     const slideSize = event.nativeEvent.layoutMeasurement.width;
     const index = event.nativeEvent.contentOffset.x / slideSize;
     const roundIndex = Math.round(index);
     setActiveIndex(roundIndex);
   }, []);
 
-  const scrollToIndex = (index) => {
+  const scrollToIndex = index => {
     flatListRef.current.scrollToIndex({
       animated: true,
       index,
@@ -27,10 +30,10 @@ function AdSlider({ data }) {
     setActiveIndex(index);
   };
 
-  const keyExtractor = useCallback((item) => item.id, []);
+  const keyExtractor = useCallback(item => item.id, []);
 
-  const renderItem = useCallback(({ item }) => {
-    const { imagePermanent, reddirectUrl } = item ?? {};
+  const renderItem = useCallback(({item}) => {
+    const {imagePermanent, reddirectUrl} = item ?? {};
 
     const onPress = () => {
       if (!reddirectUrl) return;
@@ -44,12 +47,11 @@ function AdSlider({ data }) {
       <TouchableOpacity
         activeOpacity={1}
         onPress={onPress}
-        style={styles.itemContainer}
-      >
+        style={styles.itemContainer}>
         <Image
           resizeMode="cover"
           style={styles.itemImage}
-          source={{ uri: imagePermanent.src }}
+          source={{uri: imagePermanent?.src}}
         />
       </TouchableOpacity>
     );

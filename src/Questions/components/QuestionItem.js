@@ -75,12 +75,16 @@ function QuestionItem({item, answerQuestion, number, questionsSize}) {
         <AnimatedCircularProgress
           style={styles.circle}
           rotation={0}
-          size={40}
-          width={7}
+          size={50}
+          width={5}
           fill={(number / questionsSize) * 100}
           tintColor={colors.primary}
           backgroundColor="lightgray">
-          {fill => <Text>{number}</Text>}
+          {fill => (
+            <Text>
+              {number}/{questionsSize}
+            </Text>
+          )}
         </AnimatedCircularProgress>
       </View>
       {answers &&
@@ -114,13 +118,14 @@ const styles = StyleSheet.create({
     elevation: 3,
     paddingVertical: 25,
     marginBottom: 40,
+    paddingBottom: 40,
   },
   questionText: {
     textAlign: 'center',
     fontSize: 18,
   },
   answerButton: borderColor => ({
-    borderRadius: 50,
+    borderRadius: 30,
     borderColor,
     padding: 10,
     marginBottom: 10,
@@ -146,7 +151,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     position: 'absolute',
     left: 20,
-    bottom: -15,
+    bottom: -20,
   },
 });
 

@@ -48,6 +48,7 @@ function Questions({navigation, route}) {
     adsData?.filter(item => item?.isQuestionAd) ?? [],
   ).map(item => ({...item, isAd: true}));
   const user = useSelector(state => state.user.data);
+  const {isPremium} = user ?? {};
   const dispatch = useDispatch();
   const [sliderData, setSliderData] = useState([]);
   const [openAddModal, setOpenAdModal] = useState(null);
@@ -157,25 +158,22 @@ function Questions({navigation, route}) {
   }, [activeIndex, questionIndex, sliderData]);
 
   const onFinishPress = () => {
-    console.log(
-      'zavrsavam test',
-      getResult() * 100 || 0,
-      route.params.testName,
-    );
-    let tests = user?.testHistory ?? [];
-    if (tests.length >= 100) tests.splice(99);
-    dispatch(
-      setFirestoreUser({
-        testHistory: [
-          {
-            name: route.params.testName,
-            result: getResult() * 100 || 0,
-            date: new Date(),
-          },
-          ...tests,
-        ],
-      }),
-    );
+    if (route.params.testName.includes('TEST') && isPremium) {
+      let tests = user?.testHistory ?? [];
+      if (tests.length >= 100) tests.splice(99);
+      dispatch(
+        setFirestoreUser({
+          testHistory: [
+            {
+              name: route.params.testName,
+              result: getResult() * 100 || 0,
+              date: new Date(),
+            },
+            ...tests,
+          ],
+        }),
+      );
+    }
     setIsResultsVisible(true);
   };
 
@@ -336,7 +334,7 @@ function Questions({navigation, route}) {
         isVisible={isResultsVisible}
         onHide={hideResultModal}
         progress={getResult()}
-        name={route.params.testName}
+        params={route.params}
       />
       <Modal
         animationType="slide"
@@ -417,7 +415,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 10,
+    bottom: 20,
   },
   navigationContainer: {
     flexDirection: 'row',
@@ -448,11 +446,16 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     position: 'absolute',
-    top: 35,
-    left: 20,
+    top: 50,
+    left: 30,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     borderRadius: 50,
-    zIndex: 1,
+    zIndex: 10,
+    height: 35,
+    width: 35,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   backgroundImage: {
     flex: 1,

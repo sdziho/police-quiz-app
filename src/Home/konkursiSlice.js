@@ -24,7 +24,6 @@ export const getKonkursi = createAsyncThunk(
       responses.forEach(response => {
         konkursiData[response.name] = response.data;
       });
-
       dispatch(setKonkursi(konkursiData));
     });
   },

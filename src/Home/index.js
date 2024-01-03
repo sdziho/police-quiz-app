@@ -10,6 +10,7 @@ import {
   Platform,
   TouchableOpacity,
   ImageBackground,
+  SafeAreaView,
 } from 'react-native';
 import {useTheme, ActivityIndicator, Text, Button} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
@@ -44,10 +45,8 @@ function Home({navigation, route}) {
   const cardsData = useSelector(state => state.konkursi.data);
   const user = useSelector(state => state.user.data);
   const konkursi = cardsData?.konkursi ?? [];
-  const sprema = cardsData?.fizicka_sprema ?? [];
   const ishrana = cardsData?.plan_ishrane ?? [];
-  const video = cardsData?.video ?? [];
-
+  const treniranje = cardsData?.treniranje ?? [];
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
   const {isPremium, id} = user ?? {};
   const slideImages = paymentSettings?.images ?? [];
@@ -82,12 +81,12 @@ function Home({navigation, route}) {
 
   useEffect(() => {
     const nowInSeconds = Math.floor(Date.now() / 1000);
-    const oneMonthInSeconds = 30 * 24 * 60 * 60; // 30 days * 24 hours * 60 minutes * 60 seconds * 3 months
+    const threeMonthInSeconds = 30 * 24 * 60 * 60 * 3; // 30 days * 24 hours * 60 minutes * 60 seconds * 3 months
 
     const expired = nowInSeconds > user?.paymentDetails?.expiresAt?.seconds;
     if (!user?.paymentDetails?.expiresAt && isPremium) {
       let dateExpires = new Date(0);
-      dateExpires.setUTCSeconds(nowInSeconds + oneMonthInSeconds);
+      dateExpires.setUTCSeconds(nowInSeconds + threeMonthInSeconds);
       dispatch(
         setFirestoreUser({
           paymentDetails: {
@@ -108,7 +107,7 @@ function Home({navigation, route}) {
     dispatch(getNotifications());
     dispatch(
       getKonkursi({
-        collections: ['konkursi', 'fizicka_sprema', 'plan_ishrane'],
+        collections: ['konkursi', 'plan_ishrane', 'treniranje'],
       }),
     );
   }, [dispatch]);
@@ -212,9 +211,11 @@ function Home({navigation, route}) {
     return 0;
   });
   const drzavni = filteredData.filter(element => element?.isDrzavni);
-
+  const fizickSprema = filteredData?.filter(
+    element => element?.fizicka_sprema && element?.fizicka_sprema.length > 0,
+  );
   return (
-    <>
+    <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
       <View style={styles.mainContainer(colors.surface)}>
         <StatusBar backgroundColor={colors.surface} barStyle="dark-content" />
 
@@ -224,7 +225,9 @@ function Home({navigation, route}) {
             size="small"
           />
         ) : (
-          <ScrollView style={{backgroundColor: colors.background}}>
+          <ScrollView
+            style={{backgroundColor: colors.background}}
+            scrollIndicatorInsets={{right: 1}}>
             {slideImages.length > 0 && (
               <View style={styles.imageWrapper}>
                 <SwiperFlatList
@@ -261,7 +264,12 @@ function Home({navigation, route}) {
                 key="Državni ispiti"
               />
             )}
-            <HomeCard data={filteredData} title={'Test'} key="Test" />
+            <HomeCard
+              data={filteredData}
+              title={'Test'}
+              key="Test"
+              setIsPaymentModalVisible={setIsPaymentModalVisible}
+            />
             <HomeCard
               data={filteredData?.filter(element => element?.law)}
               title="Zakoni"
@@ -274,24 +282,27 @@ function Home({navigation, route}) {
                 key="Aktuelni konkursi"
               />
             )}
-            {sprema.length > 0 && (
+            {fizickSprema.length > 0 && (
               <HomeCard
-                data={sprema}
+                data={fizickSprema}
                 title="Video fizičke spreme"
                 key="Video fizičke spreme"
-                pic={paymentSettings?.spremaURL}
               />
             )}
-            <HomeCard
-              data={filteredData}
-              title="Uplata premium paketa"
-              key="Uplata premium paketa"
-            />
-            {video.length > 0 && (
+            {paymentSettings?.esej && (
               <HomeCard
-                data={video}
-                title="Priprema fizičke spreme"
-                key="Priprema fizičke spreme"
+                data={paymentSettings?.esej}
+                title="Pisanje eseja"
+                key="Pisanje eseja"
+                pic={paymentSettings?.esejURL}
+              />
+            )}
+            {treniranje.length > 0 && (
+              <HomeCard
+                data={treniranje}
+                title="Treniranje"
+                key="Treniranje"
+                pic={paymentSettings?.treniranjeURL}
               />
             )}
             {ishrana.length > 0 && (
@@ -302,6 +313,11 @@ function Home({navigation, route}) {
                 pic={paymentSettings?.ishranaURL}
               />
             )}
+            <HomeCard
+              data={filteredData}
+              title="Uplata premium paketa"
+              key="Uplata premium paketa"
+            />
           </ScrollView>
         )}
         <Modal
@@ -347,7 +363,7 @@ function Home({navigation, route}) {
           </View>
         </Modal>
       </View>
-    </>
+    </SafeAreaView>
   );
 }
 const {width} = Dimensions.get('window');

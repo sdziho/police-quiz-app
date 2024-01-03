@@ -42,6 +42,11 @@ export default function Notifications() {
               <TouchableOpacity
                 style={[styles.shadowBox, styles.action]}
                 onPress={() => {
+                  if (notification.id === 'premium') {
+                    console.log('jes premium');
+                    setSelectedNotification(notification);
+                    return;
+                  }
                   if (!isSeen) {
                     dispatch(
                       setFirestoreUser({

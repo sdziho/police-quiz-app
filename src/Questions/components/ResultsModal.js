@@ -3,16 +3,22 @@ import React from 'react';
 import {StyleSheet, Modal, TouchableOpacity} from 'react-native';
 import {useTheme, Text, Button} from 'react-native-paper';
 import * as Progress from 'react-native-progress';
+import {useDispatch} from 'react-redux';
+import {setSelectedCategory} from '../../Home/categoriesSlice';
 
-function ResultsModal({isVisible, progress, onHide}) {
+function ResultsModal({isVisible, progress, onHide, params}) {
   const {colors} = useTheme();
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const onButtonPress = () => {
     onHide();
     setTimeout(() => {
-      navigation.replace('MainTab');
+      dispatch(setSelectedCategory(params));
     }, 300);
+    setTimeout(() => {
+      navigation.replace('MainTab');
+    }, 100);
   };
   //console.log(progress);
   return (

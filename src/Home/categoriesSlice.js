@@ -20,10 +20,14 @@ export const categoriesSlice = createSlice({
   initialState: {
     data: null,
     status: STATUS_TYPES.PENDING,
+    selectedCategory: null,
   },
   reducers: {
     setCategories: (state, action) => {
       state.data = action.payload;
+    },
+    setSelectedCategory: (state, action) => {
+      state.selectedCategory = action.payload;
     },
   },
   extraReducers: {
@@ -39,6 +43,6 @@ export const categoriesSlice = createSlice({
   },
 });
 
-export const {setCategories} = categoriesSlice.actions;
+export const {setCategories, setSelectedCategory} = categoriesSlice.actions;
 
 export default categoriesSlice.reducer;

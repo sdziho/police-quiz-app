@@ -23,7 +23,6 @@ function Profile() {
   const {colors} = useTheme();
   const [historyModal, setHistoryModal] = useState(false);
   const user = useSelector(state => state.user.data);
-  const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
   const {isPremium, id} = user ?? {};
   const navigation = useNavigation();
   const navigateTo = nav => {
@@ -55,26 +54,34 @@ function Profile() {
             {isPremium ? (
               <>
                 <View style={[styles.flexRow, styles.mb]}>
-                  <Text style={[styles.secondaryText]}>Status: </Text>
-                  <Text>Premium</Text>
+                  <Text>Status: </Text>
+                  <Text style={[styles.secondaryText(colors.primary)]}>
+                    Premium
+                  </Text>
                 </View>
                 {createdAt && (
                   <View style={[styles.flexRow, styles.mb]}>
-                    <Text style={[styles.secondaryText]}>Uplaćeno: </Text>
-                    <Text>{paymentDate}</Text>
+                    <Text>Uplaćeno: </Text>
+                    <Text style={[styles.secondaryText(colors.primary)]}>
+                      {paymentDate}
+                    </Text>
                   </View>
                 )}
                 {expiresAt && (
                   <View style={[styles.flexRow, styles.mb]}>
-                    <Text style={[styles.secondaryText]}>Ističe: </Text>
-                    <Text>{expireDate}</Text>
+                    <Text>Ističe: </Text>
+                    <Text style={[styles.secondaryText(colors.primary)]}>
+                      {expireDate}
+                    </Text>
                   </View>
                 )}
               </>
             ) : (
               <View style={[styles.flexRow, styles.mb]}>
-                <Text style={[styles.secondaryText]}>Status: </Text>
-                <Text>Besplatna verzija</Text>
+                <Text>Status: </Text>
+                <Text style={[styles.secondaryText(colors.primary)]}>
+                  Besplatna verzija
+                </Text>
               </View>
             )}
           </View>
@@ -242,11 +249,16 @@ const styles = StyleSheet.create({
   },
   buttonClose: {
     position: 'absolute',
-    top: 40,
-    left: 20,
+    top: 50,
+    left: 30,
     backgroundColor: 'rgba(0, 0, 0, 0.3)',
     borderRadius: 50,
-    zIndex: 1,
+    zIndex: 10,
+    height: 35,
+    width: 35,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   container: backgroundColor => ({
     paddingVertical: 10,
@@ -260,7 +272,9 @@ const styles = StyleSheet.create({
   circle: {
     backgroundColor: 'white',
   },
-  secondaryText: {},
+  secondaryText: color => ({
+    color,
+  }),
   borders: {
     scaleX: 1.2,
     scaleY: 1.2,
