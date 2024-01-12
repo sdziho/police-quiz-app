@@ -1,10 +1,8 @@
 /* eslint-disable react/jsx-props-no-spreading */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useLayoutEffect} from 'react';
-import {Linking, ScrollView, StyleSheet, View} from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
+import React from 'react';
+import {ScrollView, StyleSheet} from 'react-native';
 import {useTheme, Text} from 'react-native-paper';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 
 function TermsOfService({navigation}) {

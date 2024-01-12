@@ -11,7 +11,6 @@ export const getNotifications = createAsyncThunk(
     return getCollection({collection: 'notifications'}).then(response => {
       const threeDaysInSeconds = 86400 * 3;
       const nowInSeconds = Math.floor(Date.now() / 1000);
-      console.log('jel prem', store.getState()?.user?.data?.isPremium);
       const expires =
         store.getState()?.user?.data?.paymentDetails?.expiresAt?.seconds ?? 0;
       const resultTime = expires - nowInSeconds;

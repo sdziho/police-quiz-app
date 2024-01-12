@@ -15,7 +15,7 @@ function ResultsModal({isVisible, progress, onHide, params}) {
     onHide();
     setTimeout(() => {
       dispatch(setSelectedCategory(params));
-    }, 300);
+    }, 200);
     setTimeout(() => {
       navigation.replace('MainTab');
     }, 100);

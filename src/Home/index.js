@@ -199,7 +199,28 @@ function Home({navigation, route}) {
   }, [isPremium, isPaymentModalVisible]);
 
   let filteredData = data ? [...data] : [];
-
+  let filteredTreniranje = treniranje ? [...treniranje] : [];
+  let filteredIshrana = ishrana ? [...ishrana] : [];
+  filteredIshrana?.sort((a, b) => {
+    if ('order' in a && 'order' in b) {
+      return a?.order - b?.order;
+    } else if (a?.order) {
+      return -1;
+    } else if (b?.order) {
+      return 1;
+    }
+    return 0;
+  });
+  filteredTreniranje?.sort((a, b) => {
+    if ('order' in a && 'order' in b) {
+      return a?.order - b?.order;
+    } else if (a?.order) {
+      return -1;
+    } else if (b?.order) {
+      return 1;
+    }
+    return 0;
+  });
   filteredData?.sort((a, b) => {
     if ('order' in a && 'order' in b) {
       return a?.order - b?.order;
@@ -297,17 +318,17 @@ function Home({navigation, route}) {
                 pic={paymentSettings?.esejURL}
               />
             )}
-            {treniranje.length > 0 && (
+            {filteredTreniranje.length > 0 && (
               <HomeCard
-                data={treniranje}
+                data={filteredTreniranje}
                 title="Treniranje"
                 key="Treniranje"
                 pic={paymentSettings?.treniranjeURL}
               />
             )}
-            {ishrana.length > 0 && (
+            {filteredIshrana.length > 0 && (
               <HomeCard
-                data={ishrana}
+                data={filteredIshrana}
                 title="Plan ishrane"
                 key="Plan ishrane"
                 pic={paymentSettings?.ishranaURL}
@@ -316,6 +337,7 @@ function Home({navigation, route}) {
             <HomeCard
               data={filteredData}
               title="Uplata premium paketa"
+              pic={paymentSettings?.premiumURL}
               key="Uplata premium paketa"
             />
           </ScrollView>

@@ -144,7 +144,7 @@ function Profile() {
             />
           </View>
         </TouchableOpacity>
-        <View style={{position: 'absolute', bottom: 40, width: width}}>
+        <View style={{position: 'absolute', bottom: 80, width: width}}>
           <Text style={{textAlign: 'center'}}>
             Verzija: {versionInfo.version}
           </Text>

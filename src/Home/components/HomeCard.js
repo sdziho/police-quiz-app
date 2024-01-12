@@ -221,7 +221,7 @@ function CategoriesList({
                 </View>
               ) : (
                 <View>
-                  <Text style={[{padding: 50, fontSize: 20, width: 300}]}>
+                  <Text style={[{padding: 50, fontSize: 18, width: 250}]}>
                     Izaberite potkategoriju
                   </Text>
                 </View>
@@ -456,9 +456,9 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
         break;
       case 'Pisanje eseja':
         setSelectedChild(
-          <View>
+          <ScrollView>
             <Text>{data}</Text>
-          </View>,
+          </ScrollView>,
         );
         break;
       case 'Treniranje':
@@ -550,8 +550,7 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
   };
   return (
     <View style={{marginBottom: 10}}>
-      <View
-        style={styles.container(colors.background, swipableObject ? 120 : 200)}>
+      <View style={styles.container(colors.background, 200)}>
         <View
           style={{
             display: 'flex',
@@ -581,7 +580,7 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
                   preSelectedCategory?.subctg !== 'TEST'
                 ) {
                   setSelectedCategory(preSelectedCategory.ctg);
-                  setTimeout(() => setModalVisible(true), 300);
+                  setModalVisible(true);
                   dispatch(setSelectedCtg(null));
                 } else if (
                   title === 'Test' &&
@@ -637,7 +636,6 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
         imageVisible={true}
         isVisible={modalVisible}
         hideModal={() => {
-          console.log('hajdam modal');
           setModalVisible(false);
           dispatch(setSelectedCtg(null));
         }}
