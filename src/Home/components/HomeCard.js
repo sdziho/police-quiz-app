@@ -385,6 +385,7 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
   const preSelectedCategory = useSelector(
     state => state.categories.selectedCategory,
   );
+  const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -402,7 +403,7 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
     title === 'Aktuelni konkursi' ||
     title === 'Test' ||
     title == 'Državni ispiti' ||
-    title == 'Video fizičke spreme';
+    title == paymentSettings?.videoTitle;
   useEffect(() => {
     let filteredSubcategories;
     filteredSubcategories = subctg?.data?.filter(category =>
@@ -490,7 +491,7 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
           </View>,
         );
         break;
-      case 'Video fizičke spreme':
+      case paymentSettings?.videoTitle:
         {
           setSelectedChild(
             <CategoriesList
@@ -537,7 +538,7 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
 
   const handlePressObject = () => {
     if (
-      title === 'Video fizičke spreme' ||
+      title === paymentSettings?.videoTitle ||
       title === 'Plan ishrane' ||
       title == 'Pisanje eseja' ||
       title == 'Treniranje'

@@ -58,26 +58,9 @@ function Home({navigation, route}) {
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
   const [isSuccesPaymentModalVisible, setIsSuccesPaymentModalVisible] =
     useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
   const [isNotificationModal, setIsNotificationModal] = useState(false);
   const [items, setItems] = useState([]);
-  const toggleMenu = useCallback(() => {
-    setIsMenuOpen(!isMenuOpen);
-  }, [isMenuOpen]);
-
-  const toggleNotificationModal = useCallback(
-    status => {
-      if (status?.length > 0) {
-        setIsNotificationModal(true);
-        setItems(prevItems => {
-          const newItems = new Set(prevItems); // Create a new Set from the previous items
-          newItems.add(status); // Add the new item to the Set
-          return Array.from(newItems); // Convert the Set back to an array
-        });
-      }
-    },
-    [isNotificationModal, setIsNotificationModal],
-  );
 
   useEffect(() => {
     const nowInSeconds = Math.floor(Date.now() / 1000);
@@ -306,7 +289,7 @@ function Home({navigation, route}) {
             {fizickSprema.length > 0 && (
               <HomeCard
                 data={fizickSprema}
-                title="Video fizičke spreme"
+                title={paymentSettings?.videoTitle}
                 key="Video fizičke spreme"
               />
             )}
