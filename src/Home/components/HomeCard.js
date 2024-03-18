@@ -24,6 +24,7 @@ import HyperlinkedText from 'react-native-hyperlinked-text';
 import LinearGradient from 'react-native-linear-gradient';
 import logo from '../../assets/pqLogo.jpg';
 import {setSelectedCategory as setSelectedCtg} from '../../Home/categoriesSlice';
+import Hyperlink from 'react-native-hyperlink';
 
 function CategoriesList({
   filteredSubcategories,
@@ -47,11 +48,12 @@ function CategoriesList({
   }, [hasButtons]);
   const [selectedTestNumber, setSelectedTestNumber] = useState(30);
   const onPress = (item, superItem = null) => {
+    console.log('selektovani', selectedButton);
     const params = {
       categoryId: selectedCategory.id,
       subcategoryId: isTestSelected ? 'TEST' : item,
       ...(superItem && {superSubcategory: superItem}),
-      ...(selectedButton === 'Za inspoktera' && {isForInspector: true}),
+      ...(selectedButton === 'Za inspektora' && {isForInspector: true}),
       ...(selectedButton === 'Za policajca' && {isForPoliceman: true}),
       ...(isTestSelected && {numberOfQuestions: selectedTestNumber}),
       isPremium,
@@ -433,7 +435,16 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
       case 'Zakoni':
         setSelectedChild(
           <ScrollView>
-            <HyperlinkedText>{selectedCategory?.law ?? ''}</HyperlinkedText>
+            <Text>
+              <Hyperlink
+                onPress={(url, text) => {
+                  Linking.openURL(url);
+                  console.log('url', url);
+                }}
+                linkStyle={{color: '#2980b9'}}>
+                <Text>{selectedCategory?.law ?? ''}</Text>
+              </Hyperlink>
+            </Text>
           </ScrollView>,
         );
         break;
@@ -451,7 +462,12 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
         setSelectedChild(
           <View>
             <Text>{selectedCategory?.description}</Text>
-            <HyperlinkedText>{selectedCategory?.url ?? ''}</HyperlinkedText>
+            <TouchableOpacity
+              onPress={() => Linking.openURL(selectedCategory?.url)}>
+              <Text style={{color: '#2980b9'}}>
+                {selectedCategory?.url ?? ''}
+              </Text>
+            </TouchableOpacity>
           </View>,
         );
         break;

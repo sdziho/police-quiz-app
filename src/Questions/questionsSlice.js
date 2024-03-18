@@ -30,7 +30,6 @@ export const getQuestions = createAsyncThunk(
     if (isForPoliceman) {
       conditions.push(['isForPoliceman', '==', isForPoliceman]);
     }
-
     const trimQuestions = response => {
       const nowInSeconds = Math.floor(Date.now() / 1000);
       const expired = nowInSeconds > (paymentDetails?.expiresAt?._seconds || 0);
