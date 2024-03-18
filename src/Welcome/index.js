@@ -136,31 +136,28 @@ function Welcome({navigation}) {
         <View style={{flex: 1}}>
           <TextInput
             style={styles.inputElement}
-            label="Ime*"
+            label="Ime"
             mode="outlined"
             value={firstName}
             onChangeText={setFirstName}
             maxLength={50}
-            error={firstName && firstName.length == 0}
           />
           <TextInput
             style={styles.inputElement}
-            label="Prezime*"
+            label="Prezime"
             mode="outlined"
             value={lastName}
             onChangeText={setLasttName}
             maxLength={50}
-            error={lastName && lastName.length == 0}
           />
           <TextInput
             style={styles.inputElement}
-            label="Email*"
+            label="Email"
             mode="outlined"
             value={email}
             onChangeText={setEmail}
             maxLength={50}
             keyboardType="email-address"
-            error={email && !validateEmail(email)}
           />
           <TextInput
             style={styles.inputElement}
@@ -179,9 +176,8 @@ function Welcome({navigation}) {
             onChangeText={setPhoneNumber}
             maxLength={50}
             keyboardType="numeric"
-            error={phoneNumber && !validatePhoneNumber(phoneNumber)}
           />
-          <Text style={{color: 'grey'}}>Spol*</Text>
+          <Text style={{color: 'grey'}}>Spol</Text>
           <View style={{...styles.row, marginTop: 10}}>
             <Button
               style={[
@@ -211,10 +207,7 @@ function Welcome({navigation}) {
             </Button>
           </View>
         </View>
-        <Button
-          onPress={onNextPress}
-          mode="contained"
-          disabled={!isFormValid()}>
+        <Button onPress={onNextPress} mode="contained">
           Spremi
         </Button>
         <DatePicker
