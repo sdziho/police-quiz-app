@@ -9,13 +9,14 @@
     "android:release:debug": "cp release-google-services.json android/app && cd android/app && rm -f google-services.json && mv release-google-services.json google-services.json && cd .. && ./gradlew clean && cd .. && react-native run-android",
     "android:dev": "cp dev-google-services.json android/app && cd android/app && rm -f google-services.json && mv dev-google-services.json google-services.json && cd .. && ./gradlew clean && cd .. && react-native run-android",
     "android:apk": "cd android && ./gradlew assembleRelease && cd..",
+    "android:bundle": "cd android && ./gradlew bundleRelease && cd..",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint ."
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.17.10",
+    "@react-native-async-storage/async-storage": "^1.23.1",
     "@react-native-firebase/app": "^14.11.1",
     "@react-native-firebase/auth": "^14.11.1",
     "@react-native-firebase/firestore": "^14.11.1",

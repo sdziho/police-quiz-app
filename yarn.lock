@@ -1595,10 +1595,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@react-native-async-storage/async-storage@^1.17.10":
-  version "1.17.10"
-  resolved "https://registry.npmjs.org/@react-native-async-storage/async-storage/-/async-storage-1.17.10.tgz"
-  integrity sha512-KrR021BmBLsA0TT1AAsfH16bHYy0MSbhdAeBAqpriak3GS1T2alFcdTUvn13p0ZW6FKRD6Bd3ryU2zhU/IYYJQ==
+"@react-native-async-storage/async-storage@^1.23.1":
+  version "1.23.1"
+  resolved "https://registry.npmjs.org/@react-native-async-storage/async-storage/-/async-storage-1.23.1.tgz"
+  integrity sha512-Qd2kQ3yi6Y3+AcUlrHxSLlnBvpdCEMVGFlVBneVOjaFaPU61g1huc38g339ysXspwY1QZA2aNhrk/KlHGO+ewA==
   dependencies:
     merge-options "^3.0.4"
 
@@ -7207,7 +7207,7 @@ react-native-vector-icons@*, react-native-vector-icons@^9.2.0:
     prop-types "^15.7.2"
     yargs "^16.1.1"
 
-react-native@*, "react-native@^0.0.0-0 || 0.60 - 0.70 || 1000.0.0", react-native@>=0.42.0, react-native@>=0.44.0, react-native@>=0.46.1, react-native@>=0.50.0, react-native@>=0.59, react-native@>=0.59.0, react-native@>=0.61.3, react-native@>=0.62.0, react-native@>=0.63.0, react-native@>=0.65.0, react-native@>0.62.0, react-native@>0.64, react-native@0.68.1:
+react-native@*, "react-native@^0.0.0-0 || >=0.60 <1.0", react-native@>=0.42.0, react-native@>=0.44.0, react-native@>=0.46.1, react-native@>=0.50.0, react-native@>=0.59, react-native@>=0.59.0, react-native@>=0.61.3, react-native@>=0.62.0, react-native@>=0.63.0, react-native@>=0.65.0, react-native@>0.62.0, react-native@>0.64, react-native@0.68.1:
   version "0.68.1"
   resolved "https://registry.npmjs.org/react-native/-/react-native-0.68.1.tgz"
   integrity sha512-5gfvslo5NO2Ece2k/q41eVOK3ca4u1QAOf+qM+auvOiUA4/QR5Yr0WfSGbRpUr2GaFgv7qP11F4+elCravg7uQ==

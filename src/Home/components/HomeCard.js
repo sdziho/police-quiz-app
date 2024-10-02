@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
@@ -44,7 +45,13 @@ function CategoriesList({
   );
   const [selectSuperType, setSelectedSuperType] = useState(null);
   useEffect(() => {
-    setSelectedButton(hasButtons ? 'Za policajca' : null);
+    AsyncStorage.getItem('choose-category').then(value => {
+      if (value && hasButtons) {
+        setSelectedButton(value);
+      } else {
+        setSelectedButton(hasButtons ? 'Za policajca' : null);
+      }
+    });
   }, [hasButtons]);
   const [selectedTestNumber, setSelectedTestNumber] = useState(30);
   const onPress = (item, superItem = null) => {
@@ -86,7 +93,10 @@ function CategoriesList({
           {hasButtons && (
             <View style={buttonStyles.buttonWrapper}>
               <TouchableOpacity
-                onPress={() => handleButtonPress('Za policajca')}
+                onPress={() => {
+                  handleButtonPress('Za policajca');
+                  AsyncStorage.setItem('choose-category', 'Za policajca');
+                }}
                 style={[
                   buttonStyles.button,
                   styles.shadowBox,
@@ -117,7 +127,10 @@ function CategoriesList({
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={() => handleButtonPress('Za inspektora')}
+                onPress={() => {
+                  handleButtonPress('Za inspektora');
+                  AsyncStorage.setItem('choose-category', 'Za inspektora');
+                }}
                 style={[
                   buttonStyles.button,
                   styles.shadowBox,
