@@ -20,11 +20,13 @@ import {
   setCustomTouchableOpacity,
 } from 'react-native-global-props';
 function App() {
+  console.log('App mounted');
   const {colors} = useTheme();
   const dispatch = useDispatch();
   useEffect(() => {
     getUser()
       .then(response => {
+        console.log('getting user');
         dispatch(setUser(response.data()));
       })
       .finally(() => {
