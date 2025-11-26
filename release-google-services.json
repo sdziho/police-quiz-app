@@ -12,12 +12,7 @@
           "package_name": "com.policequiz"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "564900068930-hq2kg5njh2q5jr9lks39l072nvb70u8o.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
           "current_key": "AIzaSyBuxzP8vcW3vwgoPO55JhHg-8Z8k-VgC8c"
@@ -25,12 +20,7 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "564900068930-hq2kg5njh2q5jr9lks39l072nvb70u8o.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

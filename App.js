@@ -1,32 +1,26 @@
-import React, {useEffect} from 'react';
+import {useEffect} from 'react';
 import {StatusBar} from 'react-native';
 import {
   DefaultTheme,
   Provider as PaperProvider,
   useTheme,
 } from 'react-native-paper';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {useDispatch} from 'react-redux';
 import RNBootSplash from 'react-native-bootsplash';
 import {getUser} from './src/Firestore';
 import MainNavigator from './src/Navigation';
 import {setUser} from './src/Welcome/userSlice';
 import {getSettings} from './src/Settings/settingsSlice';
-import {
-  setCustomView,
-  setCustomTextInput,
-  setCustomText,
-  setCustomImage,
-  setCustomTouchableOpacity,
-} from 'react-native-global-props';
+import {setCustomText} from 'react-native-global-props';
 function App() {
-  console.log('App mounted');
   const {colors} = useTheme();
   const dispatch = useDispatch();
+
   useEffect(() => {
     getUser()
       .then(response => {
-        console.log('getting user');
+        console.log('getting user', response);
         dispatch(setUser(response.data()));
       })
       .finally(() => {
@@ -36,6 +30,7 @@ function App() {
         }, 1000);
       });
   }, [dispatch]);
+
   setCustomText({
     style: {
       fontFamily: 'Roboto-Regular',

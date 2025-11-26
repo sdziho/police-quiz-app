@@ -1,0 +1,12 @@
+{
+    "logo": "./src/assets/bootshpash_logo.jpg",
+    "backgroundColor": "#FFFFFF",
+    "logoWidth": 200,
+    "android": {
+      "resizeMode": "contain"
+    },
+    "ios": {
+      "resizeMode": "contain"
+    }
+}
+  

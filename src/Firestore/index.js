@@ -1,6 +1,8 @@
 import firestore from '@react-native-firebase/firestore';
 import {getUniqueId} from 'react-native-device-info';
 import {replaceAll, undefinedToNull} from '../utils/helpers';
+import {NativeModules} from 'react-native';
+import app from '@react-native-firebase/app';
 
 export const addDocument = async ({collection, data}) => {
   const prepData = undefinedToNull(data);
@@ -43,6 +45,15 @@ export const setUser = async data => {
 export const getUser = async () => {
   const uid = getUniqueId();
   const docId = uid.includes('-') ? replaceAll(uid, '-', '') : uid;
+
+  try {
+    console.log('app', app());
+    console.log('Firestore native module:', firestore());
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+
   return firestore().collection('users').doc(docId).get();
 };
 
