@@ -7,7 +7,7 @@ buildscript {
         ndkVersion = "27.1.12297006"
         kotlinVersion = "2.0.21"
         reactNativeVersion = "0.77.3"
-        gradlePluginVersion = "8.0.2"
+        gradlePluginVersion = "8.3.2"
     }
     repositories {
         google()

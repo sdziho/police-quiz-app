@@ -4,20 +4,22 @@ import {replaceAll, undefinedToNull} from '../utils/helpers';
 import {NativeModules} from 'react-native';
 import app from '@react-native-firebase/app';
 
+const db = firestore();
+
 export const addDocument = async ({collection, data}) => {
   const prepData = undefinedToNull(data);
-  const docId = firestore().collection(collection).doc().id;
-  await firestore()
+  const docId = db.collection(collection).doc().id;
+  await db
     .collection(collection)
     .doc(docId)
     .set({...prepData, id: docId});
-  return firestore().collection(collection).doc(docId).get();
+  return db.collection(collection).doc(docId).get();
 };
 
 export const updateDocuments = async ({collection, data}) => {
   const prepData = undefinedToNull(data);
   const docId = data?.id;
-  await firestore().collection(collection).doc(docId).update(prepData);
+  await db.collection(collection).doc(docId).update(prepData);
 };
 
 export const setUser = async data => {
@@ -26,17 +28,17 @@ export const setUser = async data => {
     const uid = getUniqueId();
     const docId = uid.includes('-') ? replaceAll(uid, '-', '') : uid;
 
-    const user = await firestore().collection('users').doc(docId).get();
+    const user = await db.collection('users').doc(docId).get();
 
     if (user?.data()) {
-      await firestore().collection('users').doc(docId).update(prepData);
+      await db.collection('users').doc(docId).update(prepData);
     } else {
-      await firestore()
+      await db
         .collection('users')
         .doc(docId)
         .set({...prepData, id: docId, createdAt: new Date()});
     }
-    return firestore().collection('users').doc(docId).get();
+    return db.collection('users').doc(docId).get();
   } catch (error) {
     console.log('error', error);
   }
@@ -45,20 +47,11 @@ export const setUser = async data => {
 export const getUser = async () => {
   const uid = getUniqueId();
   const docId = uid.includes('-') ? replaceAll(uid, '-', '') : uid;
-
-  try {
-    console.log('app', app());
-    console.log('Firestore native module:', firestore());
-  } catch (err) {
-    console.log(err);
-    throw err;
-  }
-
-  return firestore().collection('users').doc(docId).get();
+  return db.collection('users').doc(docId).get();
 };
 
 export const getCollection = async ({collection, condition, orderBy}) => {
-  let query = firestore().collection(collection);
+  let query = db.collection(collection);
   if (condition) {
     condition.forEach(c => {
       if (Array.isArray(c)) {
@@ -83,7 +76,7 @@ export const getCollection = async ({collection, condition, orderBy}) => {
 };
 /* 
 export const updateUsers = async () => {
-  let query = firestore().collection('users').where('isPremium', '==', true);
+  let query = db.collection('users').where('isPremium', '==', true);
   console.log(await query.get());
   //kFbYdXw46hckF2ROib60 opce znanje potkategorija
   // ZDNcM28hUYNVLmNg6DvH   KATEGORIJA opce znanje
@@ -116,8 +109,8 @@ export const updateUsers = async () => {
 }; */
 
 export const getMixedCollection = async ({collection, condition, orderBy}) => {
-  let query = firestore().collection(collection);
-  let subquery = firestore().collection(collection);
+  let query = db.collection(collection);
+  let subquery = db.collection(collection);
 
   function shuffleArray(array) {
     const shuffledArray = [...array];
