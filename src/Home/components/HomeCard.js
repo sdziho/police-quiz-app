@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -12,9 +12,9 @@ import {
   Pressable,
   TouchableOpacity,
   ScrollView,
+  FlatList,
 } from 'react-native';
 import {Button, List, Text, useTheme} from 'react-native-paper';
-import {SwiperFlatList} from 'react-native-swiper-flatlist';
 import OverviewModal from '../../CommonComponents/OverviewModal';
 import {useDispatch, useSelector} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -419,6 +419,42 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
     title === 'Test' ||
     title == 'Državni ispiti' ||
     title == paymentSettings?.videoTitle;
+
+  const preselectAppliedRef = useRef(null);
+  useEffect(() => {
+    if (!preSelectedCategory?.ctg?.id) {
+      preselectAppliedRef.current = null;
+      return;
+    }
+    const ctgId = preSelectedCategory.ctg.id;
+    const inThisList =
+      Array.isArray(data) && data.some(item => item.id === ctgId);
+    if (!inThisList) {
+      return;
+    }
+    const markKey = `${ctgId}-${preSelectedCategory.subctg}-${title}`;
+    if (preselectAppliedRef.current === markKey) {
+      return;
+    }
+    if (
+      title === 'Kategorije' &&
+      preSelectedCategory.subctg !== 'TEST'
+    ) {
+      preselectAppliedRef.current = markKey;
+      setSelectedCategory(preSelectedCategory.ctg);
+      setModalVisible(true);
+      dispatch(setSelectedCtg(null));
+    } else if (
+      title === 'Test' &&
+      preSelectedCategory.subctg === 'TEST'
+    ) {
+      preselectAppliedRef.current = markKey;
+      setSelectedCategory(preSelectedCategory.ctg);
+      setModalVisible(true);
+      dispatch(setSelectedCtg(null));
+    }
+  }, [preSelectedCategory, title, data, dispatch]);
+
   useEffect(() => {
     let filteredSubcategories;
     filteredSubcategories = subctg?.data?.filter(category =>
@@ -598,53 +634,41 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
           )}
         </View>
         {swipableObject && (
-          <SwiperFlatList
+          <FlatList
             data={data}
-            renderItem={({item}) => {
-              if (
-                preSelectedCategory &&
-                item.id === preSelectedCategory?.ctg.id
-              ) {
-                if (
-                  title === 'Kategorije' &&
-                  preSelectedCategory?.subctg !== 'TEST'
-                ) {
-                  setSelectedCategory(preSelectedCategory.ctg);
-                  setModalVisible(true);
-                  dispatch(setSelectedCtg(null));
-                } else if (
-                  title === 'Test' &&
-                  preSelectedCategory?.subctg === 'TEST'
-                ) {
-                  setSelectedCategory(preSelectedCategory.ctg);
-                  setModalVisible(true);
-                  dispatch(setSelectedCtg(null));
-                }
-              }
-              return (
-                <TouchableOpacity
-                  style={[styles.child, styles.shadowBox]}
-                  onPress={() => {
-                    if (title === 'Test' && !isPremium) {
-                      setIsPaymentModalVisible(true);
-                      return;
-                    }
+            horizontal
+            pagingEnabled={false}
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => String(item.id)}
+            getItemLayout={(_, index) => ({
+              length: HORIZONTAL_CARD_STRIDE,
+              offset: HORIZONTAL_CARD_STRIDE * index,
+              index,
+            })}
+            contentContainerStyle={styles.horizontalListContent}
+            renderItem={({item}) => (
+              <TouchableOpacity
+                style={[styles.child, styles.shadowBox]}
+                onPress={() => {
+                  if (title === 'Test' && !isPremium) {
+                    setIsPaymentModalVisible(true);
+                    return;
+                  }
 
-                    setSelectedCategory(item);
-                    setModalVisible(true);
-                  }}>
-                  <ImageBackground
-                    source={{uri: item.imageURL ?? image.uri}}
-                    style={styles.backgroundImage}>
-                    <Text style={styles.insideSwiper}>{item.name}</Text>
-                    <LinearGradient
-                      colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.5)']}
-                      style={styles.gradientOverlay}
-                    />
-                  </ImageBackground>
-                </TouchableOpacity>
-              );
-            }}
+                  setSelectedCategory(item);
+                  setModalVisible(true);
+                }}>
+                <ImageBackground
+                  source={{uri: item.imageURL ?? image.uri}}
+                  style={styles.backgroundImage}>
+                  <Text style={styles.insideSwiper}>{item.name}</Text>
+                  <LinearGradient
+                    colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.5)']}
+                    style={styles.gradientOverlay}
+                  />
+                </ImageBackground>
+              </TouchableOpacity>
+            )}
           />
         )}
         {!swipableObject && (
@@ -675,6 +699,8 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
   );
 }
 const {width} = Dimensions.get('window');
+/** Card width (35% screen) + horizontal margin from `shadowBox` (10+10). */
+const HORIZONTAL_CARD_STRIDE = width * 0.35 + 20;
 const styles = StyleSheet.create({
   text: {
     textAlign: 'left',
@@ -708,6 +734,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 5,
     width: width * 0.5,
+  },
+  horizontalListContent: {
+    paddingEnd: Math.max(16, width * 0.65 - 20),
   },
   child: {
     width: width * 0.35,
