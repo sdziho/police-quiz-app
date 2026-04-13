@@ -1,7 +1,13 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react/no-unstable-nested-components */
 import {useFocusEffect} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {
   View,
   StyleSheet,
@@ -15,12 +21,16 @@ import {
 import {useTheme, ActivityIndicator, Text, Button} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import Modal from '../CommonComponents/Modal';
+import OverviewModal from '../CommonComponents/OverviewModal';
 import {resetAds} from '../Questions/adsSlice';
 import {resetQuestions} from '../Questions/questionsSlice';
 import {STATUS_TYPES} from '../utils/constants';
 import {randomIntFromInterval, replaceAll} from '../utils/helpers';
 import {setFirestoreUser} from '../Welcome/userSlice';
-import {getCategories} from './categoriesSlice';
+import {
+  getCategories,
+  setSelectedCategory as setSelectedCtg,
+} from './categoriesSlice';
 import {getSubcategories} from './subcategoriesSlice';
 import PaymentModal from './components/PaymentModal';
 import UpdateModal from './components/UpdateModal';
@@ -29,14 +39,42 @@ import {getSettings} from '../Settings/settingsSlice';
 import {getNotifications} from '../Notifications/notificationsSlice';
 import {default as versionInfo} from '../../version.json';
 
-import HomeCard from './components/HomeCard';
+import HomeCard, {QuizResumeModalContent} from './components/HomeCard';
 import {ScrollView} from 'react-native-gesture-handler';
 import {getKonkursi} from './konkursiSlice';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import LinearGradient from 'react-native-linear-gradient';
-
 const {height} = Dimensions.get('window');
 const HEADER_HEIGHT = height * 0.4;
+
+/**
+ * Which Home section owns the category modal UI (matches HomeCard `title`).
+ * Državni + TEST must resolve to Državni (not Test row) so one modal opens.
+ */
+function resolveQuizModalTarget(payload, filteredData, drzavni) {
+  if (!payload?.ctg?.id) {
+    return null;
+  }
+  const ctgId = payload.ctg.id;
+  const isTestFlow = payload.subctg === 'TEST';
+  const kategorijeOnly = filteredData.filter(element => !element?.isDrzavni);
+  const inKategorije = kategorijeOnly.some(c => c.id === ctgId);
+  const inDrzavni = drzavni.some(c => c.id === ctgId);
+
+  if (isTestFlow && inDrzavni) {
+    return 'Državni ispiti';
+  }
+  if (isTestFlow) {
+    return 'Test';
+  }
+  if (!isTestFlow && inDrzavni) {
+    return 'Državni ispiti';
+  }
+  if (!isTestFlow && inKategorije) {
+    return 'Kategorije';
+  }
+  return null;
+}
 
 function Home({navigation, route}) {
   const {colors} = useTheme();
@@ -61,6 +99,97 @@ function Home({navigation, route}) {
 
   const [isNotificationModal, setIsNotificationModal] = useState(false);
   const [items, setItems] = useState([]);
+  const quizReturnPayload = useSelector(
+    state => state.categories.selectedCategory,
+  );
+  const [resumeCategoryModal, setResumeCategoryModal] = useState(null);
+
+  const filteredData = useMemo(() => {
+    const fd = data ? [...data] : [];
+    fd?.sort((a, b) => {
+      if ('order' in a && 'order' in b) {
+        return a?.order - b?.order;
+      } else if (a?.order) {
+        return -1;
+      } else if (b?.order) {
+        return 1;
+      }
+      return 0;
+    });
+    return fd;
+  }, [data]);
+
+  const drzavni = useMemo(
+    () => filteredData.filter(element => element?.isDrzavni),
+    [filteredData],
+  );
+
+  const fizickSprema = useMemo(
+    () =>
+      filteredData?.filter(
+        element => element?.fizicka_sprema && element?.fizicka_sprema.length > 0,
+      ),
+    [filteredData],
+  );
+
+  const filteredTreniranje = useMemo(() => {
+    const arr = treniranje ? [...treniranje] : [];
+    arr?.sort((a, b) => {
+      if ('order' in a && 'order' in b) {
+        return a?.order - b?.order;
+      } else if (a?.order) {
+        return -1;
+      } else if (b?.order) {
+        return 1;
+      }
+      return 0;
+    });
+    return arr;
+  }, [treniranje]);
+
+  const filteredIshrana = useMemo(() => {
+    const arr = ishrana ? [...ishrana] : [];
+    arr?.sort((a, b) => {
+      if ('order' in a && 'order' in b) {
+        return a?.order - b?.order;
+      } else if (a?.order) {
+        return -1;
+      } else if (b?.order) {
+        return 1;
+      }
+      return 0;
+    });
+    return arr;
+  }, [ishrana]);
+
+  const closeResumeCategoryModal = useCallback(() => {
+    setResumeCategoryModal(null);
+    dispatch(setSelectedCtg(null));
+  }, [dispatch]);
+
+  useLayoutEffect(() => {
+    if (!quizReturnPayload?.ctg?.id) {
+      return;
+    }
+    if (!data) {
+      return;
+    }
+    const sectionTitle = resolveQuizModalTarget(
+      quizReturnPayload,
+      filteredData,
+      drzavni,
+    );
+    dispatch(setSelectedCtg(null));
+    if (sectionTitle) {
+      setResumeCategoryModal({
+        ctg: quizReturnPayload.ctg,
+        subctg: quizReturnPayload.subctg,
+        sectionTitle,
+      });
+    } else {
+      setResumeCategoryModal(null);
+    }
+  }, [quizReturnPayload, data, filteredData, drzavni, dispatch]);
 
   useEffect(() => {
     const nowInSeconds = Math.floor(Date.now() / 1000);
@@ -138,6 +267,9 @@ function Home({navigation, route}) {
   useEffect(() => {
     (async () => {
       setIsPaymentModalVisible(false);
+      if (resumeCategoryModal) {
+        return;
+      }
       if (!isPremium) {
         if (Platform.OS === 'android' && paymentSettings?.isEnabledAndroid) {
           setIsPaymentModalVisible(true);
@@ -154,6 +286,7 @@ function Home({navigation, route}) {
     paymentSettings?.isEnabled,
     paymentSettings?.isEnabledAndroid,
     paymentSettings?.isEnabledApple,
+    resumeCategoryModal,
   ]);
 
   /* useLayoutEffect(() => {
@@ -171,9 +304,13 @@ function Home({navigation, route}) {
   useFocusEffect(onFocus);
 
   useEffect(() => {
-    if (!isPremium) {
-      //pogkedat kad se runa na androidu
+    if (resumeCategoryModal) {
+      setIsPaymentModalVisible(false);
+    }
+  }, [resumeCategoryModal]);
 
+  useEffect(() => {
+    if (!isPremium) {
       const timer = setInterval(() => {
         setIsPaymentModalVisible(true);
       }, 1000 * 60 * 2);
@@ -181,43 +318,6 @@ function Home({navigation, route}) {
     }
   }, [isPremium, isPaymentModalVisible]);
 
-  let filteredData = data ? [...data] : [];
-  let filteredTreniranje = treniranje ? [...treniranje] : [];
-  let filteredIshrana = ishrana ? [...ishrana] : [];
-  filteredIshrana?.sort((a, b) => {
-    if ('order' in a && 'order' in b) {
-      return a?.order - b?.order;
-    } else if (a?.order) {
-      return -1;
-    } else if (b?.order) {
-      return 1;
-    }
-    return 0;
-  });
-  filteredTreniranje?.sort((a, b) => {
-    if ('order' in a && 'order' in b) {
-      return a?.order - b?.order;
-    } else if (a?.order) {
-      return -1;
-    } else if (b?.order) {
-      return 1;
-    }
-    return 0;
-  });
-  filteredData?.sort((a, b) => {
-    if ('order' in a && 'order' in b) {
-      return a?.order - b?.order;
-    } else if (a?.order) {
-      return -1;
-    } else if (b?.order) {
-      return 1;
-    }
-    return 0;
-  });
-  const drzavni = filteredData.filter(element => element?.isDrzavni);
-  const fizickSprema = filteredData?.filter(
-    element => element?.fizicka_sprema && element?.fizicka_sprema.length > 0,
-  );
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: colors.background}}>
       <View style={styles.mainContainer(colors.surface)}>
@@ -367,6 +467,21 @@ function Home({navigation, route}) {
             </Button>
           </View>
         </Modal>
+        <OverviewModal
+          title={resumeCategoryModal?.sectionTitle ?? ''}
+          subtitle={resumeCategoryModal?.ctg?.name ?? ''}
+          headerImage={resumeCategoryModal?.ctg?.imageURL}
+          imageVisible={true}
+          isVisible={!!resumeCategoryModal}
+          hideModal={closeResumeCategoryModal}>
+          {resumeCategoryModal ? (
+            <QuizResumeModalContent
+              ctg={resumeCategoryModal.ctg}
+              sectionTitle={resumeCategoryModal.sectionTitle}
+              hideModal={closeResumeCategoryModal}
+            />
+          ) : null}
+        </OverviewModal>
       </View>
     </SafeAreaView>
   );

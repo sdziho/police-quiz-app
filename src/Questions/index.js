@@ -25,6 +25,7 @@ import {
 } from 'react-native';
 import {Button, Text, useTheme} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
+import {CommonActions} from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {STATUS_TYPES} from '../utils/constants';
 import QuestionItem from './components/QuestionItem';
@@ -185,7 +186,12 @@ function Questions({navigation, route}) {
     if (questionsData && questionsData.length) {
       setIsResultsVisible(true);
     } else {
-      navigation.replace('MainTab');
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'MainTab'}],
+        }),
+      );
     }
   }, [questionsData, navigation]);
 

@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -27,7 +27,7 @@ import logo from '../../assets/pqLogo.jpg';
 import {setSelectedCategory as setSelectedCtg} from '../../Home/categoriesSlice';
 import Hyperlink from 'react-native-hyperlink';
 
-function CategoriesList({
+export function CategoriesList({
   filteredSubcategories,
   hasButtons,
   isTestSelected = false,
@@ -396,10 +396,40 @@ function CategoriesList({
   );
 }
 
-function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
-  const preSelectedCategory = useSelector(
-    state => state.categories.selectedCategory,
+/** Renders subcategory / test picker for the single post-quiz modal on Home. */
+export function QuizResumeModalContent({ctg, sectionTitle, hideModal}) {
+  const subctgState = useSelector(state => state.subcategories) ?? [];
+  const filteredSubcategories = subctgState?.data?.filter(category =>
+    ctg?.subcategories?.includes(category.id),
   );
+  const isTestSection = sectionTitle === 'Test';
+  if (isTestSection) {
+    return (
+      <CategoriesList
+        isTestSelected
+        filteredSubcategories={filteredSubcategories}
+        selectedCategory={ctg}
+        hasButtons={ctg?.hasSubcategory}
+        hideModal={hideModal}
+      />
+    );
+  }
+  return (
+    <CategoriesList
+      filteredSubcategories={filteredSubcategories}
+      selectedCategory={ctg}
+      hasButtons={ctg?.hasSubcategory}
+      hideModal={hideModal}
+    />
+  );
+}
+
+function HomeCard({
+  data,
+  title,
+  pic,
+  setIsPaymentModalVisible,
+}) {
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -419,41 +449,6 @@ function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
     title === 'Test' ||
     title == 'Državni ispiti' ||
     title == paymentSettings?.videoTitle;
-
-  const preselectAppliedRef = useRef(null);
-  useEffect(() => {
-    if (!preSelectedCategory?.ctg?.id) {
-      preselectAppliedRef.current = null;
-      return;
-    }
-    const ctgId = preSelectedCategory.ctg.id;
-    const inThisList =
-      Array.isArray(data) && data.some(item => item.id === ctgId);
-    if (!inThisList) {
-      return;
-    }
-    const markKey = `${ctgId}-${preSelectedCategory.subctg}-${title}`;
-    if (preselectAppliedRef.current === markKey) {
-      return;
-    }
-    if (
-      title === 'Kategorije' &&
-      preSelectedCategory.subctg !== 'TEST'
-    ) {
-      preselectAppliedRef.current = markKey;
-      setSelectedCategory(preSelectedCategory.ctg);
-      setModalVisible(true);
-      dispatch(setSelectedCtg(null));
-    } else if (
-      title === 'Test' &&
-      preSelectedCategory.subctg === 'TEST'
-    ) {
-      preselectAppliedRef.current = markKey;
-      setSelectedCategory(preSelectedCategory.ctg);
-      setModalVisible(true);
-      dispatch(setSelectedCtg(null));
-    }
-  }, [preSelectedCategory, title, data, dispatch]);
 
   useEffect(() => {
     let filteredSubcategories;

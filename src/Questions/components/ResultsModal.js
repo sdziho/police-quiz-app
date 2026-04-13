@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {StyleSheet, Modal, TouchableOpacity} from 'react-native';
 import {useTheme, Text, Button} from 'react-native-paper';
@@ -13,12 +13,13 @@ function ResultsModal({isVisible, progress, onHide, params}) {
 
   const onButtonPress = () => {
     onHide();
-    setTimeout(() => {
-      dispatch(setSelectedCategory(params));
-    }, 200);
-    setTimeout(() => {
-      navigation.replace('MainTab');
-    }, 100);
+    dispatch(setSelectedCategory(params));
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: 'MainTab'}],
+      }),
+    );
   };
   //console.log(progress);
   return (
