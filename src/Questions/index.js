@@ -4,7 +4,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, {
   useCallback,
-  useRef,
+  useMemo,
   useState,
   useEffect,
   useLayoutEffect,
@@ -16,46 +16,44 @@ import {
   BackHandler,
   TouchableOpacity,
   Dimensions,
-  FlatList,
   ScrollView,
   ImageBackground,
   Modal,
   Pressable,
   Linking,
 } from 'react-native';
-import {Button, Text, useTheme} from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
-import {CommonActions} from '@react-navigation/native';
+import { Button, Text, useTheme } from 'react-native-paper';
+import { useDispatch, useSelector } from 'react-redux';
+import { CommonActions } from '@react-navigation/native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import {STATUS_TYPES} from '../utils/constants';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { STATUS_TYPES } from '../utils/constants';
 import QuestionItem from './components/QuestionItem';
 import ResultsModal from './components/ResultsModal';
 import NoData from '../CommonComponents/NoData';
-import {shuffle} from '../utils/helpers';
+import { shuffle } from '../utils/helpers';
 import AdItem from './components/AdItem';
 import AdSlider from './components/AdSlider';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import {setFirestoreUser} from '../Welcome/userSlice';
+import { setFirestoreUser } from '../Welcome/userSlice';
 
-const {height, width} = Dimensions.get('screen');
+const { height } = Dimensions.get('screen');
 
-function Questions({navigation, route}) {
-  const {colors} = useTheme();
-  const {data: questionsData, status: questionsStatus} = useSelector(
+function Questions({ navigation, route }) {
+  const { colors } = useTheme();
+  const { data: questionsData, status: questionsStatus } = useSelector(
     state => state.questions,
   );
-  const {data: adsData, status: adsStatus} = useSelector(state => state.ads);
+  const { data: adsData, status: adsStatus } = useSelector(state => state.ads);
   const randomizedAds = shuffle(
     adsData?.filter(item => item?.isQuestionAd) ?? [],
-  ).map(item => ({...item, isAd: true}));
+  ).map(item => ({ ...item, isAd: true }));
   const user = useSelector(state => state.user.data);
-  const {isPremium} = user ?? {};
+  const { isPremium } = user ?? {};
   const dispatch = useDispatch();
   const [sliderData, setSliderData] = useState([]);
   const [openAddModal, setOpenAdModal] = useState(null);
   const [permanentAdsData, setPermanentAdsData] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [questionIndex, setQuestionIndex] = useState(0);
   const [isResultsVisible, setIsResultsVisible] = useState(false);
 
   const getPermanentAdsData = useCallback(() => {
@@ -66,26 +64,7 @@ function Questions({navigation, route}) {
 
   const getSliderData = useCallback(() => {
     if (!questionsData || !adsData) return [];
-
-    const randomizedQuestions = shuffle(questionsData);
-
-    let questionCounter = 0;
-    let adCounter = 0;
-    const finalData = [];
-    let i = 0;
-    while (questionCounter < randomizedQuestions.length) {
-      /* if (i && i % 11 === 0) {
-        finalData.push(randomizedAds[adCounter++]);
-        if (adCounter === randomizedAds.length) {
-          adCounter = 0;
-        }
-      } else  */
-      if (questionCounter < randomizedQuestions.length) {
-        finalData.push(randomizedQuestions[questionCounter++]);
-      }
-      i++;
-    }
-    return finalData;
+    return shuffle(questionsData);
   }, [adsData, questionsData]);
 
   const getResult = useCallback(() => {
@@ -99,17 +78,15 @@ function Questions({navigation, route}) {
   }, [sliderData]);
 
   const answerQuestion = useCallback(
-    ({answerIndex, questionId}) => {
-      const newData = sliderData.map(item =>
-        item?.id === questionId
-          ? {
-              ...item,
-              answerIndex,
-              isAnswered: true,
-              isCorrect: item.answers[answerIndex].correctAnswer,
-            }
-          : item,
-      );
+    ({ answerIndex, questionId }) => {
+      const newData = sliderData.map(item => (item?.id === questionId
+        ? {
+          ...item,
+          answerIndex,
+          isAnswered: true,
+          isCorrect: item.answers[answerIndex].correctAnswer,
+        }
+        : item));
       setSliderData(newData);
     },
     [sliderData],
@@ -126,37 +103,38 @@ function Questions({navigation, route}) {
   //   setActiveIndex(roundIndex);
   // }, [questionIndex, sliderData]);
 
-  const flatListRef = useRef(null);
+  const safeActiveIndex = sliderData.length > 0
+    ? Math.min(activeIndex, sliderData.length - 1)
+    : 0;
+  const currentSlide = sliderData[safeActiveIndex];
 
-  const scrollToIndex = index => {
-    flatListRef.current.scrollToIndex({
-      animated: true,
-      index,
-    });
-    setActiveIndex(index);
-  };
+  const currentQuestionNumber = useMemo(() => {
+    let n = 0;
+    for (let i = 0; i <= safeActiveIndex && i < sliderData.length; i++) {
+      if (sliderData[i] && !sliderData[i].isAd) {
+        n++;
+      }
+    }
+    return n;
+  }, [sliderData, safeActiveIndex]);
 
   const onNextPress = useCallback(() => {
-    if ((activeIndex + 1) % 10 === 0) {
+    if (activeIndex >= sliderData.length - 1) {
+      return;
+    }
+    if ((activeIndex + 1) % 10 === 0 && randomizedAds.length > 0) {
       const randomNumber = Math.floor(Math.random() * randomizedAds.length);
       setOpenAdModal(randomizedAds[randomNumber]);
     }
-    if (activeIndex < sliderData.length) {
-      scrollToIndex(activeIndex + 1);
-      if (!sliderData[activeIndex + 1]?.isAd) {
-        setQuestionIndex(prevValue => prevValue + 1);
-      }
-    }
-  }, [activeIndex, questionIndex, sliderData]);
+    setActiveIndex(activeIndex + 1);
+  }, [activeIndex, randomizedAds, sliderData.length]);
 
   const onPreviousPress = useCallback(() => {
-    if (activeIndex >= 1) {
-      scrollToIndex(activeIndex - 1);
-      if (!sliderData[activeIndex - 1]?.isAd) {
-        setQuestionIndex(prevValue => prevValue - 1);
-      }
+    if (activeIndex < 1) {
+      return;
     }
-  }, [activeIndex, questionIndex, sliderData]);
+    setActiveIndex(activeIndex - 1);
+  }, [activeIndex]);
 
   const onFinishPress = () => {
     if (route.params.testName.includes('TEST') && isPremium) {
@@ -189,45 +167,14 @@ function Questions({navigation, route}) {
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
-          routes: [{name: 'MainTab'}],
+          routes: [{ name: 'MainTab' }],
         }),
       );
     }
   }, [questionsData, navigation]);
 
-  const isLoading =
-    questionsStatus === STATUS_TYPES.PENDING ||
-    adsStatus === STATUS_TYPES.PENDING;
-
-  const keyExtractor = useCallback(item => {
-    return item?.id;
-  }, []);
-  const renderItem = useCallback(
-    ({item}) => {
-      return item?.isAd ? (
-        <AdItem item={item} />
-      ) : (
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <QuestionItem
-            item={item}
-            answerQuestion={answerQuestion}
-            number={questionIndex + 1}
-            questionsSize={questionsData.length}
-          />
-        </ScrollView>
-      );
-    },
-    [answerQuestion, questionIndex],
-  );
-
-  const getItemLayout = useCallback(
-    (_, index) => ({
-      length: width,
-      offset: width * index,
-      index,
-    }),
-    [],
-  );
+  const isLoading = questionsStatus === STATUS_TYPES.PENDING
+    || adsStatus === STATUS_TYPES.PENDING;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -235,12 +182,13 @@ function Questions({navigation, route}) {
         <TouchableOpacity
           {...props}
           style={styles.backButton}
-          onPress={onBackPress}>
+          onPress={onBackPress}
+        >
           <MaterialIcons name="arrow-back" size={25} color="black" />
         </TouchableOpacity>
       ),
     });
-  }, [questionsData, navigation, onBackPress, questionIndex]);
+  }, [questionsData, navigation, onBackPress, activeIndex]);
 
   useEffect(() => {
     const backAction = () => {
@@ -264,41 +212,59 @@ function Questions({navigation, route}) {
     setPermanentAdsData(getPermanentAdsData());
   }, [getPermanentAdsData, getSliderData]);
 
+  useEffect(() => {
+    if (!sliderData.length) {
+      return;
+    }
+    const max = sliderData.length - 1;
+    if (activeIndex > max) {
+      setActiveIndex(max);
+    }
+  }, [sliderData, activeIndex]);
+
   return (
     <View style={styles.mainContainer(colors.surface)}>
       {isLoading ? (
         <ActivityIndicator
           size="large"
-          style={{flex: 1}}
+          style={{ flex: 1 }}
           color={colors.primary}
         />
       ) : (
         <>
-          <FlatList
-            ref={flatListRef}
-            data={sliderData}
-            keyExtractor={keyExtractor}
-            renderItem={renderItem}
-            contentContainerStyle={styles.contentContainer}
-            horizontal
-            pagingEnabled
-            scrollEnabled={false}
-            initialScrollIndex={0}
-            getItemLayout={getItemLayout}
-            showsHorizontalScrollIndicator={false}
-            // onMomentumScrollEnd={onScroll}
-            ListEmptyComponent={() => <NoData />}
-            initialNumToRender={5}
-            windowSize={10}
-            maxToRenderPerBatch={10}
-            scrollEventThrottle={100}
-          />
+          <View style={styles.slideArea}>
+            {(() => {
+              if (sliderData.length === 0) {
+                return <NoData />;
+              }
+              if (currentSlide?.isAd) {
+                return <AdItem item={currentSlide} />;
+              }
+              return (
+                <ScrollView
+                  keyboardShouldPersistTaps="handled"
+                  nestedScrollEnabled
+                  showsVerticalScrollIndicator={false}
+                  style={styles.questionScroll}
+                  contentContainerStyle={styles.questionScrollContent}
+                >
+                  <QuestionItem
+                    item={currentSlide}
+                    answerQuestion={answerQuestion}
+                    number={currentQuestionNumber}
+                    questionsSize={questionsData.length}
+                  />
+                </ScrollView>
+              );
+            })()}
+          </View>
           <View style={styles.footer}>
             <View style={styles.navigationContainer}>
               {activeIndex > 0 ? (
                 <TouchableOpacity
                   onPress={onPreviousPress}
-                  style={[styles.classicButton(colors.primary)]}>
+                  style={[styles.classicButton(colors.primary)]}
+                >
                   <Ionicons
                     name="chevron-back-sharp"
                     size={20}
@@ -312,7 +278,8 @@ function Questions({navigation, route}) {
               {activeIndex < sliderData.length - 1 ? (
                 <TouchableOpacity
                   onPress={onNextPress}
-                  style={[styles.classicButton(colors.primary)]}>
+                  style={[styles.classicButton(colors.primary)]}
+                >
                   <Button>Dalje</Button>
                   <Ionicons
                     name="chevron-forward-sharp"
@@ -324,8 +291,9 @@ function Questions({navigation, route}) {
               {activeIndex === sliderData.length - 1 ? (
                 <Button
                   onPress={onFinishPress}
-                  style={styles.finishButton(colors.primary)}>
-                  <Text style={{color: 'white'}}>Završi</Text>
+                  style={styles.finishButton(colors.primary)}
+                >
+                  <Text style={{ color: 'white' }}>Završi</Text>
                 </Button>
               ) : null}
             </View>
@@ -344,23 +312,26 @@ function Questions({navigation, route}) {
       />
       <Modal
         animationType="slide"
-        transparent={true}
+        transparent
         visible={openAddModal !== null}
         onRequestClose={() => {
           setOpenAdModal(null);
-        }}>
+        }}
+      >
         <View style={styles.buttonClose}>
           <Pressable
             onPress={() => {
               setOpenAdModal(null);
-            }}>
-            <Ionicons name="close" size={25} color={'white'} />
+            }}
+          >
+            <Ionicons name="close" size={25} color="white" />
           </Pressable>
         </View>
         <View style={styles.imageWrapper}>
           <ImageBackground
-            source={{uri: openAddModal?.imageQuestion.src}}
-            style={styles.backgroundImage}></ImageBackground>
+            source={{ uri: openAddModal?.imageQuestion.src }}
+            style={styles.backgroundImage}
+          />
           <View style={styles.adNameWrapper}>
             <Text style={styles.adName}>{openAddModal?.name}</Text>
           </View>
@@ -369,7 +340,8 @@ function Questions({navigation, route}) {
               style={styles.viewButton}
               onPress={() => {
                 Linking.openURL(openAddModal?.reddirectUrl ?? '');
-              }}>
+              }}
+            >
               VIDI VIŠE
             </Button>
           </View>
@@ -384,8 +356,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor,
   }),
-  contentContainer: {
-    // width,
+  slideArea: {
+    flex: 1,
+    overflow: 'hidden',
+  },
+  questionScroll: {
+    flex: 1,
+  },
+  questionScrollContent: {
+    flexGrow: 1,
   },
   footer: {
     height: height * 0.25,
@@ -404,7 +383,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontWeight: 'bold',
-    textShadowOffset: {width: 2, height: 2},
+    textShadowOffset: { width: 2, height: 2 },
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowRadius: 5,
   },

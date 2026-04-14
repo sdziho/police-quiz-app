@@ -1,68 +1,73 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-shadow */
-import React, {useCallback} from 'react';
-import {StyleSheet, Dimensions, TouchableOpacity, View} from 'react-native';
-import {useTheme, Text} from 'react-native-paper';
-import {AnimatedCircularProgress} from 'react-native-circular-progress';
+import React from 'react';
+import {
+  StyleSheet, Dimensions, TouchableOpacity, View,
+} from 'react-native';
+import { useTheme, Text } from 'react-native-paper';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
-const {width, height} = Dimensions.get('window');
-function QuestionItem({item, answerQuestion, number, questionsSize}) {
-  const {question, answers, isAnswered, id, answerIndex, isCorrect} =
-    item ?? {};
-  const {colors} = useTheme();
-  const AnswerButton = useCallback(
-    ({item, index}) => {
-      const borderColor = (() => {
-        if (isAnswered) {
-          return answerIndex === index
-            ? isCorrect
-              ? colors.accent
-              : colors.error
-            : answers[index].correctAnswer
-            ? colors.accent
-            : colors.backdrop;
-        }
-        return colors.backdrop;
-      })();
+const { width, height } = Dimensions.get('window');
 
-      const backgroundColor = (() => {
-        if (isAnswered) {
-          return answerIndex === index
-            ? isCorrect
-              ? colors.darkerShade
-              : colors.error
-            : answers[index].correctAnswer
-            ? colors.accent
-            : 'white';
-        }
-        return 'white';
-      })();
+function AnswerOption({
+  answer,
+  index,
+  isAnswered,
+  answerIndex,
+  isCorrect,
+  answers,
+  colors,
+  questionId,
+  answerQuestion,
+}) {
+  const borderColor = (() => {
+    if (isAnswered) {
+      return answerIndex === index
+        ? isCorrect
+          ? colors.accent
+          : colors.error
+        : answers[index].correctAnswer
+          ? colors.accent
+          : colors.backdrop;
+    }
+    return colors.backdrop;
+  })();
 
-      const onPress = () => {
-        answerQuestion({answerIndex: index, questionId: id});
-      };
+  const backgroundColor = (() => {
+    if (isAnswered) {
+      return answerIndex === index
+        ? isCorrect
+          ? colors.darkerShade
+          : colors.error
+        : answers[index].correctAnswer
+          ? colors.accent
+          : 'white';
+    }
+    return 'white';
+  })();
 
-      return (
-        <TouchableOpacity
-          disabled={isAnswered}
-          onPress={onPress}
-          style={{...styles.answerButton(borderColor), backgroundColor}}>
-          <Text style={styles.answerText}>{item?.answer}</Text>
-        </TouchableOpacity>
-      );
-    },
-    [
-      answerIndex,
-      answerQuestion,
-      answers,
-      colors.accent,
-      colors.backdrop,
-      colors.error,
-      id,
-      isAnswered,
-      isCorrect,
-    ],
+  const onPress = () => {
+    answerQuestion({ answerIndex: index, questionId });
+  };
+
+  return (
+    <TouchableOpacity
+      disabled={isAnswered}
+      onPress={onPress}
+      style={{ ...styles.answerButton(borderColor), backgroundColor }}
+    >
+      <Text style={styles.answerText}>{answer?.answer}</Text>
+    </TouchableOpacity>
   );
+}
+
+function QuestionItem({
+  item, answerQuestion, number, questionsSize,
+}) {
+  const {
+    question, answers, isAnswered, id, answerIndex, isCorrect,
+  } = item ?? {};
+  const { colors } = useTheme();
 
   return (
     <View
@@ -72,24 +77,38 @@ function QuestionItem({item, answerQuestion, number, questionsSize}) {
     >
       <View style={styles.textWrapper}>
         <Text style={styles.questionText}>{question}</Text>
-        <AnimatedCircularProgress
-          style={styles.circle}
-          rotation={0}
-          size={50}
-          width={5}
-          fill={(number / questionsSize) * 100}
-          tintColor={colors.primary}
-          backgroundColor="lightgray">
-          {fill => (
-            <Text>
-              {number}/{questionsSize}
-            </Text>
-          )}
-        </AnimatedCircularProgress>
+        <View pointerEvents="none">
+          <AnimatedCircularProgress
+            style={styles.circle}
+            rotation={0}
+            size={50}
+            width={5}
+            fill={(number / questionsSize) * 100}
+            tintColor={colors.primary}
+            backgroundColor="lightgray"
+          >
+            {() => (
+              <Text>
+                {number}/{questionsSize}
+              </Text>
+            )}
+          </AnimatedCircularProgress>
+        </View>
       </View>
-      {answers &&
-        answers.map((item, index) => (
-          <AnswerButton item={item} index={index} />
+      {answers
+        && answers.map((answer, index) => (
+          <AnswerOption
+            key={answer?.id ?? `${id}-answer-${index}`}
+            answer={answer}
+            index={index}
+            isAnswered={isAnswered}
+            answerIndex={answerIndex}
+            isCorrect={isCorrect}
+            answers={answers}
+            colors={colors}
+            questionId={id}
+            answerQuestion={answerQuestion}
+          />
         ))}
     </View>
   );
@@ -151,7 +170,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     position: 'absolute',
     left: 20,
-    bottom: -20,
+    transform: [{ translateY: 15 }],
   },
 });
 
