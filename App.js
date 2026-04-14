@@ -1,5 +1,6 @@
 import {useEffect} from 'react';
 import {StatusBar} from 'react-native';
+import {initAppOpenTracking} from './src/analytics';
 import {
   DefaultTheme,
   Provider as PaperProvider,
@@ -16,6 +17,10 @@ import {setCustomText} from 'react-native-global-props';
 function App() {
   const {colors} = useTheme();
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    return initAppOpenTracking();
+  }, []);
 
   useEffect(() => {
     getUser()

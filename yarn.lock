@@ -1885,6 +1885,11 @@
     prompts "^2.4.2"
     semver "^7.5.2"
 
+"@react-native-firebase/analytics@^19.3.0":
+  version "19.3.0"
+  resolved "https://registry.npmjs.org/@react-native-firebase/analytics/-/analytics-19.3.0.tgz"
+  integrity sha512-I+LSDvA2crn8UY78StCqatrUkBD/ZBVaQaunZYnEd4Nsm1R7HycSaW1iUzAB+3sbwLchFr4RcPc++P20m+zzHA==
+
 "@react-native-firebase/app@^19.3.0", "@react-native-firebase/app@19.3.0":
   version "19.3.0"
   resolved "https://registry.npmjs.org/@react-native-firebase/app/-/app-19.3.0.tgz"
