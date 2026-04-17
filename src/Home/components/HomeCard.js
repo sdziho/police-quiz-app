@@ -55,7 +55,6 @@ export function CategoriesList({
   }, [hasButtons]);
   const [selectedTestNumber, setSelectedTestNumber] = useState(30);
   const onPress = (item, superItem = null) => {
-    console.log('selektovani', selectedButton);
     const params = {
       categoryId: selectedCategory.id,
       subcategoryId: isTestSelected ? 'TEST' : item,
@@ -323,22 +322,41 @@ export function CategoriesList({
                 </View>
               )}
               {!isTestSelected &&
-                filteredSubcategories?.map(subcategory => (
-                  <TouchableOpacity
-                    style={[styles.categories, styles.shadowBox]}
-                    onPress={() => onPress(subcategory.id)}>
-                    <View key={subcategory.id} style={styles.flexRow}>
-                      <Text style={{width: 0.6 * width}}>
-                        {subcategory.name}
-                      </Text>
-                      <Ionicons
-                        name="chevron-forward-sharp"
-                        size={20}
-                        color={colors.darkerShade}
-                      />
-                    </View>
-                  </TouchableOpacity>
-                ))}
+                filteredSubcategories?.map(subcategory => {
+                  const areBothCategoriesSelected =
+                    subcategory?.isForInspector === true &&
+                    subcategory?.isForPoliceman === true;
+
+                  if (
+                    selectedButton === 'Za policajca' &&
+                    subcategory?.isForInspector === true &&
+                    !areBothCategoriesSelected
+                  )
+                    return;
+                  if (
+                    selectedButton === 'Za inspektora' &&
+                    subcategory?.isForPoliceman === true &&
+                    !areBothCategoriesSelected
+                  )
+                    return;
+
+                  return (
+                    <TouchableOpacity
+                      style={[styles.categories, styles.shadowBox]}
+                      onPress={() => onPress(subcategory.id)}>
+                      <View key={subcategory.id} style={styles.flexRow}>
+                        <Text style={{width: 0.6 * width}}>
+                          {subcategory.name}
+                        </Text>
+                        <Ionicons
+                          name="chevron-forward-sharp"
+                          size={20}
+                          color={colors.darkerShade}
+                        />
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
               {isTestSelected && (
                 <TouchableOpacity
                   style={[
@@ -424,12 +442,7 @@ export function QuizResumeModalContent({ctg, sectionTitle, hideModal}) {
   );
 }
 
-function HomeCard({
-  data,
-  title,
-  pic,
-  setIsPaymentModalVisible,
-}) {
+function HomeCard({data, title, pic, setIsPaymentModalVisible}) {
   const {paymentSettings} = useSelector(state => state.settings.data) ?? {};
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -483,7 +496,6 @@ function HomeCard({
               <Hyperlink
                 onPress={(url, text) => {
                   Linking.openURL(url);
-                  console.log('url', url);
                 }}
                 linkStyle={{color: '#2980b9'}}>
                 <Text>{selectedCategory?.law ?? ''}</Text>

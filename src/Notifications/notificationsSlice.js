@@ -40,7 +40,6 @@ export const getNotifications = createAsyncThunk(
           startingAt: {seconds: nowInSeconds - 100},
           endingAt: {seconds: nowInSeconds + resultTime + 100},
         };
-        console.log('ovdje cemo dispecovat nove notifikacije', response);
         dispatch(setNotifications([...response, premiumNotificaiton]));
       } else dispatch(setNotifications(response));
     });

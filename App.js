@@ -25,7 +25,6 @@ function App() {
   useEffect(() => {
     getUser()
       .then(response => {
-        console.log('getting user', response);
         dispatch(setUser(response.data()));
       })
       .finally(() => {

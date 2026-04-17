@@ -43,7 +43,6 @@ export default function Notifications() {
                 style={[styles.shadowBox, styles.action]}
                 onPress={() => {
                   if (notification.id === 'premium') {
-                    console.log('jes premium');
                     setSelectedNotification(notification);
                     return;
                   }
