@@ -46,11 +46,13 @@ export function CategoriesList({
   const [selectSuperType, setSelectedSuperType] = useState(null);
 
   useEffect(() => {
-    filteredSubcategories.sort((a, b) => {
-      if (a?.order == null) return 1;
-      if (b?.order == null) return -1;
-      return a.order - b.order;
-    });
+    if (filteredSubcategories) {
+      filteredSubcategories?.sort((a, b) => {
+        if (a?.order == null) return 1;
+        if (b?.order == null) return -1;
+        return a.order - b.order;
+      });
+    }
   }, [filteredSubcategories]);
 
   useEffect(() => {
