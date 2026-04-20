@@ -50,6 +50,26 @@ export const getUser = async () => {
   return db.collection('users').doc(docId).get();
 };
 
+/** Persists FCM device token for Cloud Messaging / Admin SDK targeting. */
+export const updateUserFcmToken = async token => {
+  try {
+    const uid = getUniqueId();
+    const docId = uid.includes('-') ? replaceAll(uid, '-', '') : uid;
+    await db
+      .collection('users')
+      .doc(docId)
+      .set(
+        {
+          fcmToken: token,
+          fcmTokenUpdatedAt: firestore.FieldValue.serverTimestamp(),
+        },
+        {merge: true},
+      );
+  } catch (error) {
+    console.log('updateUserFcmToken', error);
+  }
+};
+
 export const getCollection = async ({collection, condition, orderBy}) => {
   let query = db.collection(collection);
   if (condition) {

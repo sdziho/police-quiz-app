@@ -1,4 +1,10 @@
 import '@react-native-firebase/app';
+import messaging from '@react-native-firebase/messaging';
+
+messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('FCM background', remoteMessage);
+});
+
 if (__DEV__) {
   import('./ReactotronConfig').then(() => console.log('Reactotron Configured'));
 }

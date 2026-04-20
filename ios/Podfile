@@ -17,6 +17,8 @@ end
 
 
 target 'policeQuiz' do
+  # Required for Firebase Swift pods when using static frameworks (RNFirebaseAsStaticFramework).
+  use_modular_headers!
   config = use_native_modules!
   # use_frameworks!
 

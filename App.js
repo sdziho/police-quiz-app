@@ -14,10 +14,18 @@ import MainNavigator from './src/Navigation';
 import {setUser} from './src/Welcome/userSlice';
 import {getSettings} from './src/Settings/settingsSlice';
 import {setCustomText} from 'react-native-global-props';
+import {
+  registerDeviceForPush,
+  subscribeMessagingListeners,
+} from './src/push/fcm';
+
 function App() {
   const {colors} = useTheme();
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    return subscribeMessagingListeners();
+  }, []);
   useEffect(() => {
     return initAppOpenTracking();
   }, []);
@@ -25,7 +33,9 @@ function App() {
   useEffect(() => {
     getUser()
       .then(response => {
-        dispatch(setUser(response.data()));
+        const userData = response.data();
+        dispatch(setUser(userData));
+        void registerDeviceForPush({isPremium: !!userData?.isPremium});
       })
       .finally(() => {
         dispatch(getSettings());
