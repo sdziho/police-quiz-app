@@ -1,4 +1,4 @@
-package com.policequiz
+package com.policeQuiz
 
 import android.app.Application
 import com.facebook.react.PackageList

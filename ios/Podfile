@@ -38,5 +38,52 @@ target 'policeQuiz' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # Firebase Firestore pulls gRPC. Two Xcode/clang issues:
+    # - C++20 removes std::result_of (use gnu++17 for these pods only).
+    # - Xcode 16+ diagnoses basic_seq.h `Traits::template CallSeqFactory(...)` as
+    #   "template argument list expected after template keyword" — suppress for gRPC only.
+    %w[gRPC-Core gRPC-C++].each do |name|
+      target = installer.pods_project.targets.find { |t| t.name == name }
+      next unless target
+
+      target.build_configurations.each do |cfg|
+        cfg.build_settings['CLANG_CXX_LANGUAGE_STANDARD'] = 'gnu++17'
+        cfg.build_settings['OTHER_CPLUSPLUSFLAGS'] = '$(inherited) -Wno-missing-template-arg-list-after-template-kw'
+      end
+    end
+
+    # BoringSSL-GRPC uses "-GCC_WARN_INHIBIT_ALL_WARNINGS" in per-file COMPILER_FLAGS; Clang treats
+    # the leading "-G" as the unsupported -G option for Apple targets (arm64/x86_64 simulator).
+    installer.pods_project.targets.each do |target|
+      next unless target.name.start_with?('BoringSSL-GRPC')
+      next unless target.respond_to?(:source_build_phase) && target.source_build_phase
+
+      target.source_build_phase.files.each do |file|
+        flags = file.settings && file.settings['COMPILER_FLAGS']
+        next unless flags&.include?('GCC_WARN_INHIBIT_ALL_WARNINGS')
+
+        cleaned = flags.gsub('-GCC_WARN_INHIBIT_ALL_WARNINGS', '').gsub(/\s+/, ' ').strip
+        file.settings['COMPILER_FLAGS'] = cleaned
+      end
+    end
+
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |cfg|
+        cfg.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '15.1'
+      end
+    end
+
+    # CocoaPods + use_modular_headers! emits -fmodule-map-file=.../Headers/Private/grpc/gRPC-Core.modulemap
+    # but that file is never created; gRPC-Core keeps its map at include/grpc/module.modulemap.
+    # See https://github.com/invertase/react-native-firebase/issues/7805
+    bad_grpc_modulemap = '${PODS_ROOT}/Headers/Private/grpc/gRPC-Core.modulemap'
+    good_grpc_modulemap = '${PODS_ROOT}/gRPC-Core/include/grpc/module.modulemap'
+    Dir.glob(File.join(installer.sandbox.root, '**', '*.xcconfig')).each do |path|
+      contents = File.read(path)
+      next unless contents.include?(bad_grpc_modulemap)
+
+      File.write(path, contents.gsub(bad_grpc_modulemap, good_grpc_modulemap))
+    end
   end
 end

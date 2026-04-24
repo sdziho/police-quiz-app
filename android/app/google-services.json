@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:564900068930:android:e9a10cfa241d8769c137db",
+        "mobilesdk_app_id": "1:564900068930:android:82fe035c2785ebd0c137db",
         "android_client_info": {
-          "package_name": "com.policequiz"
+          "package_name": "com.policeQuiz"
         }
       },
       "oauth_client": [],

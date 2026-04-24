@@ -1,4 +1,4 @@
-package com.policequiz
+package com.policeQuiz
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

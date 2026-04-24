@@ -7,6 +7,25 @@
   "client": [
     {
       "client_info": {
+        "mobilesdk_app_id": "1:564900068930:android:82fe035c2785ebd0c137db",
+        "android_client_info": {
+          "package_name": "com.policeQuiz"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuxzP8vcW3vwgoPO55JhHg-8Z8k-VgC8c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
         "mobilesdk_app_id": "1:564900068930:android:e9a10cfa241d8769c137db",
         "android_client_info": {
           "package_name": "com.policequiz"
